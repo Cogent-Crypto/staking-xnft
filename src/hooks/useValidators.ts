@@ -93,7 +93,7 @@ async function fetchValidators() {
         const resp = JSON.parse(val);
         if (
           Object.keys(resp.value).length > 0 &&
-          Date.now() - resp.ts < 1000 * 60* 60 * 3 // 3 hours
+          Date.now() - resp.ts < 1000 * 60* 60 * 24 // 24 hours
         ) {
           return await resp.value;
         }

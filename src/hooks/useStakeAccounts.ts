@@ -3,7 +3,7 @@ import { StakeProgram, Connection, } from "@solana/web3.js";
 import { useState, useEffect } from "react";
 import ReactXnft, {  usePublicKey, useConnection, LocalStorage } from "react-xnft";
 import { useValidators } from "./useValidators";
-import { isEqual } from "../utils";
+import type { Validator } from "./useValidators";
 
 export type StakeAccount = { 
     accountAddress: PublicKey;
@@ -13,9 +13,6 @@ export type StakeAccount = {
     activationEpoch: number;
     deactivationEpoch: number;
     status: string;
-    validatorAPY: number;
-    validatorName: string;
-    validatorImageUrl: string;
     validatorAddress: PublicKey; //vote account address
 
 }
@@ -125,6 +122,7 @@ async function fetchStakeAndPopulateAccountsWithValidatorInfo(validators, public
         stakeAccount.stakeSol = stakeAccount.stakeLamports / LAMPORTS_PER_SOL
         stakeAccount.activationEpoch = activationEpoch;
         stakeAccount.deactivationEpoch = deactivationEpoch;
+        
 
         if (deactivationEpoch < current_epoch) {
             stakeAccount.status = "inactive";
@@ -139,16 +137,7 @@ async function fetchStakeAndPopulateAccountsWithValidatorInfo(validators, public
             stakeAccount.status = "active";
         }
 
-        let validator_data = {};
         let validatorAddress = account.account.data.parsed.info.stake.delegation.voter;
-        if (validators[validatorAddress]) {
-            validator_data = validators[validatorAddress];
-        } else {
-            console.log("Validator not found in list", validatorAddress);
-        }
-        stakeAccount.validatorAPY = validator_data.apy_estimate ? validator_data.apy_estimate : 0;
-        stakeAccount.validatorName = validator_data.name ? validator_data.name : "Private Validator";
-        stakeAccount.validatorImageUrl = validator_data.image ? validator_data.image : "https://cogentcrypto.io/noimage.webp";
         stakeAccount.validatorAddress = validatorAddress;
 
         return stakeAccount as StakeAccount;
@@ -156,14 +145,17 @@ async function fetchStakeAndPopulateAccountsWithValidatorInfo(validators, public
 
     console.log("Got all stake accounts for address, loading validator data for each stake account");
     //Sort stake accounts by apy, then lamports, then address alphabetically
+
     accountsWithInfo.sort((a, b) => {
-        if (b.validatorAPY == a.validatorAPY) {
+        const aValidatorAPY = validators[a.validatorAddress.toString()].apy_estimate;
+        const bValidatorAPY = validators[b.validatorAddress.toString()].apy_estimate;
+        if (aValidatorAPY == bValidatorAPY) {
             if(b.stakeLamports == a.stakeLamports) {
                 return b.accountAddress < a.accountAddress ? 1 : -1;
             }
             return b.stakeLamports - a.stakeLamports;
         }
-        return b.validatorAPY - a.validatorAPY;
+        return bValidatorAPY - aValidatorAPY;
     });
 
     const cacheKey = "stakeaccounts" + publicKey.toString();

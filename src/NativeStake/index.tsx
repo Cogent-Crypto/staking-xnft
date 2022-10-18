@@ -1,11 +1,11 @@
 import React from "react";
 import { Stack } from "react-xnft";
-import { StakeAccountDetailScreen } from "./StakeAccountDetail";
-import { StakeAccountOverviewScreen } from "./StakeAccountOverview";
-import { SelectValidatorScreen } from "./SelectValidatorToStake"; 
-import { CreateStakeAccountScreen } from "./CreateStakeAccount";
-import { ConfirmationScreen } from "./ConfirmTransaction";
-import { SendStakeAccountScreen } from './SendStakeAccount';
+import { StakeAccountDetailScreen } from "./StakeAccountDetailScreen";
+import { StakeAccountsOverviewScreen } from "./StakeAccountsOverviewScreen";
+import { SelectValidatorScreen } from "./SelectValidatorToStakeScreen"; 
+import { CreateStakeAccountScreen } from "./CreateStakeAccountScreen";
+import { SendStakeAccountScreen } from './SendStakeAccountScreen';
+import { prettifyAddress } from '../utils'
 
 export function StakeAccountsScreen() {
   return (
@@ -19,7 +19,7 @@ export function StakeAccountsScreen() {
             };
           case "detail":
             return {
-              title: route.props.accountAddress.toString(),
+              title: "Stake Account Details　　　",
             };
           case "create":
             return {
@@ -41,7 +41,7 @@ export function StakeAccountsScreen() {
     >
       <Stack.Screen
         name={"overview"}
-        component={(props: any) => <StakeAccountOverviewScreen {...props} />}
+        component={(props: any) => <StakeAccountsOverviewScreen {...props} />}
       />
       <Stack.Screen
         name={"detail"}
