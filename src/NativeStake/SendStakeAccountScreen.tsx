@@ -29,7 +29,7 @@ export function SendStakeAccountScreen({stakeAccount, validator}: {stakeAccount:
   const [destinationAddress, setDestinationAddress] = React.useState("");
 
   const onAddressChange = async (e) => {
-    const destinationAddress = e.data.value;
+    const destinationAddress = e.target.value;
     setDestinationAddress(destinationAddress);
     
     if (destinationAddress === "") {
@@ -136,6 +136,9 @@ export function SendStakeAccountScreen({stakeAccount, validator}: {stakeAccount:
           value={destinationAddress}
           style={{ width: "100%" }}
           ></TextField>
+          <Text style={{fontSize:"8px"}}>
+            Sending a stake account permanently transfers the withdraw and delegation authority to the desination address
+          </Text>
       </View>
       <PrimaryButton key={buttonStatus} status={buttonStatus} disabled={!accountValidated} onClick={onSend} text={buttonText} />
       {/* {showInvalidKeyToast ? <Toast  message="Invalid Solana Address" status={ToastType.warn} />:""} */}

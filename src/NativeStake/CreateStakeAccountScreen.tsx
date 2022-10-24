@@ -15,7 +15,7 @@ export function CreateStakeAccountScreen(validator: Validator) {
     const nav = useNavigation();
     const [stakeAmount, setStakeAmount] = React.useState(0);
     const onSolInputChange = (e) => { 
-        const input = e.data.value.replace(/[^0-9.]/g, '').replace(/^0+/, '');;
+        const input = e.target.value.replace(/[^0-9.]/g, '').replace(/^0+/, '');;
         setStakeAmount(input);
     }
 

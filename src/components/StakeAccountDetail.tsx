@@ -18,7 +18,7 @@ export function StakeAccountDetail({stakeAccount, validator} : {stakeAccount: St
                 {prettifyAddress(stakeAccount.accountAddress.toString(), 4)}
             </Text>
             <Text>
-                {(Math.round(stakeAccount.stakeSol*100)/100).toLocaleString()} Sol Staked
+                {(Math.round(stakeAccount.stakeSol*1000)/1000).toLocaleString()} Sol Staked
             </Text>
             <ValidatorInfo {...validator} />
         </View>

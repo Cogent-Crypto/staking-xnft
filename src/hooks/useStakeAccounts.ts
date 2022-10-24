@@ -17,11 +17,14 @@ export type StakeAccount = {
 
 }
 
+export const stakeAccountRentExempt = 2282880;
+
 export type fetchedStakeAccounts = {
     stakeAccounts: StakeAccount[];
     cached: boolean;
 }
 
+export const stakeAccountCacheKey =  "stakeaccounts" // + publicKey.toString();
 
 export function useStakeAccounts() {
     
@@ -35,11 +38,11 @@ export function useStakeAccounts() {
     useEffect(() => {
 
 
-        console.log("fetching stake accounts for public key", publicKey.toString());
+        
         if (publicKey && validators) {
 
-
-            const cacheKey = "stakeaccounts" + publicKey.toString();
+            console.log("fetching stake accounts for public key", publicKey.toString());
+            const cacheKey = stakeAccountCacheKey + publicKey.toString();
             LocalStorage.get(cacheKey).then((val) => {
                 let accounts;
                 if (val) {
@@ -158,7 +161,7 @@ async function fetchStakeAndPopulateAccountsWithValidatorInfo(validators, public
         return bValidatorAPY - aValidatorAPY;
     });
 
-    const cacheKey = "stakeaccounts" + publicKey.toString();
+    const cacheKey = stakeAccountCacheKey + publicKey.toString();
     LocalStorage.set(cacheKey,JSON.stringify({
         ts: Date.now(),
         value: accountsWithInfo,

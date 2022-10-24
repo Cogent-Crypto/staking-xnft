@@ -3,7 +3,7 @@ import ReactXnft, {  usePublicKey, useConnection, LocalStorage } from "react-xnf
 import {Connection } from "@solana/web3.js";
 
 
-export function useSolBalance() {
+export function useSolBalance() { //lamports
     const publicKey = usePublicKey();
     const connection = useConnection();
     // const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/34de7f944c3ac4fa11d689afa1566e8e605e0979/", "processed");

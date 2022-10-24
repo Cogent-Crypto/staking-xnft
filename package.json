@@ -11,12 +11,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@coral-xyz/xnft-cli": "latest"
+    "@coral-xyz/xnft-cli": "^0.2.0-latest.148"
   },
   "dependencies": {
     "@solana/web3.js": "^1.63.1",
-    "axios": "^0.27.2",
     "react": "^17.0.2",
-    "react-xnft": "latest"
+    "react-xnft": "^0.2.0-latest.148"
   }
 }

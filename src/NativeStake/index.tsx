@@ -5,6 +5,7 @@ import { StakeAccountsOverviewScreen } from "./StakeAccountsOverviewScreen";
 import { SelectValidatorScreen } from "./SelectValidatorToStakeScreen"; 
 import { CreateStakeAccountScreen } from "./CreateStakeAccountScreen";
 import { SendStakeAccountScreen } from './SendStakeAccountScreen';
+import { SplitStakeAccountScreen } from './SplitStakeAccountScreen';
 import { prettifyAddress } from '../utils'
 
 export function StakeAccountsScreen() {
@@ -33,6 +34,10 @@ export function StakeAccountsScreen() {
             return {
               title: "Send Stake Account　　　",
             };
+          case "split":
+            return {
+              title: "Split Stake Account　　　",
+            };
           default:
             throw new Error("unknown route ");
         }
@@ -58,6 +63,10 @@ export function StakeAccountsScreen() {
       <Stack.Screen
         name={"send"}
         component={(props: any) => <SendStakeAccountScreen {...props} />}
+      />
+       <Stack.Screen
+        name={"split"}
+        component={(props: any) => <SplitStakeAccountScreen {...props} />}
       />
       {/* <Stack.Screen
         name={"confirm"}

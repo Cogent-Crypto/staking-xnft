@@ -72,7 +72,9 @@ export function useValidators() {
     const [validators, setValidators] = useState(null);
 
     useEffect(() => {
+      console.log("fetching validators 1");
         fetchValidators().then((validators) => {
+          console.log("fetched validators");
             setValidators(validators);
         })
     }, []);
@@ -84,11 +86,10 @@ export function useValidators() {
 
 async function fetchValidators() {
     const cacheKey = "validators" 
+    console.log("fetching validators 2");
     const val = await LocalStorage.get(cacheKey);
 
-    //
-    // Only fetch this every few hours.
-    //
+    console.log("fetching validators 3");
     if (val) {
         const resp = JSON.parse(val);
         if (
