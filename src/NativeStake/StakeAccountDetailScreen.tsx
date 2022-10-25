@@ -9,12 +9,12 @@ import type { Validator } from "../hooks/useValidators";
 import React from "react";
 
 
-export function StakeAccountDetailScreen({stakeAccount, validator} : {stakeAccount: StakeAccount, validator: Validator}) {
+export function StakeAccountDetailScreen({stakeAccount, validator, mergableStakeAccounts} : {stakeAccount: StakeAccount, validator: Validator, mergableStakeAccounts: StakeAccount[]}) {
     console.log("StakeAccountDetailScreen", stakeAccount, validator);
     const nav = useNavigation();
     const publicKey = usePublicKey();
     const connection = useConnection();
-
+    
     return (
         <View style={{ height: "100%", display: "flex", flexDirection: "column" }}>
             <View style={{ flex: 1, margin: '0px 12px' }}>
@@ -25,14 +25,17 @@ export function StakeAccountDetailScreen({stakeAccount, validator} : {stakeAccou
                 <Button>Deactivate</Button>
                 <Button onClick={() =>withdrawStake(stakeAccount, publicKey, connection, nav)}>Withdraw</Button>
                 <Button>Redelegate</Button>
-                <Button onClick={() => {nav.push("send", {stakeAccount, validator})}} >Send</Button>
-                <Button>Merge</Button>
-                <Button onClick={() => {nav.push("split", {stakeAccount, validator})}} >Split</Button> 
+                <Button onClick={() => { nav.push("send", {stakeAccount, validator})} } >Send</Button>
+                <Button onClick={ () => { console.log("merge"); nav.push("merge", {stakeAccount, validator, mergableStakeAccounts})}}>Merge</Button>
+                <Button onClick={() => { nav.push("split", {stakeAccount, validator})} } >Split</Button> 
 
             </View>
         </View>
 
     )
+}
+
+async function deactivateStake(stakeAccount: StakeAccount, publicKey: PublicKey, connection: Connection, nav: any) {
 }
 
 async function withdrawStake(stakeAccount: StakeAccount, publicKey: PublicKey, connection: Connection, nav: any) { 

@@ -94,14 +94,12 @@ export function SendStakeAccountScreen({stakeAccount, validator}: {stakeAccount:
     });
     transaction.add(authorized_staker);
 
-    let txnSignature: any
     try {
-        txnSignature = await window.xnft.sendAndConfirm(transaction)
+        let txnSignature = await window.xnft.solana.sendAndConfirm(transaction);
     } catch (error) {
         console.log("Here is the error",JSON.stringify(error));
         return
     }
-    console.log("txnSignature", txnSignature);
     nav.pop()
     nav.pop()
     nav.push("overview",{expectingStakeAccountsToUpdate: true})

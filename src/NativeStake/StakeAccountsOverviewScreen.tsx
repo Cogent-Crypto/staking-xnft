@@ -10,10 +10,9 @@ import {
 
 } from "react-xnft";
 import { useStakeAccounts } from "../hooks/useStakeAccounts";
-import { useCustomTheme } from "../hooks/useCustomTheme";
+import { useCustomTheme, statusColor } from "../hooks/useCustomTheme";
 import type { StakeAccount } from "../hooks/useStakeAccounts";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
-import { Toast } from "../components/Toast";
 import { useValidators } from "../hooks/useValidators";
 import type { Validator } from "../hooks/useValidators";
 
@@ -38,7 +37,12 @@ export function StakeAccountsOverviewScreen({expectingStakeAccountsToUpdate}: {e
 
   const clickStakeAccount = (account: StakeAccount) => {
     console.log("Clicked", JSON.stringify( account));
-    nav.push("detail", {stakeAccount: account, validator: validators[account.validatorAddress.toString()]});
+    const mergableStakeAccounts = stakeAccounts?.filter((mergeAccount) => {
+      return account.validatorAddress.toString() == mergeAccount.validatorAddress.toString()
+        && account.accountAddress.toString() != mergeAccount.accountAddress.toString()
+        && account.status == mergeAccount.status
+    })
+    nav.push("detail", {stakeAccount: account, validator: validators[account.validatorAddress.toString()], mergableStakeAccounts: mergableStakeAccounts});
     console.log("After Clicked", JSON.stringify( account));
   };
 
@@ -46,14 +50,7 @@ export function StakeAccountsOverviewScreen({expectingStakeAccountsToUpdate}: {e
     nav.push("selectvalidator");
   };
 
-  const statusColor = (status: string) => {
-    if (status == "active") return "#00d41c";
-    if (status == "inactive") return "#b8260d";
-    if (status == "deactivating" || status == "activating") return "yellow";
-    
-    console.log("got an unknown status: " + status);
-    return "white";
-  };
+
 
   return (
     <View style={{ height: "100%" }}>

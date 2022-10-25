@@ -15,7 +15,7 @@ export function CreateStakeAccountScreen(validator: Validator) {
     const nav = useNavigation();
     const [stakeAmount, setStakeAmount] = React.useState(0);
     const onSolInputChange = (e) => { 
-        const input = e.target.value.replace(/[^0-9.]/g, '').replace(/^0+/, '');;
+        const input = e.target.value.replace(/[^0-9.]/g, '').replace(/^0+/, '');
         setStakeAmount(input);
     }
 
@@ -66,7 +66,7 @@ export function CreateStakeAccountScreen(validator: Validator) {
 
         let txnSignature: any
         try {
-            txnSignature = await window.xnft.sendAndConfirm(stakeTx)
+            txnSignature = await window.xnft.solana.sendAndConfirm(stakeTx)
         } catch (error) {
             console.log("Here is the error",JSON.stringify(error));
             return

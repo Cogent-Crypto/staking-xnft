@@ -30,7 +30,7 @@ export function useStakeAccounts() {
     
     const publicKey  = usePublicKey();
     // const connection = useConnection(); 
-    const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/34de7f944c3ac4fa11d689afa1566e8e605e0979/", "processed");
+    const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/");
     const validators = useValidators();
 
     const [stakeAccounts, setStakeAccounts] = useState<fetchedStakeAccounts | null>(null);
@@ -53,6 +53,11 @@ export function useStakeAccounts() {
                     ) {
                         accounts = resp.value;
                         
+                        for (const account of accounts) {
+                            account.accountAddress = new PublicKey(account.accountAddress);
+                            account.validatorAddress = new PublicKey(account.validatorAddress);
+                        }
+
                         setStakeAccounts({
                             stakeAccounts: accounts,
                             cached: true
