@@ -69,7 +69,7 @@ export type Validator = {
 
 export function useValidators() { 
 
-    const [validators, setValidators] = useState(null);
+    const [validators, setValidators] = useState<{[key: string]: Validator} | null >(null);
 
     useEffect(() => {
       console.log("fetching validators 1");
