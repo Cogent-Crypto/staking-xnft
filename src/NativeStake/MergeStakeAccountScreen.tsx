@@ -1,4 +1,4 @@
-import ReactXnft, { View, Image, Text, Button, useConnection, usePublicKey, useNavigation } from "react-xnft";
+import ReactXnft, { View, Image, Text, Button, useConnection, usePublicKey, useNavigation, ScrollBar } from "react-xnft";
 import { PublicKey, StakeProgram, Transaction } from "@solana/web3.js";
 import React, { useState } from "react";
 import { useStakeAccounts } from "../hooks/useStakeAccounts";
@@ -111,11 +111,11 @@ export function MergeStakeAccountScreen({
                 <StakeAccountDetail stakeAccount={stakeAccount} validator={validator} />
                 
             </View>
-            <View style={{ flexGrow:"1", margin: "0px 8px", overflowY: "auto" }}>
+            <ScrollBar style={{ flexGrow:"1", margin: "0px 8px", overflowY: "auto" }}>
                 {mergeAbleAccounts.map((account)=>{
                     return <SelectableStakeAccount key={account.accountAddress+JSON.stringify(account.selected)}stakeAccount={account} validator={validator} mergeAbleAccounts={mergeAbleAccounts} setMergeAbleAccounts={setMergeAbleAccounts} />
                 }) }
-            </View>
+            </ScrollBar>
             <View
                     style={{
                     display: "flex",

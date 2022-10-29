@@ -5,10 +5,11 @@ import type { Validator } from "../hooks/useValidators";
 export function ValidatorInfo(validator: Validator) {
     return (
         <View style={{
-            fontSize: 20,
+            fontSize: "18px",
             fontWeight: "bold",
             color: "white",
             textAlign: "center",
+            margin: "auto",
         }}>
              <Image style={{height:"50px", borderRadius:"999px"}} src={validator.image} />
             <Text>

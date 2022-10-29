@@ -2,11 +2,12 @@ import React from "react";
 import { Stack } from "react-xnft";
 import { StakeAccountDetailScreen } from "./StakeAccountDetailScreen";
 import { StakeAccountsOverviewScreen } from "./StakeAccountsOverviewScreen";
-import { SelectValidatorScreen } from "./SelectValidatorToStakeScreen"; 
+import { SelectValidatorScreen } from "./SelectValidatorScreen"; 
 import { CreateStakeAccountScreen } from "./CreateStakeAccountScreen";
 import { SendStakeAccountScreen } from './SendStakeAccountScreen';
 import { SplitStakeAccountScreen } from './SplitStakeAccountScreen';
 import { MergeStakeAccountScreen } from './MergeStakeAccountScreen';
+import { RedelegateScreen } from './RedelegateScreen';
 import { prettifyAddress } from '../utils'
 
 export function StakeAccountsScreen() {
@@ -43,6 +44,10 @@ export function StakeAccountsScreen() {
             return {
               title: "Merge Stake Accounts　　　",
             };
+            case "redelegate":
+              return {
+                title: "Redelegate Stake　　　",
+              };
           default:
             throw new Error("unknown route ");
         }
@@ -76,6 +81,10 @@ export function StakeAccountsScreen() {
        <Stack.Screen
         name={"merge"}
         component={(props: any) => <MergeStakeAccountScreen {...props} />}
+      />
+       <Stack.Screen
+        name={"redelegate"}
+        component={(props: any) => <RedelegateScreen {...props} />}
       />
       {/* <Stack.Screen
         name={"confirm"}

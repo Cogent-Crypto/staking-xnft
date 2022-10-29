@@ -47,7 +47,7 @@ export function StakeAccountsOverviewScreen({expectingStakeAccountsToUpdate}: {e
   };
 
   const clickNewStakeAccount = () => {
-    nav.push("selectvalidator");
+    nav.push("selectvalidator", {onSelectScreen: "create"});
   };
 
 

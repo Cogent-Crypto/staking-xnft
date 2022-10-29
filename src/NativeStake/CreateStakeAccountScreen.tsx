@@ -7,7 +7,7 @@ import { PublicKey, Authorized, LAMPORTS_PER_SOL, Keypair, StakeProgram, Lockup 
 import { ValidatorInfo } from "../components/ValidatorInfo";
 import { PrimaryButton, ButtonStatus } from "../components/PrimaryButton";
 
-export function CreateStakeAccountScreen(validator: Validator) {
+export function CreateStakeAccountScreen({validator}: {validator: Validator} ) {
 
     const publicKey = usePublicKey();
     const connection = useConnection();
