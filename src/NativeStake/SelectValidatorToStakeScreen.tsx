@@ -6,7 +6,7 @@ import { useCustomTheme } from "../hooks/useCustomTheme";
 import type { Validator } from "../hooks/useValidators";
 import { useSolBalance } from "../hooks/useSolBalance";
 
-export function SelectValidatorScreen() {
+export function SelectValidatorScreen(onSelectScreen="") {
   const validators = useValidators();
   const [searchText, setSearchText] = useState("");
   const [validatorRenderCount, setValidatorRenderCount] = useState(20)
@@ -53,6 +53,14 @@ export function SelectValidatorScreen() {
       voteAddress: "LodezVTbz3v5GK6oULfWNFfcs7D4rtMZQkmRjnh65gq",
       nft_group: "Sentries",
     },
+    {
+      voteAddress: "2ayMCC4aizr8RGg5ptXYqu8uoxW1whNek1hE1zaAd58z",
+      nft_group: "Lifinity",
+    },
+    {
+      voteAddress: "ChaossQVry9AgexbXooZoWUTDfhT1x5zsAmTbBqa5142",
+      nft_group: "UdderChaos",
+    },
   ];
 
   const onSearchBarChange = (e) => {
@@ -82,7 +90,8 @@ export function SelectValidatorScreen() {
             <Text style={{ marginTop: "8px" }}>Helpful in the Community</Text>
             {helpfulInTheCommunity.map((voteAccount) => {
               let validator = validators[voteAccount];
-              return <ValidatorListItem key={voteAccount} validator={validator} />;
+              return <ValidatorListItem key={voteAccount} validator={validator} 
+              onSelectScreen={onSelectScreen}/>;
             })}
             <Text style={{ marginTop: "8px" }}>NFT Project Validators</Text>
             {nftValidators.map((nft_val) => {
@@ -91,13 +100,15 @@ export function SelectValidatorScreen() {
                 <ValidatorListItem
                   key={nft_val.voteAddress}
                   validator={validator}
+                  onSelectScreen={onSelectScreen}
                 />
               );
             })}
             <Text>
               <Text style={{ marginTop: "8px" }}>All Validators</Text>
               {searchResults.map((validator) => {
-                return <ValidatorListItem key={validator.vote_identity} validator={validator} />;
+                return <ValidatorListItem key={validator.vote_identity} validator={validator}
+                onSelectScreen={onSelectScreen} />;
               })}
               <Button style={{ marginTop: "8px", cursor:"pointer", width:"100%" }} onClick={()=> {console.log("hi"); setValidatorRenderCount(validatorRenderCount + 20)}}>
                 Show More Validators
@@ -114,6 +125,8 @@ export function SelectValidatorScreen() {
                   <ValidatorListItem
                   key={validator.vote_identity}
                   validator={validator}
+                  onSelectScreen={onSelectScreen}
+                  
                 />
                 )})}
                 {
@@ -133,10 +146,10 @@ export function SelectValidatorScreen() {
   );
 }
 
-function ValidatorListItem({ validator }: { validator: Validator }) {
+function ValidatorListItem({ validator, onSelectScreen }: { validator: Validator, onSelectScreen: string }) {
   const nav = useNavigation();
   const clickValidator = () => {
-    nav.push("create", validator);
+    nav.push(onSelectScreen, validator);
   };
   const THEME = useCustomTheme();
   return (
