@@ -14,7 +14,9 @@
     "@coral-xyz/xnft-cli": "0.2.0-latest.300"
   },
   "dependencies": {
+    "@soceanfi/stake-pool-sdk": "^0.4.5",
     "@solana/web3.js": "^1.63.1",
+    "@unstake-it/sol": "^0.1.2",
     "axios": "^0.27.2",
     "react": "^17.0.2",
     "react-xnft": "0.2.0-latest.300"

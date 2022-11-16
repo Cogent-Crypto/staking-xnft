@@ -37,7 +37,6 @@ export function CreateStakeAccountScreen({validator}: {validator: Validator} ) {
     }
 
     const onStake = async () =>{
-
         let stakeKeys = Keypair.generate();
         let auth = new Authorized(publicKey, publicKey);
 

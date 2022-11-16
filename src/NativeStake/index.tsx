@@ -8,7 +8,9 @@ import { SendStakeAccountScreen } from './SendStakeAccountScreen';
 import { SplitStakeAccountScreen } from './SplitStakeAccountScreen';
 import { MergeStakeAccountScreen } from './MergeStakeAccountScreen';
 import { RedelegateScreen } from './RedelegateScreen';
+import { InstantUnstakeScreen } from './InstantUnstakeScreen';
 import { prettifyAddress } from '../utils'
+
 
 export function StakeAccountsScreen() {
   return (
@@ -86,6 +88,10 @@ export function StakeAccountsScreen() {
         name={"redelegate"}
         component={(props: any) => <RedelegateScreen {...props} />}
       />
+      {/* <Stack.Screen
+        name={"instantunstake"}
+        component={(props: any) => <InstantUnstakeScreen {...props} />}
+      /> */}
       {/* <Stack.Screen
         name={"confirm"}
         component={(props: any) => <ConfirmTransaction {...props} />}

@@ -47,7 +47,12 @@ import {
     }
 
     function onSplitAmountChange(e) {
-      const input = e.target.value.replace(/[^0-9.]/g, '');
+      let input = e.target.value.replace(/[^0-9.]/g, '').replace(/^0+/, '');
+      //remove all . except the first one
+      input = input.replace(/\./g, (c, i, text) => text.indexOf(c) === i ? c : '')
+      input = input.slice(0,10)
+
+      
       if (input == "") {
         setSplitAmountDisplay("0");
         setSplitAmount(0);
@@ -71,11 +76,11 @@ import {
 
       if (splitLamports > stakeAccount.stakeLamports) {
         splitLamports = stakeAccount.stakeLamports - LAMPORTS_PER_SOL/1000000
-
+        input = (splitLamports / LAMPORTS_PER_SOL).toString();
       }
       splitAmount = splitLamports / LAMPORTS_PER_SOL;
       setSplitAmount(splitAmount)
-      setSplitAmountDisplay(splitAmount.toString())
+      setSplitAmountDisplay(input)
     }
 
     const onSplitStakeAccount = async () => {
@@ -100,6 +105,7 @@ import {
       nav.pop()
       nav.pop()
       nav.push("overview",{expectingStakeAccountsToUpdate: true})
+
     }
   
     return (

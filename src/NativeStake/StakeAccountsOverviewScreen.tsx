@@ -25,13 +25,14 @@ export function StakeAccountsOverviewScreen({expectingStakeAccountsToUpdate}: {e
   const THEME = useCustomTheme();
   console.log("Theme", THEME);
 
-  if (fetchedStakeAccounts === null) {
-    return <Loading></Loading>;
+  if (fetchedStakeAccounts === null || validators === null) {
+    
+    return (<View key="loading" tw="flex items-center justify-center h-screen align-top -top-10">
+    <Loading tw="h-35 "></Loading>
+    </View>)
+    ;
   }
 
-  if (validators === null) {
-    return <Loading></Loading>;
-  }
 
   const {cached, stakeAccounts} = fetchedStakeAccounts
 
@@ -121,3 +122,4 @@ export function StakeAccountsOverviewScreen({expectingStakeAccountsToUpdate}: {e
     </View>
   )
 }
+ 

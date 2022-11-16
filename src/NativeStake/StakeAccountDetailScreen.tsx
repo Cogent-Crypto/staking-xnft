@@ -21,9 +21,9 @@ export function StakeAccountDetailScreen({stakeAccount, validator, mergableStake
             
                 <StakeAccountDetail stakeAccount={stakeAccount} validator={validator} />
                 
-                <Button style={{width: "150px"}}>Instant Unstake</Button>
-                <Button>Deactivate</Button>
-                <Button onClick={() =>withdrawStake(stakeAccount, publicKey, connection, nav)}>Withdraw</Button>
+                {/* <Button style={{width: "150px"}}>Instant Unstake</Button> */}
+                <Button>Unstake</Button>
+                <Button onClick={() => withdrawStake(stakeAccount, publicKey, connection, nav)}>Withdraw</Button>
                 <Button onClick={() => { nav.push("selectvalidator", {onSelectScreen: "redelegate", data: stakeAccount}) }}>Redelegate</Button>
                 <Button onClick={() => { nav.push("send", {stakeAccount, validator})} } >Send</Button>
                 <Button onClick={ () => { console.log("merge"); nav.push("merge", {stakeAccount, validator, mergableStakeAccounts})}}>Merge</Button>
