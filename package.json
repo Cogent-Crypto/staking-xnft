@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@soceanfi/stake-pool-sdk": "^0.4.5",
+    "@soceanfi/solana-stake-sdk": "0.1.0",
     "@solana/web3.js": "^1.63.1",
     "@unstake-it/sol": "^0.1.2",
     "axios": "^0.27.2",

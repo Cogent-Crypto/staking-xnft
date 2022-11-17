@@ -52,9 +52,9 @@ export function InstantUnstakeScreen(stakeAccount: StakeAccount) {
 
   let availableLiquidityLamports: number = 0;
   let unStakeLamportsWithRent: number;
-  if (validators == null) {
-    return "Error Loading Validators";
-  }
+//   if (validators == null) {
+//     return "Error Loading Validators";
+//   }
 
   let unstakeFees = 0;
   let unstakeLamports = 0;
