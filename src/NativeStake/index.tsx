@@ -88,10 +88,10 @@ export function StakeAccountsScreen() {
         name={"redelegate"}
         component={(props: any) => <RedelegateScreen {...props} />}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name={"instantunstake"}
         component={(props: any) => <InstantUnstakeScreen {...props} />}
-      />
+      /> */}
       {/* <Stack.Screen
         name={"confirm"}
         component={(props: any) => <ConfirmTransaction {...props} />}
