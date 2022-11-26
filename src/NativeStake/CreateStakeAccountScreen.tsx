@@ -7,14 +7,14 @@ import { PublicKey, Authorized, LAMPORTS_PER_SOL, Keypair, StakeProgram, Lockup 
 import { ValidatorInfo } from "../components/ValidatorInfo";
 import { PrimaryButton, ButtonStatus } from "../components/PrimaryButton";
 
-export function CreateStakeAccountScreen({validator}: {validator: Validator} ) {
+export function CreateStakeAccountScreen({ validator }: { validator: Validator }) {
 
     const publicKey = usePublicKey();
     const connection = useConnection();
     const solbalance = useSolBalance()
     const nav = useNavigation();
     const [stakeAmount, setStakeAmount] = React.useState(0);
-    const onSolInputChange = (e) => { 
+    const onSolInputChange = (e) => {
         const input = e.target.value.replace(/[^0-9.]/g, '').replace(/^0+/, '');
         setStakeAmount(input);
     }
@@ -36,16 +36,16 @@ export function CreateStakeAccountScreen({validator}: {validator: Validator} ) {
         buttonText = "Insufficient SOL";
     }
 
-    const onStake = async () =>{
+    const onStake = async () => {
         let stakeKeys = Keypair.generate();
         let auth = new Authorized(publicKey, publicKey);
 
         let stakeTx = StakeProgram.createAccount({
-        authorized: auth,
-        fromPubkey: publicKey,
-        lamports: stakeAmount * LAMPORTS_PER_SOL,
-        lockup: new Lockup(0, 0, publicKey),
-        stakePubkey: stakeKeys.publicKey
+            authorized: auth,
+            fromPubkey: publicKey,
+            lamports: stakeAmount * LAMPORTS_PER_SOL,
+            lockup: new Lockup(0, 0, publicKey),
+            stakePubkey: stakeKeys.publicKey
         });
 
         let recentBlockhash = await connection.getLatestBlockhash();
@@ -53,9 +53,9 @@ export function CreateStakeAccountScreen({validator}: {validator: Validator} ) {
         let votePubkey = new PublicKey(validator.vote_identity);
 
         let delegateIx = StakeProgram.delegate({
-        authorizedPubkey: publicKey,
-        stakePubkey: stakeKeys.publicKey,
-        votePubkey: votePubkey
+            authorizedPubkey: publicKey,
+            stakePubkey: stakeKeys.publicKey,
+            votePubkey: votePubkey
         });
         console.log("selected_validator", validator);
         stakeTx.add(delegateIx);
@@ -67,35 +67,29 @@ export function CreateStakeAccountScreen({validator}: {validator: Validator} ) {
         try {
             txnSignature = await window.xnft.solana.sendAndConfirm(stakeTx)
         } catch (error) {
-            console.log("Here is the error",JSON.stringify(error));
+            console.log("Here is the error", JSON.stringify(error));
             return
         }
         console.log("txnSignature", txnSignature);
         nav.pop()
         nav.pop()
-        nav.push("overview",{expectingStakeAccountsToUpdate: true})
-
-
-
-
-
-        
+        nav.push("overview", { expectingStakeAccountsToUpdate: true })
     }
 
     return (
 
         <View style={{ height: "100%", display: "flex", flexDirection: "column" }}>
-            <View style={{ flex: 1, paddingTop: "20px",margin: '0px 12px' }}>
+            <View style={{ flex: 1, paddingTop: "20px", margin: '0px 12px' }}>
                 <ValidatorInfo {...validator} />
-                    <TextField
+                <TextField
                     onChange={onSolInputChange}
                     value={stakeAmount}
                     style={{ width: "100%" }}
-                    ></TextField>
-                    <Text>{(solbalance/LAMPORTS_PER_SOL).toFixed(2)} Sol in wallet</Text>
+                ></TextField>
+                <Text>{(solbalance / LAMPORTS_PER_SOL).toFixed(2)} Sol in wallet</Text>
             </View>
             <PrimaryButton status={buttonStatus} disabled={buttonDisabled} text={buttonText} onClick={onStake} />
-            
+
         </View>
 
         // <View style={{ height: "100%" }}>

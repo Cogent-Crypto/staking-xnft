@@ -12,6 +12,7 @@ import { useValidators } from "../hooks/useValidators";
 import { useCustomTheme } from "../hooks/useCustomTheme";
 import type { Validator } from "../hooks/useValidators";
 import { useSolBalance } from "../hooks/useSolBalance";
+import { LoadingScreen } from "../components/LoadingScreen";
 
 export function SelectValidatorScreen({
   onSelectScreen,
@@ -25,7 +26,7 @@ export function SelectValidatorScreen({
   const [validatorRenderCount, setValidatorRenderCount] = useState(20);
 
   if (!validators) {
-    return <Text>Loading...</Text>;
+    return <LoadingScreen />;
   }
 
   const helpfulInTheCommunity = [
@@ -210,7 +211,7 @@ function ValidatorListItem({
     } else {
       nav.push(onSelectScreen, { validator: validator, stakeAccount: selectScreenData });
     }
-    
+
   };
   const THEME = useCustomTheme();
   return (

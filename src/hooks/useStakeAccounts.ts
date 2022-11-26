@@ -1,11 +1,11 @@
 import { AccountInfo, LAMPORTS_PER_SOL, ParsedAccountData, PublicKey } from "@solana/web3.js";
 import { StakeProgram, Connection, } from "@solana/web3.js";
 import { useState, useEffect } from "react";
-import ReactXnft, {  usePublicKey, useConnection, LocalStorage } from "react-xnft";
+import ReactXnft, { usePublicKey, useConnection, LocalStorage } from "react-xnft";
 import { useValidators } from "./useValidators";
 import type { Validator } from "./useValidators";
 
-export type StakeAccount = { 
+export type StakeAccount = {
     accountAddress: PublicKey;
     accountLamports: number;
     stakeLamports: number; //lamports
@@ -14,7 +14,6 @@ export type StakeAccount = {
     deactivationEpoch: number;
     status: string;
     validatorAddress: PublicKey; //vote account address
-
 }
 
 export const stakeAccountRentExempt = 2282880;
@@ -24,11 +23,11 @@ export type fetchedStakeAccounts = {
     cached: boolean;
 }
 
-export const stakeAccountCacheKey =  "stakeaccounts" // + publicKey.toString();
+export const stakeAccountCacheKey = "stakeaccounts" // + publicKey.toString();
 
 export function useStakeAccounts() {
-    
-    const publicKey  = usePublicKey();
+
+    const publicKey = usePublicKey();
     // const connection = useConnection(); 
     const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/");
     const validators = useValidators();
@@ -36,9 +35,6 @@ export function useStakeAccounts() {
     const [stakeAccounts, setStakeAccounts] = useState<fetchedStakeAccounts | null>(null);
 
     useEffect(() => {
-
-
-        
         if (publicKey && validators) {
 
             console.log("fetching stake accounts for public key", publicKey.toString());
@@ -48,11 +44,11 @@ export function useStakeAccounts() {
                 if (val) {
                     const resp = JSON.parse(val);
                     if (
-                    Object.keys(resp.value).length > 0 &&
-                    Date.now() - resp.ts < 1000 * 60 * 5 * 60 // 5 hours
+                        Object.keys(resp.value).length > 0 &&
+                        Date.now() - resp.ts < 1000 * 60 * 5 * 60 // 5 hours
                     ) {
                         accounts = resp.value;
-                        
+
                         for (const account of accounts) {
                             account.accountAddress = new PublicKey(account.accountAddress);
                             account.validatorAddress = new PublicKey(account.validatorAddress);
@@ -66,7 +62,7 @@ export function useStakeAccounts() {
                 }
 
                 fetchStakeAndPopulateAccountsWithValidatorInfo(validators, publicKey, connection).then((newStakeAccounts) => {
-                    
+
                     if (JSON.stringify(accounts) != JSON.stringify(newStakeAccounts)) {
                         console.log("new stake accounts", JSON.stringify(newStakeAccounts));
                         console.log("old stake accounts", JSON.stringify(accounts));
@@ -76,18 +72,18 @@ export function useStakeAccounts() {
                             cached: false
                         });
                     }
-    
-                    
+
+
                 })
-                
+
             })
 
-           
+
         }
-      
-        
+
+
     }, [validators, publicKey]);
-    
+
     return stakeAccounts;
 }
 
@@ -96,18 +92,18 @@ async function fetchStakeAndPopulateAccountsWithValidatorInfo(validators, public
         commitment: "processed",
         filters: [
             {
-            memcmp: {
-                offset: 44,
-                bytes: publicKey.toString()
-            }
+                memcmp: {
+                    offset: 44,
+                    bytes: publicKey.toString()
+                }
             },
             {
-            dataSize: 200
+                dataSize: 200
             }
         ]
     });
-   
-  
+
+
     console.log("accounts", accounts);
 
     if (accounts.length === 0) {
@@ -130,7 +126,7 @@ async function fetchStakeAndPopulateAccountsWithValidatorInfo(validators, public
         stakeAccount.stakeSol = stakeAccount.stakeLamports / LAMPORTS_PER_SOL
         stakeAccount.activationEpoch = activationEpoch;
         stakeAccount.deactivationEpoch = deactivationEpoch;
-        
+
 
         if (deactivationEpoch < current_epoch) {
             stakeAccount.status = "inactive";
@@ -158,7 +154,7 @@ async function fetchStakeAndPopulateAccountsWithValidatorInfo(validators, public
         const aValidatorAPY = validators[a.validatorAddress.toString()].apy_estimate;
         const bValidatorAPY = validators[b.validatorAddress.toString()].apy_estimate;
         if (aValidatorAPY == bValidatorAPY) {
-            if(b.stakeLamports == a.stakeLamports) {
+            if (b.stakeLamports == a.stakeLamports) {
                 return b.accountAddress < a.accountAddress ? 1 : -1;
             }
             return b.stakeLamports - a.stakeLamports;
@@ -167,12 +163,12 @@ async function fetchStakeAndPopulateAccountsWithValidatorInfo(validators, public
     });
 
     const cacheKey = stakeAccountCacheKey + publicKey.toString();
-    LocalStorage.set(cacheKey,JSON.stringify({
+    LocalStorage.set(cacheKey, JSON.stringify({
         ts: Date.now(),
         value: accountsWithInfo,
-      })
+    })
     );
-    return accountsWithInfo; 
+    return accountsWithInfo;
 
 }
 

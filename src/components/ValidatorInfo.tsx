@@ -10,20 +10,27 @@ export function ValidatorInfo(validator: Validator) {
             color: "white",
             textAlign: "center",
             margin: "auto",
+            display: "flex",
+            flexDirection: "column"
         }}>
-             <Image style={{height:"50px", borderRadius:"999px"}} src={validator.image} />
-            <Text>
-                {validator.name}
-            </Text>
-            {validator.website ?  
-                (<Text>
-                    {validator.website}
-                </Text>) : 
-                ""}
-            <Text>
-                {validator.apy_estimate}% APY
-            </Text> 
-           
+            <View style={{ display: "flex", alignItems: "center", margin: "0 3px" }}>
+                <View tw="flex-1">
+                    <Image style={{ height: "40px", maxWidth: "unset", borderRadius: "999px", alignSelf: "center" }} src={validator.image} />
+                </View>
+                <Text>
+                    {validator.name}
+                </Text>
+                <View tw="flex-1">
+                </View>
+            </View>
+            {validator.delinquent && <View tw="text-red-500">Validator is currently delinquent.</View>}
+            {/* {
+                validator.website ?
+                    (<Text>
+                        {validator.website}
+                    </Text>) :
+                    ""
+            } */}
         </View>
     )
 }
