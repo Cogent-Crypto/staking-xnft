@@ -1,4 +1,4 @@
-import { Svg, Path } from "react-xnft";
+import { View, Svg, Path } from "react-xnft";
 
 export function LinkIcon(props) {
   return (
@@ -10,4 +10,13 @@ export function LinkIcon(props) {
       />
     </Svg>
   );
+}
+
+export function ExpandIcon({ expanded, ...props }) {
+  return (
+    <View {...props} style={{ transform: expanded ? "rotate(-90deg)" : "rotate(90deg)" }}>
+      <Svg width="24px" height="24px" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
+        <Path d="m412.55 939.95 24.289 24.293 355.65-355.65-355.65-355.65-24.289 24.289 331.36 331.36z" fill="#fff" />
+      </Svg>
+    </View>)
 }

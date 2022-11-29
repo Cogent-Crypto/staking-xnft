@@ -78,7 +78,7 @@ export function CreateStakeAccountScreen({ validator }: { validator: Validator }
 
     return (
 
-        <View style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+        <View tw="h-full flex flex-col">
             <View style={{ flex: 1, paddingTop: "20px", margin: '0px 12px' }}>
                 <ValidatorInfo {...validator} />
                 <TextField

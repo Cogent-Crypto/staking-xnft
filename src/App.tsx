@@ -1,10 +1,6 @@
-import React, { useState, useEffect } from "react";
-import ReactXnft, { Text, View, useConnection, usePublicKey, Loading, useTheme } from "react-xnft";
-import Validator from "./components/Validator";
-import { PublicKey, Transaction } from "@solana/web3.js";
-import { useStakeAccounts } from "./hooks/useStakeAccounts";
+import React from "react";
+import ReactXnft, { View } from "react-xnft";
 import { StakeAccountsScreen } from "./NativeStake";
-import { THEME } from "./utils/theme";
 //
 // On connection to the host environment, warm the cache.
 //
