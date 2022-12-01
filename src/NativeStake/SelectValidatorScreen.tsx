@@ -258,7 +258,17 @@ const ValidatorListItem = ({
               {validator.apy_estimate}% APY
             </Text>
           </View>
-          {isExpanded && <View tw="text-white">Expanded!</View>}
+          {isExpanded &&
+            <View tw="py-2 py-1 text-white text-xs">
+              {validator.website &&
+                <View onClick={() => window.xnft.openWindow(validator.website)} tw="py-1">
+                  {validator.website}
+                </View>}
+              <View tw="py-1">
+                {validator.description}
+              </View>
+            </View>
+          }
         </View>
 
         <ExpandIcon expanded={isExpanded} onClick={() => handleExpand()} tw={`transition-transform ml-auto min-w-[24px]`} />
