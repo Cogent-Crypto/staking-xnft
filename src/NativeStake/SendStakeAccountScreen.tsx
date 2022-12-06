@@ -16,7 +16,7 @@ import { ValidatorInfo } from "../components/ValidatorInfo";
 import { StakeAccountDetail } from "../components/StakeAccountDetail";
 import { prettifyAddress } from "../utils";
 
-export function SendStakeAccountScreen({stakeAccount, validator}: {stakeAccount: StakeAccount, validator: Validator}) {
+export function SendStakeAccountScreen({ stakeAccount, validator }: { stakeAccount: StakeAccount, validator: Validator }) {
   const connection = useConnection();
   const publicKey = usePublicKey();
   const nav = useNavigation();
@@ -31,37 +31,37 @@ export function SendStakeAccountScreen({stakeAccount, validator}: {stakeAccount:
   const onAddressChange = async (e) => {
     const destinationAddress = e.target.value;
     setDestinationAddress(destinationAddress);
-    
+
     if (destinationAddress === "") {
-        setAccountValidated(false);
-        setAddressError(false);
-        return;
-      }
-    
+      setAccountValidated(false);
+      setAddressError(false);
+      return;
+    }
+
     let pubkey;
     try {
-        pubkey = new PublicKey(destinationAddress);
+      pubkey = new PublicKey(destinationAddress);
     } catch (err) {
-        console.log("Invalid address from pubkey failure", addressError, destinationAddress, err);
-        setAddressError(true);
-        return;
+      console.log("Invalid address from pubkey failure", addressError, destinationAddress, err);
+      setAddressError(true);
+      return;
     }
 
     const account = await connection.getAccountInfo(pubkey);
 
     // Null data means the account has no lamports. This is valid.
     if (!account) {
-        setIsFreshAccount(true);
-        setAccountValidated(true);
-        setAddressError(false);
-    return;
+      setIsFreshAccount(true);
+      setAccountValidated(true);
+      setAddressError(false);
+      return;
     }
 
     // Only allow system program accounts to be given. ATAs only!
     if (!account.owner.equals(SystemProgram.programId)) {
-        setAddressError(true);
-        console.log("Invalid address from ownership", addressError, destinationAddress);
-        return;
+      setAddressError(true);
+      console.log("Invalid address from ownership", addressError, destinationAddress);
+      return;
     }
 
     // The account data has been successfully validated.
@@ -95,18 +95,18 @@ export function SendStakeAccountScreen({stakeAccount, validator}: {stakeAccount:
     transaction.add(authorized_staker);
 
     try {
-        let txnSignature = await window.xnft.solana.sendAndConfirm(transaction);
+      let txnSignature = await window.xnft.solana.sendAndConfirm(transaction);
     } catch (error) {
-        console.log("Here is the error",JSON.stringify(error));
-        return
+      console.log("Here is the error", JSON.stringify(error));
+      return
     }
     nav.pop()
     nav.pop()
-    nav.push("overview",{expectingStakeAccountsToUpdate: true})
+    nav.push("overview", { expectingStakeAccountsToUpdate: true })
 
   };
 
-  let buttonText = accountValidated ? `Send ${(stakeAccount.stakeLamports/LAMPORTS_PER_SOL).toFixed(2)} Staked SOL ${prettifyAddress(destinationAddress, 4)}` : "Send";
+  let buttonText = accountValidated ? `Send ${(stakeAccount.stakeLamports / LAMPORTS_PER_SOL).toFixed(2)} Staked SOL ${prettifyAddress(destinationAddress, 4)}` : "Send";
   let buttonStatus = ButtonStatus.Ok;
   let disabled = false;
   console.log("Address error", addressError);
@@ -118,9 +118,9 @@ export function SendStakeAccountScreen({stakeAccount, validator}: {stakeAccount:
   }
   if (!accountValidated) {
     disabled = true;
-  } 
+  }
 
-  if(isFreshAccount) {
+  if (isFreshAccount) {
     buttonText = "Send (Destination is a New Account)";
   }
 
@@ -129,14 +129,14 @@ export function SendStakeAccountScreen({stakeAccount, validator}: {stakeAccount:
     <View style={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <View style={{ flex: 1, margin: '0px 12px' }}>
         <StakeAccountDetail stakeAccount={stakeAccount} validator={validator} />
-          <TextField
+        <TextField
           onChange={onAddressChange}
           value={destinationAddress}
           style={{ width: "100%" }}
-          ></TextField>
-          <Text style={{fontSize:"10px"}}>
-            Sending a stake account permanently transfers the withdraw and delegation authority to the desination address
-          </Text>
+        ></TextField>
+        <Text style={{ fontSize: "10px" }}>
+          Sending a stake account permanently transfers the withdraw and delegation authority to the desination address
+        </Text>
       </View>
       <PrimaryButton key={buttonStatus} status={buttonStatus} disabled={!accountValidated} onClick={onSend} text={buttonText} />
       {/* {showInvalidKeyToast ? <Toast  message="Invalid Solana Address" status={ToastType.warn} />:""} */}

@@ -37,6 +37,10 @@ export function CreateStakeAccountScreen({ validator }: { validator: Validator }
     }
 
     const onStake = async () => {
+        if (buttonDisabled) {
+            return
+        }
+
         let stakeKeys = Keypair.generate();
         let auth = new Authorized(publicKey, publicKey);
 
@@ -79,11 +83,10 @@ export function CreateStakeAccountScreen({ validator }: { validator: Validator }
     return (
 
         <View tw="h-full flex flex-col">
+            <ValidatorInfo {...validator} />
             <View style={{ flex: 1, paddingTop: "20px", margin: '0px 12px' }}>
-                <ValidatorInfo {...validator} />
                 <TextField
                     onChange={onSolInputChange}
-                    value={stakeAmount}
                     style={{ width: "100%" }}
                 ></TextField>
                 <Text>{(solbalance / LAMPORTS_PER_SOL).toFixed(2)} Sol in wallet</Text>

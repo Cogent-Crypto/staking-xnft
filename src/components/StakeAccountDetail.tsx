@@ -6,6 +6,7 @@ import { prettifyAddress } from "../utils";
 import { ValidatorInfo } from "../components/ValidatorInfo";
 import { useCustomTheme, statusColor } from "../hooks/useCustomTheme";
 import { LinkIcon } from "./Icons";
+import { StakeRewardHistory } from "./StakeRewardHistory";
 
 const SubTitle = ({ children }: { children: React.ReactNode }) => (
     <Text style={{ color: "#A9A9A9", fontSize: ".8rem", lineHeight: 0.2 }}>
@@ -87,8 +88,8 @@ export function StakeAccountDetail({ stakeAccount, validator }: { stakeAccount: 
                         Status
                     </SubTitle>
                 </View>
-
             </View>
-        </View >
+            <StakeRewardHistory stakeAccountPK={stakeAccount.accountAddress} />
+        </View>
     )
 }
