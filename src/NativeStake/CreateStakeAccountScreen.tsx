@@ -15,7 +15,8 @@ export function CreateStakeAccountScreen({ validator }: { validator: Validator }
     const nav = useNavigation();
     const [stakeAmount, setStakeAmount] = React.useState(0);
     const onSolInputChange = (e) => {
-        const input = e.target.value.replace(/[^0-9.]/g, '').replace(/^0+/, '');
+        let input = e.target.value.replace(/[^0-9.]/g, '').replace(/^0+/, '');
+        input = input.replace(/\./g, (c, i, text) => text.indexOf(c) === i ? c : '')
         setStakeAmount(input);
     }
 
@@ -88,6 +89,7 @@ export function CreateStakeAccountScreen({ validator }: { validator: Validator }
                 <TextField
                     onChange={onSolInputChange}
                     style={{ width: "100%" }}
+                    value={stakeAmount}
                 ></TextField>
                 <Text>{(solbalance / LAMPORTS_PER_SOL).toFixed(2)} Sol in wallet</Text>
             </View>
