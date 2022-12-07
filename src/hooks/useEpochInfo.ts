@@ -11,7 +11,21 @@ export type EpochInfo = {
     elapsed_seconds: Number,
     remaining_seconds: Number,
     epochs_per_year: Number
+    remaining_dhm: String,
 }
+
+function secondsToDhm(seconds) {
+    seconds = Number(seconds)
+    const d = Math.floor(seconds / (3600 * 24))
+    const h = Math.floor((seconds % (3600 * 24)) / 3600)
+    const m = Math.floor((seconds % 3600) / 60)
+    // console.log(d, h, m, s)
+
+    const dDisplay = d > 0 ? d + "d " : ""
+    const hDisplay = h > 0 ? h + "h " : ""
+    const mDisplay = m > 0 ? m + "m" : ""
+    return (dDisplay + hDisplay + mDisplay).trim()
+  }
 
 export function useEpochInfo() {
     const [epochInfo, setEpochInfo] = useState<EpochInfo | null>(null);
@@ -49,7 +63,7 @@ async function fetchEpochInfo() {
     const cacheKey = "epochinfo";
     const epochInfo = await fetch("https://api.stakewiz.com/epoch_info").then((res) => res.json())
     epochInfo.start_time = new Date(epochInfo.start_time);
-    console.log("sol balances", epochInfo);
+    epochInfo.remaining_dhm = secondsToDhm(epochInfo.remaining_seconds);
     LocalStorage.set(cacheKey, JSON.stringify({ value: epochInfo, ts: Date.now() }));
 
     return epochInfo;
