@@ -52,8 +52,11 @@ export function useStakeAccounts() {
                         for (const account of accounts) {
                             account.accountAddress = new PublicKey(account.accountAddress);
                             account.validatorAddress = new PublicKey(account.validatorAddress);
+                            account.accountLamports = parseInt(account.accountLamports);
+                            account.stakeLamports = parseInt(account.stakeLamports);
+                            account.activationEpoch = parseInt(account.activationEpoch);
+                            account.deactivationEpoch = parseInt(account.deactivationEpoch);
                         }
-
                         setStakeAccounts({
                             stakeAccounts: accounts,
                             cached: true
@@ -64,6 +67,10 @@ export function useStakeAccounts() {
                 fetchStakeAndPopulateAccountsWithValidatorInfo(validators, publicKey, connection).then((newStakeAccounts) => {
 
                     if (JSON.stringify(accounts) != JSON.stringify(newStakeAccounts)) {
+                        for (const account of newStakeAccounts) {
+                            account.accountAddress = new PublicKey(account.accountAddress);
+                            account.validatorAddress = new PublicKey(account.validatorAddress);
+                        }
                         console.log("new stake accounts", JSON.stringify(newStakeAccounts));
                         console.log("old stake accounts", JSON.stringify(accounts));
                         setStakeAccounts(null)

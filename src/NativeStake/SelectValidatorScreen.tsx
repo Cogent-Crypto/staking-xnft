@@ -10,7 +10,7 @@ import React, { useState } from "react";
 import { useValidators } from "../hooks/useValidators";
 import { useCustomTheme } from "../hooks/useCustomTheme";
 import type { Validator } from "../hooks/useValidators";
-import { ExpandIcon } from "../components/Icons"
+import { ExpandIcon } from "../components/Icons";
 import { LoadingScreen } from "../components/LoadingScreen";
 
 const helpfulInTheCommunity = [
@@ -22,7 +22,6 @@ const helpfulInTheCommunity = [
   "juicQdAnksqZ5Yb8NQwCLjLWhykvXGktxnQCDvMe6Nx",
   "NoRDTy8jpkpjPR7yxahVdoEUPngbojPhFU5jb8TtY4m",
 ];
-
 
 const nftValidators = [
   {
@@ -74,13 +73,16 @@ export function SelectValidatorScreen({
   const [searchText, setSearchText] = useState("");
   const [validatorRenderCount, setValidatorRenderCount] = useState(20);
 
-
   if (!validators) {
     return <LoadingScreen />;
   }
 
-  const communityValidators = helpfulInTheCommunity.map(voteAccount => validators[voteAccount])
-  const nftProjectValidators = nftValidators.map(({ voteAddress }) => validators[voteAddress])
+  const communityValidators = helpfulInTheCommunity.map(
+    (voteAccount) => validators[voteAccount]
+  );
+  const nftProjectValidators = nftValidators.map(
+    ({ voteAddress }) => validators[voteAddress]
+  );
 
   const onSearchBarChange = (e) => {
     const text = e.target.value;
@@ -108,9 +110,24 @@ export function SelectValidatorScreen({
         ></TextField>
         {searchText == "" ? (
           <View>
-            <ValidatorListContainer title={"Helpful in the Community"} onSelectScreen={onSelectScreen} selectScreenData={data} validators={communityValidators} />
-            <ValidatorListContainer title={"NFT Project Validators"} onSelectScreen={onSelectScreen} selectScreenData={data} validators={nftProjectValidators} />
-            <ValidatorListContainer title="All Validators" onSelectScreen={onSelectScreen} selectScreenData={data} validators={searchResults} />
+            <ValidatorListContainer
+              title={"Helpful in the Community"}
+              onSelectScreen={onSelectScreen}
+              selectScreenData={data}
+              validators={communityValidators}
+            />
+            <ValidatorListContainer
+              title={"NFT Project Validators"}
+              onSelectScreen={onSelectScreen}
+              selectScreenData={data}
+              validators={nftProjectValidators}
+            />
+            <ValidatorListContainer
+              title="All Validators"
+              onSelectScreen={onSelectScreen}
+              selectScreenData={data}
+              validators={searchResults}
+            />
             <Button
               style={{ marginTop: "8px", cursor: "pointer", width: "100%" }}
               onClick={() => {
@@ -125,7 +142,12 @@ export function SelectValidatorScreen({
           <View>
             {searchResults.length > 0 ? (
               <View>
-                <ValidatorListContainer title="Search Results" onSelectScreen={onSelectScreen} selectScreenData={data} validators={searchResults} />
+                <ValidatorListContainer
+                  title="Search Results"
+                  onSelectScreen={onSelectScreen}
+                  selectScreenData={data}
+                  validators={searchResults}
+                />
                 {searchResults.length == validatorRenderCount && (
                   <Button
                     style={{
@@ -151,17 +173,23 @@ export function SelectValidatorScreen({
   );
 }
 
-
-const ValidatorListContainer = ({ validators, onSelectScreen, selectScreenData, title }: {
+const ValidatorListContainer = ({
+  validators,
+  onSelectScreen,
+  selectScreenData,
+  title,
+}: {
   validators: Validator[];
   onSelectScreen: string;
   selectScreenData: any;
-  title: any
+  title: any;
 }) => {
   const [currentIndex, setCurrentIndex] = useState(null);
 
   const handleExpandClick = (id: any) => {
-    currentIndex === id ? setCurrentIndex(() => null) : setCurrentIndex(() => id);
+    currentIndex === id
+      ? setCurrentIndex(() => null)
+      : setCurrentIndex(() => id);
   };
 
   return (
@@ -181,9 +209,8 @@ const ValidatorListContainer = ({ validators, onSelectScreen, selectScreenData, 
         );
       })}
     </View>
-  )
-}
-
+  );
+};
 
 const ValidatorListItem = ({
   validator,
@@ -205,16 +232,18 @@ const ValidatorListItem = ({
 
   const handleExpand = () => {
     handleExpandClick(index);
-  }
+  };
 
   const clickValidator = () => {
     console.log("onSelectScreen", onSelectScreen);
     if (onSelectScreen == "create") {
       nav.push(onSelectScreen, { validator: validator });
     } else {
-      nav.push(onSelectScreen, { validator: validator, stakeAccount: selectScreenData });
+      nav.push(onSelectScreen, {
+        validator: validator,
+        stakeAccount: selectScreenData,
+      });
     }
-
   };
   return (
     <View
@@ -243,36 +272,37 @@ const ValidatorListItem = ({
           onClick={clickValidator}
           style={{ height: "44px", borderRadius: "9999px" }}
         />
-        <View tw="w-full"
-          onClick={clickValidator} >
+        <View tw="w-full" onClick={clickValidator}>
           <Text>{validator.name}</Text>
 
-          <View
-            tw="flex mt--2 text-sm justify-between"
-          >
+          <View tw="flex mt--2 text-sm justify-between">
             <Text tw="font-light">
               {Math.round(validator.activated_stake).toLocaleString()} SOL
               Staked
             </Text>
-            <Text tw="font-light">
-              {validator.apy_estimate}% APY
-            </Text>
+            <Text tw="font-light">{validator.apy_estimate}% APY</Text>
           </View>
-          {isExpanded &&
+          {isExpanded && (
             <View tw="py-2 py-1 text-white text-xs">
-              {validator.website &&
-                <View onClick={() => window.xnft.openWindow(validator.website)} tw="py-1">
+              {validator.website && (
+                <View
+                  onClick={() => window.xnft.openWindow(validator.website)}
+                  tw="py-1"
+                >
                   {validator.website}
-                </View>}
-              <View tw="py-1">
-                {validator.description}
-              </View>
+                </View>
+              )}
+              <View tw="py-1">{validator.description}</View>
             </View>
-          }
+          )}
         </View>
 
-        <ExpandIcon expanded={isExpanded} onClick={() => handleExpand()} tw={`transition-transform ml-auto min-w-[24px]`} />
+        <ExpandIcon
+          expanded={isExpanded}
+          onClick={() => handleExpand()}
+          tw={`transition-transform ml-auto min-w-[24px]`}
+        />
       </View>
     </View>
   );
-}
+};

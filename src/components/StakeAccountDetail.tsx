@@ -7,6 +7,7 @@ import { ValidatorInfo } from "../components/ValidatorInfo";
 import { useCustomTheme, statusColor } from "../hooks/useCustomTheme";
 import { LinkIcon } from "./Icons";
 import { StakeRewardHistory } from "./StakeRewardHistory";
+import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 
 const SubTitle = ({ children }: { children: React.ReactNode }) => (
     <Text style={{ color: "#A9A9A9", fontSize: ".8rem", lineHeight: 0.2 }}>
@@ -16,7 +17,7 @@ const SubTitle = ({ children }: { children: React.ReactNode }) => (
 
 export function StakeAccountDetail({ stakeAccount, validator }: { stakeAccount: StakeAccount, validator: Validator }) {
     console.log("StakeAccountDetailScreen", stakeAccount, validator);
-
+    const stakeAccountRent = 2283000;
     const onClick = () => {
         window.xnft.openWindow("https://solscan.io/account/" + stakeAccount.accountAddress.toString());
     }
@@ -29,7 +30,7 @@ export function StakeAccountDetail({ stakeAccount, validator }: { stakeAccount: 
         }}>
             <ValidatorInfo {...validator} />
 
-            <View tw="grid grid-cols-2 mx-auto mt-4 gap-y-4">
+            <View tw="grid grid-cols-3 mx-auto mt-4 gap-y-4">
                 <View>
                     <Text style={{ fontSize: "1.5rem" }} >
                         {parseInt(validator.activated_stake).toLocaleString()}
@@ -48,33 +49,41 @@ export function StakeAccountDetail({ stakeAccount, validator }: { stakeAccount: 
                 </View>
                 <View>
                     <Text style={{ fontSize: "1.5rem" }} >
-                        {validator.skip_rate.toFixed(2)}%
+                        {(validator.skip_rate).toFixed(2)}%
                     </Text>
                     <SubTitle>
                         Skip Rate
                     </SubTitle>
                 </View>
-                <View>
+                {/* <View>
                     <Text style={{ fontSize: "1.5rem" }} >
                         {validator.commission}%
                     </Text>
                     <SubTitle>
                         Commission
                     </SubTitle>
-                </View>
+                </View> */}
             </View>
             <View tw="font-medium cursor-pointer mt-12 flex items-center justify-center gap-x-2" onClick={onClick}>
                 Stake Account
                 {/* {prettifyAddress(stakeAccount.accountAddress.toString(), 4)} */}
                 <LinkIcon />
             </View>
-            <View tw="grid grid-cols-2">
+            <View tw="grid grid-cols-3">
                 <View>
                     <Text style={{ fontSize: "1.5rem" }}>
                         {(Math.round(stakeAccount.stakeSol * 1000) / 1000).toLocaleString()}
                     </Text>
                     <SubTitle>
                         Sol Staked
+                    </SubTitle>
+                </View>
+                <View>
+                    <Text style={{ fontSize: "1.5rem" }}>
+                        {stakeAccountRent/LAMPORTS_PER_SOL}
+                    </Text>
+                    <SubTitle>
+                        Rent Exempt SOL
                     </SubTitle>
                 </View>
                 <View>

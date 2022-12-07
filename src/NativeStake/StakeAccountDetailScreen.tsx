@@ -23,18 +23,21 @@ export function StakeAccountDetailScreen({ stakeAccount, validator, mergableStak
 
                 <StakeAccountDetail stakeAccount={stakeAccount} validator={validator} />
 
-                {/* <Button style={{width: "150px"}}>Instant Unstake</Button> */}
+               
                 <View style={{ overflow: "hidden", position: "fixed", bottom: 0, width: "100%", display: "flex", flexDirection: "column" }}>
-                    <Button onClick={() => setExpanded(!expanded)} style={{ width: "100%", borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>Update Stake</Button>
+                    <Button onClick={() => setExpanded(!expanded)} style={{ width: "100%", borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }} tw="py-3">Stake Account Actions</Button>
                     <View style={{ maxHeight: expanded ? "400px" : "0", transition: "max-height 0.5s linear" }}>
                         <List style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0 }}>
+                            <Button onClick={()=> {nav.push("instantunstake", {stakeAccount})}}>Instant Unstake</Button>
                             {stakeAccount.status === "active" &&
                                 <Button>Unstake</Button>
                             }
                             {stakeAccount.status === "inactive" &&
                                 <Button onClick={() => withdrawStake(stakeAccount, publicKey, connection, nav)}>Withdraw</Button>
                             }
+                            {stakeAccount.status === "inactive" &&
                             <Button onClick={() => { nav.push("selectvalidator", { onSelectScreen: "redelegate", data: stakeAccount }) }}>Redelegate</Button>
+                            }
                             <Button onClick={() => { nav.push("send", { stakeAccount, validator }) }} >Send</Button>
                             {mergableStakeAccounts.length > 0
                                 && <Button onClick={() => { console.log("merge"); nav.push("merge", { stakeAccount, validator, mergableStakeAccounts }) }}>Merge</Button>
