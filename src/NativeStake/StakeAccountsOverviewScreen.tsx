@@ -16,12 +16,14 @@ import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { useValidators } from "../hooks/useValidators";
 import type { Validator } from "../hooks/useValidators";
 import { LoadingScreen } from "../components/LoadingScreen";
+import { useEpochInfo } from "../hooks/useEpochInfo";
 
 export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: { expectingStakeAccountsToUpdate: boolean }) {
   const fetchedStakeAccounts = useStakeAccounts();
   const validators = useValidators();
   const nav = useNavigation();
   const THEME = useCustomTheme();
+  const epochInfo = useEpochInfo();
 
   if (fetchedStakeAccounts === null || validators === null) {
     return <LoadingScreen />
@@ -100,6 +102,7 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
                       }}
                     >
                       {account.status}
+                      {account.status == "activating" || account.status == "deactivating"  ? " (" + epochInfo?.remaining_dhm + ")" : ""}
                     </Text>
                     <Text style={{}}>
                       {account.stakeSol.toFixed(2)} SOL

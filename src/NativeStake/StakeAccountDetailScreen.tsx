@@ -9,6 +9,7 @@ import type { Validator } from "../hooks/useValidators";
 import React from "react";
 import { useScrollPosition } from "../hooks/useScrollPosition";
 import { useEffect, useState } from "react";
+import { useEpochInfo } from "../hooks/useEpochInfo";
 
 export function StakeAccountDetailScreen({ stakeAccount, validator, mergableStakeAccounts }: { stakeAccount: StakeAccount, validator: Validator, mergableStakeAccounts: StakeAccount[] }) {
     const [expanded, setExpanded] = useState(false)
@@ -16,6 +17,7 @@ export function StakeAccountDetailScreen({ stakeAccount, validator, mergableStak
     const nav = useNavigation();
     const publicKey = usePublicKey();
     const connection = useConnection();
+    const epochInfo = useEpochInfo();
 
     return (
         <View style={{ height: "100%", display: "flex", flexDirection: "column" }}>
@@ -30,7 +32,7 @@ export function StakeAccountDetailScreen({ stakeAccount, validator, mergableStak
                         <List style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0 }}>
                             <Button onClick={()=> {nav.push("instantunstake", {stakeAccount})}}>Instant Unstake</Button>
                             {stakeAccount.status === "active" &&
-                                <Button>Unstake</Button>
+                                <Button onClick={()=>{deactivateStake(stakeAccount, publicKey, connection, nav)}}>Unstake (Availble to withdraw in {epochInfo?.remaining_dhm} )</Button>
                             }
                             {stakeAccount.status === "inactive" &&
                                 <Button onClick={() => withdrawStake(stakeAccount, publicKey, connection, nav)}>Withdraw</Button>
@@ -55,6 +57,18 @@ export function StakeAccountDetailScreen({ stakeAccount, validator, mergableStak
 }
 
 async function deactivateStake(stakeAccount: StakeAccount, publicKey: PublicKey, connection: Connection, nav: any) {
+    let transaction = StakeProgram.deactivate({stakePubkey: stakeAccount.accountAddress, authorizedPubkey: publicKey})
+    let recentBlockhash = await connection.getLatestBlockhash();
+    transaction.feePayer = publicKey;
+    transaction.recentBlockhash = recentBlockhash.blockhash;
+    try {
+        let txnSignature = await window.xnft.solana.sendAndConfirm(transaction);
+    } catch (error) {
+        console.log("error", error);
+        return
+    }
+    nav.pop()
+    nav.push("overview", { expectingStakeAccountsToUpdate: true })
 }
 
 async function withdrawStake(stakeAccount: StakeAccount, publicKey: PublicKey, connection: Connection, nav: any) {
