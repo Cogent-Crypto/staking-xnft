@@ -73,7 +73,7 @@ export function ValidatorInfo(validator: Validator) {
                     </StatContainer>
                     <StatContainer tw="cursor-pointer" onClick={() => window.xnft.openWindow(`https://stakewiz.com/validator/${validator.vote_identity}`)}>
                         <LinkIcon tw="mx-auto h-{4.5} -mt-2" />
-                        <SubTitle>StakeWiz Profile</SubTitle>
+                        <SubTitle>Stakewiz Profile</SubTitle>
                     </StatContainer>
                 </View>
                 {validator.website &&
