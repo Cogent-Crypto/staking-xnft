@@ -24,7 +24,7 @@ export function ValidatorInfo(validator: Validator) {
     return (
         <View tw="text-bold" style={{
             fontSize: "1rem",
-            backgroundColor: THEME.colors?.bg2,
+            // backgroundColor: THEME.colors?.bg2,
             fontWeight: "bold",
             color: THEME.colors?.fontColor,
             margin: "auto",
@@ -51,7 +51,7 @@ export function ValidatorInfo(validator: Validator) {
             </View>
 
             <View tw="overflow-hidden" style={{ maxHeight: expanded ? "400px" : "0", transition: "max-height 0.5s linear" }}>
-                <View tw="grid grid-cols-3 mx-auto mt-4 gap-y-4">
+                <View tw="grid grid-cols-2 mx-auto mt-4 gap-y-4">
                     <StatContainer>
                         <Text style={{ fontSize: "1rem" }}>
                             {parseInt(validator.activated_stake).toLocaleString()}
