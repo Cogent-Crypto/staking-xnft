@@ -46,7 +46,7 @@ export function StakeAccountDetailScreen({ stakeAccount, validator, mergableStak
         if (mergableStakeAccounts.length > 0) {
             buttons.push(mergeButton)
         }
-        if (stakeAccount.status === "active") {
+        if (stakeAccount.status === "active" || stakeAccount.status === "inactive") {
             buttons.push(splitButton)
         }
 

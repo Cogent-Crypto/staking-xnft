@@ -54,14 +54,15 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
             textAlign: "center",
           }}
         >
+          {cached && expectingStakeAccountsToUpdate ? (<View tw="-z-10"><Loading></Loading></View>) : ""}
           Total Sol Staked:{" "}
-          {stakeAccounts.reduce((a, b) => a + b.stakeSol, 0).toFixed(1)} SOL
+          {stakeAccounts.reduce((a, b) => a + b.stakeSol, 0).toFixed(1)} SOL 
         </Text>
       </View>
       <View tw="py-1 px-1">
         <Button tw="w-full" style={{ borderRadius: "5px" }} onClick={clickNewStakeAccount}>Create New +</Button>
       </View>
-      {cached && expectingStakeAccountsToUpdate ? (<Loading></Loading>) : ""}
+      
       {stakeAccounts.length == 0 ? (
         <Text>No stake accounts found</Text>
       ) : (
