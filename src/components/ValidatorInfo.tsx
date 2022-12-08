@@ -22,7 +22,7 @@ export function ValidatorInfo(validator: Validator) {
     const THEME = useCustomTheme();
 
     return (
-        <View tw="text-bold" style={{
+        <View tw="text-bold px-2" style={{
             fontSize: "1rem",
             // backgroundColor: THEME.colors?.bg2,
             fontWeight: "bold",
@@ -71,12 +71,12 @@ export function ValidatorInfo(validator: Validator) {
                         <SubTitle>Commission</SubTitle>
                     </StatContainer>
                     <StatContainer tw="cursor-pointer" onClick={() => window.xnft.openWindow(`https://stakewiz.com/validator/${validator.vote_identity}`)}>
-                        <LinkIcon tw="mx-auto" />
+                        <LinkIcon tw="mx-auto h-{4.5} -mt-2" />
                         <SubTitle>StakeWiz Profile</SubTitle>
                     </StatContainer>
                 </View>
                 {validator.website &&
-                    <View tw="my-2">
+                    <View tw="my-2 cursor-pointer hover:underline" onClick={() => window.xnft.openWindow(validator.website)}>
                         <Text style={{ fontSize: ".8rem" }}>{validator.website}</Text>
                     </View>
                 }
