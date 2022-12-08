@@ -88,7 +88,7 @@ const ShowRewardHistory = ({ rewardHistory, loadMoreRewards }: { rewardHistory: 
     }
 
     return (
-        <View tw="flex flex-col justify-center mb-12">
+        <View tw="flex flex-col justify-center mb-4">
             {rewardHistory.map((reward, index) => {
                 return (
                     <View key={index} tw="flex mb-1 mx-auto">
