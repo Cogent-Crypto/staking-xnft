@@ -133,7 +133,7 @@ export function SelectValidatorScreen({
     searchResults = Object.values(validators).slice(0, validatorRenderCount);
   }
 
-  // shuffleArray(nftValidators)
+  shuffleArray(nftValidators)
   // shuffleArray(nftValidatorsHeld);
   shuffleArray(communityValidators);
   return (

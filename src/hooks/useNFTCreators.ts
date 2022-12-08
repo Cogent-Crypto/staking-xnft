@@ -19,7 +19,7 @@ export type NFT = {
 export function useNFTCreators() { 
   const connection = useConnection();
   const publicKey = usePublicKey();
-  const [nftCreators, setNFTCreators] = useState<Set<string> >(new Set());
+  const [nftCreators, setNFTCreators] = useState<Set<string> | null>(null);
   useEffect(() => {
     console.log("fetching nft creators");
     fetchCreators(connection, publicKey).then((creators) => {
