@@ -326,11 +326,11 @@ const ValidatorListItem = ({
             <Text tw="font-light">{validator.apy_estimate}% APY</Text>
           </View>
           {isExpanded && (
-            <View tw="py-2 py-1 text-white text-xs">
+            <View tw="py-2 py-1 text-white text-xs ">
               {validator.website && (
                 <View
                   onClick={() => window.xnft.openWindow(validator.website)}
-                  tw="py-1"
+                  tw="py-1 hover:underline"
                 >
                   {validator.website}
                 </View>
