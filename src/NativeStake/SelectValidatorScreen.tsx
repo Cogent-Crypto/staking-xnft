@@ -52,7 +52,7 @@ const nftValidators = [
   {
     voteAddress: "4qvFxnUXYjBdcviCwVV7gKcGJMCENEBfS82hSLJUhyvu",
     nft_group: "Degen Infrastructure",
-    creators: ["DC2mkgwhy56w3viNtHDjJQmc7SGu2QX785bS4aexojwX"]
+    creators: ["DC2mkgwhy56w3viNtHDjJQmc7SGu2QX785bS4aexojwX","CLErvyrMpi66RAxNV2wveSi25NxHb8G383MSVuGDgZzp","daaLrDfvcT4joui5axwR2gCkGAroruJFzyVsacU926g"]
   },
   {
     voteAddress: "5yHqB3NxovCEMUniQCboaPRMyyQ7kQQF4QqvC4vaz78z",
@@ -134,7 +134,7 @@ export function SelectValidatorScreen({
   }
 
   shuffleArray(nftValidators)
-  // shuffleArray(nftValidatorsHeld);
+  shuffleArray(nftValidatorsHeld);
   shuffleArray(communityValidators);
   return (
     <View style={{ height: "100%", display: "flex", flexDirection: "column" }}>
