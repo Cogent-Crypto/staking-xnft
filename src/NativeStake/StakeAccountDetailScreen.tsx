@@ -30,22 +30,22 @@ export function StakeAccountDetailScreen({ stakeAccount, validator, mergableStak
                     <Button onClick={() => setExpanded(!expanded)} style={{ width: "100%", borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }} tw="py-3">Stake Account Actions</Button>
                     <View style={{ maxHeight: expanded ? "400px" : "0", transition: "max-height 0.5s linear" }}>
                         <List style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0 }}>
-                            <Button key={"instantunstake"} onClick={() => { nav.push("instantunstake", { stakeAccount }) }}>Instant Unstake</Button>
+                            <Button tw="w-full text-left" key={"instantunstake"} onClick={() => { nav.push("instantunstake", { stakeAccount }) }}>Instant Unstake</Button>
                             {stakeAccount.status === "active" &&
-                                <Button key={"deactivateunstake"} onClick={() => { deactivateStake(stakeAccount, publicKey, connection, nav) }}>Unstake (Availble to withdraw in {epochInfo?.remaining_dhm})</Button>
+                                <Button tw="w-full text-left" key={"deactivateunstake"} onClick={() => { deactivateStake(stakeAccount, publicKey, connection, nav) }}>Unstake (Availble to withdraw in {epochInfo?.remaining_dhm})</Button>
                             }
                             {stakeAccount.status === "inactive" &&
-                                <Button key={"withdraw"} onClick={() => withdrawStake(stakeAccount, publicKey, connection, nav)}>Withdraw</Button>
+                                <Button tw="w-full text-left" key={"withdraw"} onClick={() => withdrawStake(stakeAccount, publicKey, connection, nav)}>Withdraw</Button>
                             }
                             {stakeAccount.status === "inactive" &&
-                                <Button key={"inactive"} onClick={() => { nav.push("selectvalidator", { onSelectScreen: "redelegate", data: stakeAccount }) }}>Redelegate</Button>
+                                <Button tw="w-full text-left" key={"inactive"} onClick={() => { nav.push("selectvalidator", { onSelectScreen: "redelegate", data: stakeAccount }) }}>Redelegate</Button>
                             }
-                            <Button key={"send"} onClick={() => { nav.push("send", { stakeAccount, validator }) }}>Send</Button>
+                            <Button tw="w-full text-left" key={"send"} onClick={() => { nav.push("send", { stakeAccount, validator }) }}>Send</Button>
                             {mergableStakeAccounts.length > 0
-                                && <Button onClick={() => { console.log("merge"); nav.push("merge", { stakeAccount, validator, mergableStakeAccounts }) }}>Merge</Button>
+                                && <Button tw="w-full text-left" onClick={() => { console.log("merge"); nav.push("merge", { stakeAccount, validator, mergableStakeAccounts }) }}>Merge</Button>
                             }
                             {stakeAccount.status === "active" &&
-                                <Button key="active" onClick={() => { nav.push("split", { stakeAccount, validator }) }}>Split</Button>
+                                <Button tw="w-full text-left" key="active" onClick={() => { nav.push("split", { stakeAccount, validator }) }}>Split</Button>
                             }
                         </List>
                     </View>
