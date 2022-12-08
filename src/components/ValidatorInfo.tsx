@@ -29,7 +29,7 @@ export function ValidatorInfo(validator: Validator) {
             margin: "auto",
             display: "flex",
             flexDirection: "column"
-            
+
         }}>
             {validator.delinquent && <View tw="text-red-500">Validator is currently delinquent.</View>}
             <View onClick={() => setExpanded(!expanded)} tw="flex items-center px-2 pt-4 cursor-pointer ">
@@ -71,7 +71,7 @@ export function ValidatorInfo(validator: Validator) {
                         <SubTitle>Commission</SubTitle>
                     </StatContainer>
                     <StatContainer tw="cursor-pointer" onClick={() => window.xnft.openWindow(`https://stakewiz.com/validator/${validator.vote_identity}`)}>
-                        <LinkIcon tw="mx-auto h-{4.5} -mt-2" />
+                        <LinkIcon lightMode={THEME.colors?.lightMode} tw="mx-auto h-{4.5} -mt-2" />
                         <SubTitle>StakeWiz Profile</SubTitle>
                     </StatContainer>
                 </View>
@@ -85,7 +85,7 @@ export function ValidatorInfo(validator: Validator) {
                 </View>
             </View>
             <View onClick={() => setExpanded(!expanded)} tw="w-6 mx-auto cursor-pointer">
-                <ExpandIcon expanded={expanded} />
+                <ExpandIcon lightMode={THEME.colors?.lightMode} expanded={expanded} />
             </View>
 
         </View >

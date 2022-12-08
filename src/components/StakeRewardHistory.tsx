@@ -1,7 +1,8 @@
-import { View, Text, Image, LocalStorage, Button, Loading } from "react-xnft";
+import { View, Text, Image, LocalStorage, Button, Loading, useTheme } from "react-xnft";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import React from "react";
 import { Connection, PublicKey } from "@solana/web3.js";
+import { useCustomTheme } from "../hooks/useCustomTheme";
 
 const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/");
 
@@ -79,6 +80,7 @@ export function StakeRewardHistory({ stakeAccountPK }: { stakeAccountPK: any }) 
 
 const ShowRewardHistory = ({ rewardHistory, loadMoreRewards }: { rewardHistory: fetchedRewards, loadMoreRewards: () => Promise<any> }) => {
     const [isLoading, setIsLoading] = React.useState(false);
+    const THEME = useCustomTheme();
 
     const handleViewMore = () => {
         setIsLoading(true);
@@ -102,7 +104,7 @@ const ShowRewardHistory = ({ rewardHistory, loadMoreRewards }: { rewardHistory: 
                 {/* If Loading show loading indicator */}
                 {isLoading && <Loading />}
                 {/* If not Loading and last fetched value isn't undefined show Button */}
-                {!isLoading && rewardHistory[rewardHistory.length - 1]?.value && <View tw="text-sm cursor-pointer" onClick={() => handleViewMore()}>More</View>}
+                {!isLoading && rewardHistory[rewardHistory.length - 1]?.value && <View tw="text-sm cursor-pointer" style={{ color: THEME.colors?.secondary }} onClick={() => handleViewMore()}>More</View>}
             </View>
         </View >
     )

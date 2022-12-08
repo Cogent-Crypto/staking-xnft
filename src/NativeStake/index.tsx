@@ -9,7 +9,6 @@ import { SplitStakeAccountScreen } from './SplitStakeAccountScreen';
 import { MergeStakeAccountScreen } from './MergeStakeAccountScreen';
 import { RedelegateScreen } from './RedelegateScreen';
 import { InstantUnstakeScreen } from './InstantUnstakeScreen';
-import { prettifyAddress } from '../utils'
 import { useCustomTheme } from "../hooks/useCustomTheme";
 
 
@@ -62,7 +61,7 @@ export function StakeAccountsScreen() {
         }
       }}
       style={{}}
-      titleStyle={{ color: THEME.color?.fontColor }}
+      titleStyle={{ color: THEME.colors?.fontColor }}
     >
       <Stack.Screen
         name={"overview"}

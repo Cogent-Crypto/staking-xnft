@@ -7,7 +7,7 @@ import type { Validator } from "../hooks/useValidators";
 import { useCustomTheme, statusColor } from "../hooks/useCustomTheme";
 import { StakeAccountDetail } from "../components/StakeAccountDetail";
 
-type SelectableStakeAccount = StakeAccount & {selected: boolean};
+type SelectableStakeAccount = StakeAccount & { selected: boolean };
 
 export function MergeStakeAccountScreen({
   stakeAccount,
@@ -24,12 +24,9 @@ export function MergeStakeAccountScreen({
   const nav = useNavigation();
   const max_num_merges = 22;
 
-  
-  
+  const [mergeAbleAccounts, setMergeAbleAccounts] = useState<SelectableStakeAccount[]>(mergableStakeAccounts.map((stakeAccount) => { return { ...stakeAccount, selected: false } }));
 
-  const [mergeAbleAccounts, setMergeAbleAccounts] = useState<SelectableStakeAccount[]>( mergableStakeAccounts.map((stakeAccount) => {return {...stakeAccount, selected: false}}));
-
-  const selectedCount = mergeAbleAccounts.filter((account)=>account.selected).length
+  const selectedCount = mergeAbleAccounts.filter((account) => account.selected).length
 
   const mergeAccounts = async (accounts: StakeAccount[]) => {
     const recentBlockhash = await connection.getLatestBlockhash();
@@ -39,110 +36,112 @@ export function MergeStakeAccountScreen({
       lastValidBlockHeight: recentBlockhash.lastValidBlockHeight
     });
     const instructions = accounts.map((account) => {
-        return StakeProgram.merge({
-            authorizedPubkey: publicKey,
-            sourceStakePubKey: account.accountAddress,
-            stakePubkey: stakeAccount.accountAddress
-          }
-        ).instructions[0];
+      return StakeProgram.merge({
+        authorizedPubkey: publicKey,
+        sourceStakePubKey: account.accountAddress,
+        stakePubkey: stakeAccount.accountAddress
+      }
+      ).instructions[0];
     });
     let i = 0
     transaction.add(...instructions);
     console.log("Transaction before signature", transaction.serializeMessage().length);
     try {
-        await window.xnft.solana.sendAndConfirm(transaction);
+      await window.xnft.solana.sendAndConfirm(transaction);
     } catch (error) {
-        console.log("error",error);
-        return
-    }   
+      console.log("error", error);
+      return
+    }
     nav.pop()
     nav.pop()
-    nav.push("overview",{expectingStakeAccountsToUpdate: true})
+    nav.push("overview", { expectingStakeAccountsToUpdate: true })
 
   }
-  
+
   const mergeAll = async () => {
-    mergeAccounts(mergeAbleAccounts.slice(0,max_num_merges));
+    mergeAccounts(mergeAbleAccounts.slice(0, max_num_merges));
   }
 
   const mergeSelected = async () => {
-    mergeAccounts(mergeAbleAccounts.filter((account)=>account.selected));
+    mergeAccounts(mergeAbleAccounts.filter((account) => account.selected));
   }
 
-  
-  
-  let mergeAllButtonStyle = {flex: 1, marginLeft: "6px",} as any
+
+
+  let mergeAllButtonStyle = { flex: 1, marginLeft: "6px", } as any
   let mergeAllButtonText = `Merge All (${mergeAbleAccounts.length})`;
-  
-  if(mergeAbleAccounts.length >= max_num_merges){
+
+  if (mergeAbleAccounts.length >= max_num_merges) {
     mergeAllButtonText = `Merge Max (${max_num_merges})`
   }
 
-  if(mergeAbleAccounts.length == 1){ 
+  if (mergeAbleAccounts.length == 1) {
     mergeAllButtonText = `Merge`
-    mergeAllButtonStyle = {flex: 1}
+    mergeAllButtonStyle = { flex: 1 }
     mergeAbleAccounts[0].selected = true
 
   }
 
-  let mergeSelectedButtonStyle = {flex: 1, height: "48px", marginRight: "6px",} as any
+  let mergeSelectedButtonStyle = { flex: 1, height: "48px", marginRight: "6px", } as any
   let mergeSelectedButtonText = "Merge Selected (0)"
-  if(selectedCount > 0){
+  if (selectedCount > 0) {
     mergeSelectedButtonText = `Merge (${selectedCount})`
   }
 
   if (selectedCount >= max_num_merges) {
     mergeSelectedButtonText = `Selected (${selectedCount})`
-    mergeSelectedButtonStyle = {flex: 1, height: "48px", marginRight: "6px", backgroundColor: "red", opacity: 0.5} 
+    mergeSelectedButtonStyle = { flex: 1, height: "48px", marginRight: "6px", backgroundColor: "red", opacity: 0.5 }
   }
-  if(mergeAbleAccounts.length == 1){ 
-    mergeSelectedButtonStyle = {display: "none"}
+  if (mergeAbleAccounts.length == 1) {
+    mergeSelectedButtonStyle = { display: "none" }
   }
 
 
 
   return (
     <View style={{ height: "100%", display: "flex", flexDirection: "column", overflow: "auto" }}>
-        <View style={{display: "flex",
-                    flexDirection: "column",
-                    flexGrow: "1",
-                    overflow: "auto"}}>
-            <View style={{margin: "0px 12px", flex: "0 0 20px" }}>
-                <StakeAccountDetail stakeAccount={stakeAccount} validator={validator} />
-                
-            </View>
-            <ScrollBar style={{ flexGrow:"1", margin: "0px 8px", overflowY: "auto" }}>
-                {mergeAbleAccounts.map((account)=>{
-                    return <SelectableStakeAccount key={account.accountAddress+JSON.stringify(account.selected)}stakeAccount={account} validator={validator} mergeAbleAccounts={mergeAbleAccounts} setMergeAbleAccounts={setMergeAbleAccounts} />
-                }) }
-            </ScrollBar>
-            <View
-                    style={{
-                    display: "flex",
-                    paddingTop: "10px",
-                    paddingLeft: "12px",
-                    paddingRight: "12px",
-                    paddingBottom: "10px",
-                    justifyContent: "space-between",
-                    }}
-                >   
-                <Button
-                    style={mergeSelectedButtonStyle}
-                    onClick={mergeSelected}
-                    disabled={selectedCount == 0}
-                >
-                        {mergeSelectedButtonText}
-                </Button>
-                <Button
-                    style={mergeAllButtonStyle}
-                    onClick={mergeAll}
-                >
-                        {mergeAllButtonText}
-                </Button>
+      <View style={{
+        display: "flex",
+        flexDirection: "column",
+        flexGrow: "1",
+        overflow: "auto"
+      }}>
+        <View style={{ margin: "0px 12px", flex: "0 0 20px" }}>
+          <StakeAccountDetail stakeAccount={stakeAccount} validator={validator} />
 
-            
-            </View>
         </View>
+        <ScrollBar style={{ flexGrow: "1", margin: "0px 8px", overflowY: "auto" }}>
+          {mergeAbleAccounts.map((account) => {
+            return <SelectableStakeAccount key={account.accountAddress + JSON.stringify(account.selected)} stakeAccount={account} validator={validator} mergeAbleAccounts={mergeAbleAccounts} setMergeAbleAccounts={setMergeAbleAccounts} />
+          })}
+        </ScrollBar>
+        <View
+          style={{
+            display: "flex",
+            paddingTop: "10px",
+            paddingLeft: "12px",
+            paddingRight: "12px",
+            paddingBottom: "10px",
+            justifyContent: "space-between",
+          }}
+        >
+          <Button
+            style={mergeSelectedButtonStyle}
+            onClick={mergeSelected}
+            disabled={selectedCount == 0}
+          >
+            {mergeSelectedButtonText}
+          </Button>
+          <Button
+            style={mergeAllButtonStyle}
+            onClick={mergeAll}
+          >
+            {mergeAllButtonText}
+          </Button>
+
+
+        </View>
+      </View>
     </View>
   );
 }
@@ -184,16 +183,16 @@ export function SelectableStakeAccount({
           opacity: stakeAccount.selected ? 1 : .5,
         }}
         onClick={() => {
-          if (mergeAbleAccounts.length == 1 ){
+          if (mergeAbleAccounts.length == 1) {
             return
           }
-            const newMergeAbleAccounts = mergeAbleAccounts.map((account) => { 
-                if (account.accountAddress.toString() == key) {
-                    return {...account, selected: !account.selected}
-                } else {
-                    return account
-                }
-            })
+          const newMergeAbleAccounts = mergeAbleAccounts.map((account) => {
+            if (account.accountAddress.toString() == key) {
+              return { ...account, selected: !account.selected }
+            } else {
+              return account
+            }
+          })
 
           setMergeAbleAccounts(newMergeAbleAccounts);
         }}

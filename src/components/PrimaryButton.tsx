@@ -1,4 +1,4 @@
-import { View, Text, Button, useNavigation, Image } from "react-xnft";
+import { View, Button } from "react-xnft";
 import React from "react";
 
 export enum ButtonStatus {
@@ -13,15 +13,12 @@ export function PrimaryButton({ status, disabled, onClick, text }: { status: But
         height: "48px",
         borderRadius: "12px",
         cursor: "pointer",
-        color: "white"
-
+        color: "#71717A"
     } as any
 
     if (status == ButtonStatus.Error) {
-
         buttonStyle.backgroundColor = "rgb(233, 80, 80)";  //Red
-
-
+        buttonStyle.color = "#ffffff";
     }
 
     if (status == ButtonStatus.Warn) {
@@ -30,12 +27,11 @@ export function PrimaryButton({ status, disabled, onClick, text }: { status: But
         buttonStyle.opacity = "0.75";
     }
 
-
     if (disabled) {
         buttonStyle.opacity = "0.5";
     }
-    console.log("Disabled", disabled);
 
+    console.log("Disabled", disabled);
 
     return (
         <View

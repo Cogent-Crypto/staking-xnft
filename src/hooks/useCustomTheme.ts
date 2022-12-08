@@ -32,16 +32,17 @@ import { useTheme } from 'react-xnft';
 // }
 
 const LightModeTheme = {
-    fontColor: "#0000000",
-    secondary: "#333333",
-    light: true
+    fontColor: "#000000",
+    // secondary: "#333333",
+    bg2: "#fff",
+    lightMode: true
 }
 
 const DarkModeTheme = {
     bg2: "#272727",
-    fontColor: "#fff",
+    // fontColor: "#ffffff",
     // secondary: "#333333",
-    light: false
+    lightMode: false
 }
 
 export function useCustomTheme() {
@@ -54,11 +55,10 @@ export function useCustomTheme() {
 
         const newTheme = { colors: { ...theme.custom.colors, ...modeThemeOverrides } }
 
-
         setCustomTheme(newTheme);
     }, [theme]);
 
-    console.log("theme", customTheme);
+    // console.log("theme", customTheme);
 
     return customTheme;
 }
@@ -66,7 +66,7 @@ export function useCustomTheme() {
 export function statusColor(status: string) {
     if (status == "active") return "#00d41c";
     if (status == "inactive") return "#b8260d";
-    if (status == "deactivating" || status == "activating") return "yellow";
+    if (status == "deactivating" || status == "activating") return "rgb(225 29 72)";
 
     console.log("got an unknown status: " + status);
     return "white";

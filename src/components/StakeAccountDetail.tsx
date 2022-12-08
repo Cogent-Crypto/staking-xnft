@@ -2,7 +2,6 @@ import { Text, View, Image } from "react-xnft";
 import React from "react";
 import type { StakeAccount } from "../hooks/useStakeAccounts";
 import type { Validator } from "../hooks/useValidators";
-import { prettifyAddress } from "../utils";
 import { ValidatorInfo } from "../components/ValidatorInfo";
 import { useCustomTheme, statusColor } from "../hooks/useCustomTheme";
 import { LinkIcon } from "./Icons";
@@ -28,6 +27,8 @@ export function StakeAccountDetail({
     stakeAccount: StakeAccount;
     validator: Validator;
 }) {
+    const THEME = useCustomTheme();
+    console.log("theme", THEME);
     // console.log("StakeAccountDetailScreen", stakeAccount, validator);
     const stakeAccountRent = 2283000;
     const onClick = () => {
@@ -40,7 +41,6 @@ export function StakeAccountDetail({
             style={{
                 fontSize: 20,
                 fontWeight: "bold",
-                color: "white",
                 textAlign: "center",
             }}
         >
@@ -48,10 +48,11 @@ export function StakeAccountDetail({
 
             <View
                 tw="font-medium text-lg cursor-pointer mt-4 mb-2 flex items-center justify-center gap-x-2"
+                style={{ color: THEME.colors?.secondary }}
                 onClick={onClick}
             >
                 Stake Account
-                <LinkIcon />
+                <LinkIcon lightMode={THEME.colors?.lightMode} />
             </View>
             <View tw="grid grid-cols-3">
                 <StatContainer>
