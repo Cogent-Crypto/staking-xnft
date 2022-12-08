@@ -64,9 +64,9 @@ export function useCustomTheme() {
 }
 
 export function statusColor(status: string) {
-    if (status == "active") return "#00d41c";
+    if (status == "active") return "#02b519";
     if (status == "inactive") return "#b8260d";
-    if (status == "deactivating" || status == "activating") return "rgb(225 29 72)";
+    if (status == "deactivating" || status == "activating") return "#c7b002";
 
     console.log("got an unknown status: " + status);
     return "white";
