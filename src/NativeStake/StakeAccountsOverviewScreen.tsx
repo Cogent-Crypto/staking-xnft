@@ -55,7 +55,7 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
           style={{
             fontSize: 20,
             fontWeight: "bold",
-            color: "white",
+            color: THEME.color?.secondary,
             textAlign: "center",
           }}
         >
@@ -104,7 +104,7 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
                       }}
                     >
                       {account.status}
-                      {account.status == "activating" || account.status == "deactivating"  ? " (" + epochInfo?.remaining_dhm + ")" : ""}
+                      {account.status == "activating" || account.status == "deactivating" ? " (" + epochInfo?.remaining_dhm + ")" : ""}
                     </Text>
                     <Text style={{}}>
                       {account.stakeSol.toFixed(2)} SOL

@@ -24,7 +24,6 @@ export function ValidatorInfo(validator: Validator) {
     return (
         <View tw="text-bold" style={{
             fontSize: "1rem",
-            // backgroundColor: THEME.colors?.bg2,
             fontWeight: "bold",
             color: THEME.colors?.fontColor,
             margin: "auto",

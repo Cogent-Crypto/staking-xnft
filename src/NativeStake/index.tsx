@@ -10,9 +10,12 @@ import { MergeStakeAccountScreen } from './MergeStakeAccountScreen';
 import { RedelegateScreen } from './RedelegateScreen';
 import { InstantUnstakeScreen } from './InstantUnstakeScreen';
 import { prettifyAddress } from '../utils'
+import { useCustomTheme } from "../hooks/useCustomTheme";
 
 
 export function StakeAccountsScreen() {
+  const THEME = useCustomTheme();
+
   return (
     <Stack.Navigator
       initialRoute={{ name: "overview" }}
@@ -50,15 +53,16 @@ export function StakeAccountsScreen() {
             return {
               title: "Redelegate Stake　　　",
             };
-            case "instantunstake":
-              return {
-                title: "Instant Unstake　　　",
-              };
+          case "instantunstake":
+            return {
+              title: "Instant Unstake　　　",
+            };
           default:
             throw new Error("unknown route ");
         }
       }}
       style={{}}
+      titleStyle={{ color: THEME.color?.fontColor }}
     >
       <Stack.Screen
         name={"overview"}
