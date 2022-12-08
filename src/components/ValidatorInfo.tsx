@@ -22,13 +22,14 @@ export function ValidatorInfo(validator: Validator) {
     const THEME = useCustomTheme();
 
     return (
-        <View tw="text-bold px-2" style={{
+        <View tw="text-bold px-2 text-center" style={{
             fontSize: "1rem",
             fontWeight: "bold",
             color: THEME.colors?.fontColor,
             margin: "auto",
             display: "flex",
             flexDirection: "column"
+            
         }}>
             {validator.delinquent && <View tw="text-red-500">Validator is currently delinquent.</View>}
             <View onClick={() => setExpanded(!expanded)} tw="flex items-center px-2 pt-4 cursor-pointer ">

@@ -47,7 +47,7 @@ export function StakeAccountDetail({
             <ValidatorInfo {...validator} />
 
             <View
-                tw="font-medium cursor-pointer mt-6 mb-3 flex items-center justify-center gap-x-2"
+                tw="font-medium text-lg cursor-pointer mt-4 mb-2 flex items-center justify-center gap-x-2"
                 onClick={onClick}
             >
                 Stake Account
