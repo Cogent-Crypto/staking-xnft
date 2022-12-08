@@ -7,6 +7,8 @@ import {
   List,
   Image,
   Button,
+  useConnection,
+  usePublicKey
 
 } from "react-xnft";
 import { useStakeAccounts } from "../hooks/useStakeAccounts";
@@ -17,6 +19,7 @@ import { useValidators } from "../hooks/useValidators";
 import type { Validator } from "../hooks/useValidators";
 import { LoadingScreen } from "../components/LoadingScreen";
 import { useEpochInfo } from "../hooks/useEpochInfo";
+import { useNFTCreators } from "../hooks/useNFTCreators";
 
 export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: { expectingStakeAccountsToUpdate: boolean }) {
   const fetchedStakeAccounts = useStakeAccounts();
@@ -24,7 +27,6 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
   const nav = useNavigation();
   const THEME = useCustomTheme();
   const epochInfo = useEpochInfo();
-
   if (fetchedStakeAccounts === null || validators === null) {
     return <LoadingScreen />
   }

@@ -17,7 +17,7 @@ export function CreateStakeAccountScreen({ validator }: { validator: Validator }
     const onSolInputChange = (e) => {
         let input = e.target.value.replace(/[^0-9.]/g, '').replace(/^0+/, '');
         input = input.replace(/\./g, (c, i, text) => text.indexOf(c) === i ? c : '')
-        setStakeAmount(input);
+        setStakeAmount(parseFloat(input));
     }
 
     let buttonText = "Create Stake Account With " + stakeAmount + " SOL";
