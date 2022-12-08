@@ -59,7 +59,7 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
             textAlign: "center",
           }}
         >
-          {cached && expectingStakeAccountsToUpdate || (<View tw="-z-10"><Loading></Loading></View>) : ""}
+          {cached && expectingStakeAccountsToUpdate ? (<View tw="-z-10"><Loading></Loading></View>) : ""}
           Total Sol Staked:{" "}
           {stakeAccounts.reduce((a, b) => a + b.stakeSol, 0).toFixed(1)} SOL 
         </Text>
