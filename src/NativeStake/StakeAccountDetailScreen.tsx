@@ -44,7 +44,7 @@ export function StakeAccountDetailScreen({ stakeAccount, validator, mergableStak
                             {mergableStakeAccounts.length > 0
                                 && <Button tw="w-full text-left" onClick={() => { console.log("merge"); nav.push("merge", { stakeAccount, validator, mergableStakeAccounts }) }}>Merge</Button>
                             }
-                            {stakeAccount.status === "active" &&
+                            {(stakeAccount.status === "active" || stakeAccount.status == "inactive") &&
                                 <Button tw="w-full text-left" key="active" onClick={() => { nav.push("split", { stakeAccount, validator }) }}>Split</Button>
                             }
                         </List>
