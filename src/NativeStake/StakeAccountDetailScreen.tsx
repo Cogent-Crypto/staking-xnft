@@ -7,12 +7,13 @@ import { stakeAccountCacheKey } from "../hooks/useStakeAccounts";
 import { StakeAccountDetail } from "../components/StakeAccountDetail";
 import type { Validator } from "../hooks/useValidators";
 import React from "react";
-import { useScrollPosition } from "../hooks/useScrollPosition";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useEpochInfo } from "../hooks/useEpochInfo";
+import { useCustomTheme } from "../hooks/useCustomTheme";
 
 export function StakeAccountDetailScreen({ stakeAccount, validator, mergableStakeAccounts }: { stakeAccount: StakeAccount, validator: Validator, mergableStakeAccounts: StakeAccount[] }) {
     const [expanded, setExpanded] = useState(false)
+    const THEME = useCustomTheme();
 
     const nav = useNavigation();
     const publicKey = usePublicKey();
@@ -62,7 +63,7 @@ export function StakeAccountDetailScreen({ stakeAccount, validator, mergableStak
                 <View style={{ overflow: "hidden", position: "fixed", bottom: 0, width: "100%", display: "flex", flexDirection: "column" }}>
                     <Button onClick={() => setExpanded(!expanded)} style={{ width: "100%", borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }} tw="py-3">Stake Account Actions</Button>
                     <View style={{ maxHeight: expanded ? "400px" : "0", transition: "max-height 0.5s linear" }}>
-                        <List style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0, backgroundColor: "#fff" }}>
+                        <List style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0, backgroundColor: THEME.colors?.bg2 }}>
                             {ListChildren()}
                         </List>
                     </View>

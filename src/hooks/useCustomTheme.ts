@@ -41,7 +41,7 @@ const LightModeTheme = {
 const DarkModeTheme = {
     bg2: "#272727",
     // fontColor: "#ffffff",
-    // secondary: "#333333",
+    secondary: "#ffffff",
     lightMode: false
 }
 
