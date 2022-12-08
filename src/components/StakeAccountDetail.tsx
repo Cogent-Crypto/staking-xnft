@@ -53,7 +53,7 @@ export function StakeAccountDetail({
                 Stake Account
                 <LinkIcon />
             </View>
-            <View tw="grid grid-cols-2">
+            <View tw="grid grid-cols-3">
                 <StatContainer>
                     <Text style={{ fontSize: "1rem" }}>
                         {(Math.round(stakeAccount.stakeSol * 1000) / 1000).toLocaleString()}
