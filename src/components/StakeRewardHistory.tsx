@@ -1,4 +1,5 @@
 import { View, Text, Image, LocalStorage, Button, Loading } from "react-xnft";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import React from "react";
 import { Connection, PublicKey } from "@solana/web3.js";
 
@@ -69,7 +70,7 @@ export function StakeRewardHistory({ stakeAccountPK }: { stakeAccountPK: any }) 
 
     return (
         <View tw="mt-6">
-            <Text tw="font-medium">Recent Rewards</Text>
+            <Text tw="font-medium text-base">Recent Rewards</Text>
             {rewardHistory.length > 0 &&
                 <ShowRewardHistory loadMoreRewards={loadMoreRewards} rewardHistory={rewardHistory} />
             }
@@ -92,8 +93,8 @@ const ShowRewardHistory = ({ rewardHistory, loadMoreRewards }: { rewardHistory: 
             {rewardHistory.map((reward, index) => {
                 return (
                     <View key={index} tw="flex mb-1 mx-auto">
-                        <Text tw="font-bold">{reward.epoch}:</Text>
-                        <Text tw="ml-2 font-bold text-teal-500">{reward.value / 1000000000}</Text>
+                        <Text tw="font-bold text-base">{reward.epoch}:</Text>
+                        <Text tw="ml-2 font-bold text-teal-500 text-base">{reward.value / LAMPORTS_PER_SOL}</Text>
                     </View>
                 )
             })}
