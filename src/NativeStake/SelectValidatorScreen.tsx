@@ -26,10 +26,10 @@ const helpfulInTheCommunity = [
 
 function shuffleArray(array) {
   for (var i = array.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var temp = array[i];
-      array[i] = array[j];
-      array[j] = temp;
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
   }
 }
 
@@ -47,7 +47,7 @@ const nftValidators = [
   {
     voteAddress: "DeNodee9LR1WPokmRqidmAQEq8UbBqNCv6QfFTvU6k69",
     nft_group: "DeGods|Yoots",
-    creators: ["yootn8Kf22CQczC732psp7qEqxwPGSDQCFZHkzoXp25","AxFuniPo7RaDgPH6Gizf4GZmLQFc4M5ipckeeZfkrPNn"]
+    creators: ["yootn8Kf22CQczC732psp7qEqxwPGSDQCFZHkzoXp25", "AxFuniPo7RaDgPH6Gizf4GZmLQFc4M5ipckeeZfkrPNn"]
   },
   {
     voteAddress: "4qvFxnUXYjBdcviCwVV7gKcGJMCENEBfS82hSLJUhyvu",
@@ -72,7 +72,7 @@ const nftValidators = [
   {
     voteAddress: "2ayMCC4aizr8RGg5ptXYqu8uoxW1whNek1hE1zaAd58z",
     nft_group: "Lifinity",
-    creators : ["EWyWxSkxWHWGzxfCd9kG7zGrKTUDbZGiV6VbFJF8YfqN"]
+    creators: ["EWyWxSkxWHWGzxfCd9kG7zGrKTUDbZGiV6VbFJF8YfqN"]
   },
   {
     voteAddress: "ChaossQVry9AgexbXooZoWUTDfhT1x5zsAmTbBqa5142",
@@ -96,7 +96,7 @@ export function SelectValidatorScreen({
   if (!validators) {
     return <LoadingScreen />;
   }
-  
+
   if (!creatorsHeld) {
     return <LoadingScreen />;
   }
@@ -146,13 +146,13 @@ export function SelectValidatorScreen({
         ></TextField>
         {searchText == "" ? (
           <View>
-            {nftValidatorsHeld.length > 0 && 
-            <ValidatorListContainer
-            title={"Validators you hold NFTs for"}
-            onSelectScreen={onSelectScreen}
-            selectScreenData={data}
-            validators={nftValidatorsHeld}
-          />}
+            {nftValidatorsHeld.length > 0 &&
+              <ValidatorListContainer
+                title={"Validators you hold NFTs for"}
+                onSelectScreen={onSelectScreen}
+                selectScreenData={data}
+                validators={nftValidatorsHeld}
+              />}
             <ValidatorListContainer
               title={"Helpful in the Community"}
               onSelectScreen={onSelectScreen}
@@ -160,7 +160,7 @@ export function SelectValidatorScreen({
               validators={communityValidators}
             />
             <ValidatorListContainer
-              title={nftValidatorsHeld.length > 0 ? "Other NFT Validators":"NFT Project Validators"}
+              title={nftValidatorsHeld.length > 0 ? "Other NFT Validators" : "NFT Project Validators"}
               onSelectScreen={onSelectScreen}
               selectScreenData={data}
               validators={nftProjectValidators}
@@ -298,7 +298,7 @@ const ValidatorListItem = ({
       }}
     >
       <View
-        tw="flex items-center"
+        tw="flex items-start"
         style={{
           backgroundColor: THEME.colors?.bg2,
           width: "100%",

@@ -10,7 +10,8 @@
   },
   "alias": {
     "process": false,
-    "assert": false
+    "assert": false,
+    "util": false
   },
   "author": "",
   "license": "ISC",
