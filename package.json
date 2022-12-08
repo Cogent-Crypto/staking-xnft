@@ -9,7 +9,8 @@
     "dev": "xnft dev"
   },
   "alias": {
-    "process": false
+    "process": false,
+    "assert": false
   },
   "author": "",
   "license": "ISC",

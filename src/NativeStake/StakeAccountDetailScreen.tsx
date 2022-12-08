@@ -25,27 +25,27 @@ export function StakeAccountDetailScreen({ stakeAccount, validator, mergableStak
 
                 <StakeAccountDetail stakeAccount={stakeAccount} validator={validator} />
 
-               
+
                 <View style={{ overflow: "hidden", position: "fixed", bottom: 0, width: "100%", display: "flex", flexDirection: "column" }}>
                     <Button onClick={() => setExpanded(!expanded)} style={{ width: "100%", borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }} tw="py-3">Stake Account Actions</Button>
                     <View style={{ maxHeight: expanded ? "400px" : "0", transition: "max-height 0.5s linear" }}>
                         <List style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0 }}>
-                            <Button onClick={()=> {nav.push("instantunstake", {stakeAccount})}}>Instant Unstake</Button>
+                            <Button key={"instantunstake"} onClick={() => { nav.push("instantunstake", { stakeAccount }) }}>Instant Unstake</Button>
                             {stakeAccount.status === "active" &&
-                                <Button onClick={()=>{deactivateStake(stakeAccount, publicKey, connection, nav)}}>Unstake (Availble to withdraw in {epochInfo?.remaining_dhm} )</Button>
+                                <Button key={"deactivateunstake"} onClick={() => { deactivateStake(stakeAccount, publicKey, connection, nav) }}>Unstake (Availble to withdraw in {epochInfo?.remaining_dhm})</Button>
                             }
                             {stakeAccount.status === "inactive" &&
-                                <Button onClick={() => withdrawStake(stakeAccount, publicKey, connection, nav)}>Withdraw</Button>
+                                <Button key={"withdraw"} onClick={() => withdrawStake(stakeAccount, publicKey, connection, nav)}>Withdraw</Button>
                             }
                             {stakeAccount.status === "inactive" &&
-                            <Button onClick={() => { nav.push("selectvalidator", { onSelectScreen: "redelegate", data: stakeAccount }) }}>Redelegate</Button>
+                                <Button key={"inactive"} onClick={() => { nav.push("selectvalidator", { onSelectScreen: "redelegate", data: stakeAccount }) }}>Redelegate</Button>
                             }
-                            <Button onClick={() => { nav.push("send", { stakeAccount, validator }) }} >Send</Button>
+                            <Button key={"send"} onClick={() => { nav.push("send", { stakeAccount, validator }) }}>Send</Button>
                             {mergableStakeAccounts.length > 0
                                 && <Button onClick={() => { console.log("merge"); nav.push("merge", { stakeAccount, validator, mergableStakeAccounts }) }}>Merge</Button>
                             }
                             {stakeAccount.status === "active" &&
-                                <Button onClick={() => { nav.push("split", { stakeAccount, validator }) }}>Split</Button>
+                                <Button key="active" onClick={() => { nav.push("split", { stakeAccount, validator }) }}>Split</Button>
                             }
                         </List>
                     </View>
@@ -57,7 +57,7 @@ export function StakeAccountDetailScreen({ stakeAccount, validator, mergableStak
 }
 
 async function deactivateStake(stakeAccount: StakeAccount, publicKey: PublicKey, connection: Connection, nav: any) {
-    let transaction = StakeProgram.deactivate({stakePubkey: stakeAccount.accountAddress, authorizedPubkey: publicKey})
+    let transaction = StakeProgram.deactivate({ stakePubkey: stakeAccount.accountAddress, authorizedPubkey: publicKey })
     let recentBlockhash = await connection.getLatestBlockhash();
     transaction.feePayer = publicKey;
     transaction.recentBlockhash = recentBlockhash.blockhash;

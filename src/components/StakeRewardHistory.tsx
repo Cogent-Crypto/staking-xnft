@@ -68,7 +68,7 @@ export function StakeRewardHistory({ stakeAccountPK }: { stakeAccountPK: any }) 
     }
 
     return (
-        <View tw="mt-12">
+        <View tw="mt-6">
             <Text tw="font-medium">Recent Rewards</Text>
             {rewardHistory.length > 0 &&
                 <ShowRewardHistory loadMoreRewards={loadMoreRewards} rewardHistory={rewardHistory} />
