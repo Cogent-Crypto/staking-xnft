@@ -84,7 +84,6 @@ export function InstantUnstakeScreen({stakeAccount}:{stakeAccount: StakeAccount}
         unstaker: walletPublicKey,
         protocolFee: protocolFee,
       });
-      // debugger;
       let unstakeLamports_temp = unStakeLamportsWithRent - stakeAccountRent;
       setUnstakeLamports(unstakeLamports_temp);
       setUnstakeFee(stakeAccount.stakeLamports - unstakeLamports_temp);
@@ -128,7 +127,7 @@ export function InstantUnstakeScreen({stakeAccount}:{stakeAccount: StakeAccount}
         }
 
         try {
-          await window.xnft.solana.sendAndConfirm(transaction);
+          await window.xnft.solana.sendAndConfirm(transaction,);
       } catch (error) {
           console.log("error",error);
           return
@@ -136,7 +135,6 @@ export function InstantUnstakeScreen({stakeAccount}:{stakeAccount: StakeAccount}
       nav.pop()
       nav.pop()
       nav.push("overview",{expectingStakeAccountsToUpdate: true})
-        
   };
 
   if (validators == null) {
