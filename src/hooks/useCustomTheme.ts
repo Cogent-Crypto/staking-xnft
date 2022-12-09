@@ -35,14 +35,16 @@ const LightModeTheme = {
     fontColor: "#000000",
     // secondary: "#333333",
     bg2: "#fff",
-    lightMode: true
+    lightMode: true,
+    buttonTextColor: "#71717A"
 }
 
 const DarkModeTheme = {
     bg2: "#272727",
     // fontColor: "#ffffff",
     secondary: "#ffffff",
-    lightMode: false
+    lightMode: false,
+    buttonTextColor: "#ffffff"
 }
 
 export function useCustomTheme() {

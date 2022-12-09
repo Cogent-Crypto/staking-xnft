@@ -22,8 +22,8 @@ import {
     const nav = useNavigation();
     const solBalance = useSolBalance();
 
-    const [splitAmount, setSplitAmount] = useState<number>(0);
-    const [splitAmountDisplay, setSplitAmountDisplay] = useState<string>("0");
+    const [splitAmount, setSplitAmount] = useState<number>(stakeAccount.stakeLamports/2/LAMPORTS_PER_SOL);
+    const [splitAmountDisplay, setSplitAmountDisplay] = useState<string>((stakeAccount.stakeLamports/2/LAMPORTS_PER_SOL).toString());
     const buildingSmallNumberRegex = /^0\.0*$/
     
     const hasSolToCoverRent = solBalance > stakeAccountRentExempt

@@ -43,8 +43,6 @@ export function RedelegateScreen({
 
     nav.pop()
     nav.pop()
-    nav.pop()
-    nav.pop()
     nav.push("overview",{expectingStakeAccountsToUpdate: true})
   };
 

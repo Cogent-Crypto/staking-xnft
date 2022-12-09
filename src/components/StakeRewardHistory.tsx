@@ -52,11 +52,14 @@ const getLastFiveStakeRewardsFromEpoch = (stakeAccountPK, epoch: null | number =
 
 export function StakeRewardHistory({ stakeAccountPK }: { stakeAccountPK: any }) {
     const [rewardHistory, setRewardHistory] = React.useState<fetchedRewards | []>([])
+    const [allRewardsLoaded, setAllRewardsLoaded] = React.useState(false);
 
     React.useEffect(() => {
         async function fetchRewards() {
             let res = await getLastFiveStakeRewardsFromEpoch(stakeAccountPK, null, 1);
-
+            if (res.map((r) => r.value).some((v) => v === undefined)) {
+                setAllRewardsLoaded(true);
+            }
             setRewardHistory((history) => [...res, ...history]);
         }
 
@@ -68,17 +71,25 @@ export function StakeRewardHistory({ stakeAccountPK }: { stakeAccountPK: any }) 
             setRewardHistory((history) => [...history, ...res]);
         })
     }
+    if (rewardHistory.length === 0) {
+        return <View></View>;
+    }
+    if (isNaN(rewardHistory[0].value)) {
+        return <View></View>;
+    }
 
     return (
-        <View tw="mt-6">
-            <Text tw="font-medium text-base">Recent Rewards</Text>
-            {rewardHistory.length > 0 &&
-                <ShowRewardHistory loadMoreRewards={loadMoreRewards} rewardHistory={rewardHistory} />
-            }
+        <View>
+            <View tw="mt-6">
+                <Text tw="font-medium text-base">Recent Rewards</Text>
+                {rewardHistory.length > 0 &&
+                    <ShowRewardHistory loadMoreRewards={loadMoreRewards} rewardHistory={rewardHistory} allRewardsLoaded={allRewardsLoaded} />
+                }
+            </View>
         </View>)
 }
 
-const ShowRewardHistory = ({ rewardHistory, loadMoreRewards }: { rewardHistory: fetchedRewards, loadMoreRewards: () => Promise<any> }) => {
+const ShowRewardHistory = ({ rewardHistory, loadMoreRewards, allRewardsLoaded }: { rewardHistory: fetchedRewards, loadMoreRewards: () => Promise<any>, allRewardsLoaded:Boolean }) => {
     const [isLoading, setIsLoading] = React.useState(false);
     const THEME = useCustomTheme();
 
@@ -91,9 +102,9 @@ const ShowRewardHistory = ({ rewardHistory, loadMoreRewards }: { rewardHistory: 
     }
 
     return (
-        <View tw="flex flex-col justify-center mb-4">
+        <View tw="flex flex-col justify-center mb-4 ">
             {rewardHistory.map((reward, index) => {
-                return (
+                return ( reward.value !== undefined &&
                     <View key={index} tw="flex mb-1 mx-auto">
                         <Text tw="font-bold text-base">{reward.epoch}:</Text>
                         <Text tw="ml-2 font-bold text-teal-500 text-base">{reward.value / LAMPORTS_PER_SOL}</Text>
@@ -104,7 +115,7 @@ const ShowRewardHistory = ({ rewardHistory, loadMoreRewards }: { rewardHistory: 
                 {/* If Loading show loading indicator */}
                 {isLoading && <Loading />}
                 {/* If not Loading and last fetched value isn't undefined show Button */}
-                {!isLoading && rewardHistory[rewardHistory.length - 1]?.value && <View tw="text-sm cursor-pointer" style={{ color: THEME.colors?.secondary }} onClick={() => handleViewMore()}>More</View>}
+                { !allRewardsLoaded && !isLoading && rewardHistory[rewardHistory.length - 1]?.value && <View tw="text-sm cursor-pointer" style={{ color: THEME.colors?.secondary }} onClick={() => handleViewMore()}>More</View>}
             </View>
         </View >
     )
