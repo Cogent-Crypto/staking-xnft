@@ -134,7 +134,7 @@ export function SendStakeAccountScreen({ stakeAccount, validator }: { stakeAccou
           value={destinationAddress}
           style={{ width: "100%" }}
         ></TextField>
-        <Text style={{ fontSize: "10px" }}>
+        <Text style={{ fontSize: "10px" }} tw="mt-2">
           Sending a stake account permanently transfers the withdraw and delegation authority to the desination address
         </Text>
       </View>
