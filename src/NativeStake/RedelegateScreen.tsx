@@ -60,7 +60,7 @@ export function RedelegateScreen({
           stakeAccount={stakeAccount}
           validator={existingValidator}
         />
-        <Text>Switcing To</Text>
+        <Text>Switching To</Text>
 
         <ValidatorInfo {...validator} />
        
