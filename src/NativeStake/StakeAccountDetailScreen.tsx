@@ -1,7 +1,7 @@
 
 import { View, Text, List, Button, useNavigation, Image, useConnection, usePublicKey, LocalStorage } from "react-xnft";
 import type { Connection, PublicKey } from "@solana/web3.js";
-import { StakeProgram } from "@solana/web3.js";
+import { StakeProgram, Transaction } from "@solana/web3.js";
 import type { StakeAccount } from "../hooks/useStakeAccounts";
 import { stakeAccountCacheKey } from "../hooks/useStakeAccounts";
 import { StakeAccountDetail } from "../components/StakeAccountDetail";
@@ -22,6 +22,7 @@ export function StakeAccountDetailScreen({ stakeAccount, validator, mergableStak
 
     const ListChildren = () => {
         let buttons: any[] = [];
+        const claimMevButton = <Button tw="w-full text-left" key={"claimMev"} onClick={() => claimMev(stakeAccount, publicKey, connection, nav)}>Claim Mev</Button>
         const unstakeButton = <Button tw="w-full text-left" key={"instantunstake"} onClick={() => { nav.push("instantunstake", { stakeAccount }) }}>Instant Unstake</Button>
         const deactivateUnstakeButton = <Button tw="w-full text-left" key={"deactivateunstake"} onClick={() => { deactivateStake(stakeAccount, publicKey, connection, nav) }}>Unstake (Availble to withdraw in {epochInfo?.remaining_dhm})</Button>
         const withdrawButton = <Button tw="w-full text-left" key={"withdraw"} onClick={() => withdrawStake(stakeAccount, publicKey, connection, nav)}>Withdraw</Button>
@@ -29,6 +30,10 @@ export function StakeAccountDetailScreen({ stakeAccount, validator, mergableStak
         const sendButton = <Button tw="w-full text-left" key={"send"} onClick={() => { nav.push("send", { stakeAccount, validator }) }}>Send</Button>
         const mergeButton = <Button tw="w-full text-left" onClick={() => { console.log("merge"); nav.push("merge", { stakeAccount, validator, mergableStakeAccounts }) }}>Merge</Button>
         const splitButton = <Button tw="w-full text-left" key="active" onClick={() => { nav.push("split", { stakeAccount, validator }) }}>Split</Button>
+
+        if (stakeAccount.excessLamports > 0) {
+            buttons.push(claimMevButton)
+        }
 
         buttons.push(unstakeButton)
 
@@ -88,6 +93,37 @@ async function deactivateStake(stakeAccount: StakeAccount, publicKey: PublicKey,
     nav.pop()
     nav.push("overview", { expectingStakeAccountsToUpdate: true })
 }
+
+async function claimMev(stakeAccount: StakeAccount, publicKey: PublicKey, connection: Connection, nav: any) {
+    const recentBlockhash = await connection.getLatestBlockhash();
+    const transaction = new Transaction({
+        feePayer: publicKey,
+        blockhash: recentBlockhash.blockhash,
+        lastValidBlockHeight: recentBlockhash.lastValidBlockHeight
+    });
+
+    if (stakeAccount.excessLamports > 0) {
+        transaction.add(
+            StakeProgram.withdraw({
+                stakePubkey: stakeAccount.accountAddress,
+                authorizedPubkey: publicKey,
+                toPubkey: publicKey,
+                lamports: stakeAccount.excessLamports
+            }))
+    }
+
+    // send the transaction
+    try {
+        const signature = await window.xnft.solana.sendAndConfirm(transaction)
+    } catch (e) {
+        console.log(e);
+        return
+    }
+
+    nav.pop()
+    nav.push("overview", { expectingStakeAccountsToUpdate: true })
+}
+
 
 async function withdrawStake(stakeAccount: StakeAccount, publicKey: PublicKey, connection: Connection, nav: any) {
     if (stakeAccount.status !== "inactive") {
