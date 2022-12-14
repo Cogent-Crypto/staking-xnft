@@ -87,7 +87,7 @@ export function useValidators() {
 async function fetchValidators() {
   const cacheKey = "validators"
   console.log("fetching validators 2");
-  const val = null // await LocalStorage.get(cacheKey);
+  const val = await LocalStorage.get(cacheKey);
 
   console.log("fetching validators 3");
   if (val) {
@@ -112,7 +112,6 @@ async function fetchValidators() {
     }, initialValue);
   };
 
-
   let validators = validator_list.map((validator) => { return { ...validator, commission_rugger: rugging_validators.has(validator.vote_identity) } })
 
   validators = convertArrayToObject(validators, "vote_identity");
@@ -122,6 +121,7 @@ async function fetchValidators() {
     value: validators,
   })
   );
+
   return validators;
 }
 
