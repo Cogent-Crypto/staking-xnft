@@ -17,21 +17,24 @@ export function CreateStakeAccountScreen({ validator }: { validator: Validator }
     const [stakeAmount, setStakeAmount] = React.useState(0);
 
     const onSolInputChange = (e) => {
-        
-        let input = e.target.value.replace(/[^0-9.]/g, '').replace(/^0+\B/, '');
+        let input = e.target.value.replace(/[^0-9.]/g, '').replace(/^0+/, '');
         //remove all . except the first one
         input = input.replace(/\./g, (c, i, text) => text.indexOf(c) === i ? c : '')
         input = input.slice(0,10)
   
         
         if (input == "") {
-            setStakeAmountDisplay("");
+            setStakeAmountDisplay("0");
           setStakeAmount(0);
           return
         }
   
         setStakeAmountDisplay(input);
-        
+        const buildingSmallNumberRegex = /^0\.0*$/
+        if (buildingSmallNumberRegex.test(input)) {
+            setStakeAmount(0);
+          return
+        }
         let stakeAmount = parseFloat(input);
         if (isNaN(stakeAmount)) {
             setStakeAmount(0);

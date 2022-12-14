@@ -10,6 +10,7 @@ export type StakeAccount = {
     accountLamports: number;
     stakeLamports: number; //lamports
     stakeSol: number;
+    excessLamports: number;
     activationEpoch: number;
     deactivationEpoch: number;
     status: string;
@@ -56,6 +57,7 @@ export function useStakeAccounts() {
                             account.stakeLamports = parseInt(account.stakeLamports);
                             account.activationEpoch = parseInt(account.activationEpoch);
                             account.deactivationEpoch = parseInt(account.deactivationEpoch);
+                            account.excessLamports = parseInt(account.excessLamports);
                         }
                         setStakeAccounts({
                             stakeAccounts: accounts,
@@ -133,6 +135,7 @@ async function fetchStakeAndPopulateAccountsWithValidatorInfo(validators, public
         stakeAccount.stakeSol = stakeAccount.stakeLamports / LAMPORTS_PER_SOL
         stakeAccount.activationEpoch = activationEpoch;
         stakeAccount.deactivationEpoch = deactivationEpoch;
+        stakeAccount.excessLamports = stakeAccount.accountLamports-stakeAccount.stakeLamports-stakeAccountRentExempt
 
 
         if (deactivationEpoch < current_epoch) {

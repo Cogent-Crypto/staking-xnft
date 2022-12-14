@@ -21,7 +21,8 @@ import {
     const publicKey = usePublicKey();
     const nav = useNavigation();
     const solBalance = useSolBalance();
-
+    const buildingSmallNumberRegex = /^0\.0*$/
+    
     const [splitAmount, setSplitAmount] = useState<number>(stakeAccount.stakeLamports/2/LAMPORTS_PER_SOL);
     const [splitAmountDisplay, setSplitAmountDisplay] = useState<string>((stakeAccount.stakeLamports/2/LAMPORTS_PER_SOL).toString());
    
