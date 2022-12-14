@@ -126,7 +126,7 @@ export function SelectValidatorScreen({
   if (searchText != "") {
     searchResults = Object.values(validators)
       .filter((validator) => {
-        return validator.name?.toLowerCase().includes(searchText.toLowerCase());
+        return validator.name?.toLowerCase().includes(searchText.toLowerCase()) || validator.vote_identity?.toString().toLowerCase().includes(searchText.toLowerCase());
       })
       .slice(0, validatorRenderCount);
   } else {

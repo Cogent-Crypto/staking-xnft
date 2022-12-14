@@ -150,15 +150,17 @@ export function InstantUnstakeScreen({stakeAccount}:{stakeAccount: StakeAccount}
   
 
   return (
-    <View>
-      <StakeAccountDetail stakeAccount={stakeAccount} validator={validator} />
-      <Text tw="px-4">Instant Unstake Fee: {(unstakeFee/LAMPORTS_PER_SOL).toFixed(4)} SOL ({(unstakeFee/unstakeLamports*100).toFixed(2)}%)</Text>
-      <PrimaryButton
-        status={ButtonStatus.Ok}
-        disabled={false}
-        text={buttonText}
-        onClick={instantUnstake}
-      />
+    <View style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+      <View style={{ flex: 1, margin: '0px 12px' }}>
+        <StakeAccountDetail stakeAccount={stakeAccount} validator={validator} />
+        <Text tw="px-4">Instant Unstake Fee: {(unstakeFee/LAMPORTS_PER_SOL).toFixed(4)} SOL ({(unstakeFee/unstakeLamports*100).toFixed(2)}%)</Text>
+      </View>
+        <PrimaryButton
+          status={ButtonStatus.Ok}
+          disabled={false}
+          text={buttonText}
+          onClick={instantUnstake}
+        />
     </View>
   );
 }

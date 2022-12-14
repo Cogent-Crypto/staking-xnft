@@ -124,7 +124,7 @@ async function fetchValidators() {
     return validators;
 }
 
-let rugging_validators = new Set([
+const rugging_validators = new Set([
   "rep1xGEJzUiQCQgnYjNn76mFRpiPaZaKRwc13wm8mNr",
   "AxP8nEVvay26BvFqSVWFC73ciQ4wVtmhNjAkUz5szjCg",
   "DeFiDeAgFR29GgKdyyVZdvsELbDR8k4WqprWGtgtbi1o",

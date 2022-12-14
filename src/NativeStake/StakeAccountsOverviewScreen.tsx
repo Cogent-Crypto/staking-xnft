@@ -74,7 +74,7 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
               key={account.accountAddress.toString()}
             >
               <View
-                style={{ 
+                style={{
                   display: "flex",
                   backgroundColor: THEME.colors?.bg2,
                   height: "100%",

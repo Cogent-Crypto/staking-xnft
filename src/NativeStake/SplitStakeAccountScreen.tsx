@@ -24,7 +24,7 @@ import {
 
     const [splitAmount, setSplitAmount] = useState<number>(stakeAccount.stakeLamports/2/LAMPORTS_PER_SOL);
     const [splitAmountDisplay, setSplitAmountDisplay] = useState<string>((stakeAccount.stakeLamports/2/LAMPORTS_PER_SOL).toString());
-    const buildingSmallNumberRegex = /^0\.0*$/
+   
     
     const hasSolToCoverRent = solBalance > stakeAccountRentExempt
 
@@ -47,7 +47,7 @@ import {
     }
 
     function onSplitAmountChange(e) {
-      let input = e.target.value.replace(/[^0-9.]/g, '').replace(/^0+/, '');
+      let input = e.target.value.replace(/[^0-9.]/g, '').replace(/^0+\B/, '');
       //remove all . except the first one
       input = input.replace(/\./g, (c, i, text) => text.indexOf(c) === i ? c : '')
       input = input.slice(0,10)
@@ -60,13 +60,14 @@ import {
       }
 
       setSplitAmountDisplay(input);
+      const buildingSmallNumberRegex = /^0\.0*$/
       if (buildingSmallNumberRegex.test(input)) {
         setSplitAmount(0);
         return
       }
       
       let splitAmount = parseFloat(input);
-      if (splitAmount == NaN) {
+      if (isNaN(splitAmount)) {
         setSplitAmount(0);
         setSplitAmountDisplay("0");
         return
