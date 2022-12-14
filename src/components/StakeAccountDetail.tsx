@@ -30,7 +30,7 @@ export function StakeAccountDetail({
     const THEME = useCustomTheme();
     console.log("theme", THEME);
     // console.log("StakeAccountDetailScreen", stakeAccount, validator);
-    const stakeAccountRent = 2283000;
+    const stakeAccountRent = stakeAccount.excessLamports;
     const onClick = () => {
         window.xnft.openWindow(
             "https://solscan.io/account/" + stakeAccount.accountAddress.toString()
@@ -65,7 +65,7 @@ export function StakeAccountDetail({
                     <Text style={{ fontSize: "1rem" }}>
                         {stakeAccountRent / LAMPORTS_PER_SOL}
                     </Text>
-                    <SubTitle>Rent Exempt SOL</SubTitle>
+                    <SubTitle>Claimable MEV Rewards</SubTitle>
                 </StatContainer>
                 <StatContainer>
                     <Text

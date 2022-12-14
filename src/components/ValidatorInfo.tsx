@@ -31,6 +31,7 @@ export function ValidatorInfo(validator: Validator) {
             flexDirection: "column"
 
         }}>
+            {validator.commission_rugger && <View tw="text-red-500">Validator is probably an asshole.</View>}
             {validator.delinquent && <View tw="text-red-500">Validator is currently delinquent.</View>}
             <View onClick={() => setExpanded(!expanded)} tw="flex items-center px-2 pt-4 cursor-pointer ">
                 <Image style={{ height: "35px", maxWidth: "unset", borderRadius: "999px" }} src={validator.image} />
