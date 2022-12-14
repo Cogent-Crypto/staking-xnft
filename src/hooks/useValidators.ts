@@ -1,8 +1,8 @@
-import {useState, useEffect} from 'react';
-import ReactXnft, {LocalStorage} from "react-xnft";
+import { useState, useEffect } from 'react';
+import ReactXnft, { LocalStorage } from "react-xnft";
 
 ReactXnft.events.on("connect", () => {
-    fetchValidators();
+  fetchValidators();
 });
 
 export type Validator = {
@@ -68,60 +68,61 @@ export type Validator = {
   commission_rugger: boolean;
 }
 
-export function useValidators() { 
+export function useValidators() {
+  const [validators, setValidators] = useState<{ [key: string]: Validator } | null>(null);
 
-    const [validators, setValidators] = useState<{[key: string]: Validator} | null >(null);
+  useEffect(() => {
+    console.log("fetching validators 1");
+    fetchValidators().then((validators) => {
+      console.log("fetched validators");
+      setValidators(validators);
+    })
+  }, []);
 
-    useEffect(() => {
-      console.log("fetching validators 1");
-        fetchValidators().then((validators) => {
-          console.log("fetched validators");
-            setValidators(validators);
-        })
-    }, []);
-
-    return validators; 
+  return validators;
 }
 
 
 
 async function fetchValidators() {
-    const cacheKey = "validators" 
-    console.log("fetching validators 2");
-    const val = await LocalStorage.get(cacheKey);
+  const cacheKey = "validators"
+  console.log("fetching validators 2");
+  const val = null // await LocalStorage.get(cacheKey);
 
-    console.log("fetching validators 3");
-    if (val) {
-        const resp = JSON.parse(val);
-        if (
-          Object.keys(resp.value).length > 0 &&
-          Date.now() - resp.ts < 1000 * 60* 60 * 24 // 24 hours
-        ) {
-          return await resp.value;
-        }
-      }
+  console.log("fetching validators 3");
+  if (val) {
+    const resp = JSON.parse(val);
+    if (
+      Object.keys(resp.value).length > 0 &&
+      Date.now() - resp.ts < 1000 * 60 * 60 * 24 // 24 hours
+    ) {
+      return await resp.value;
+    }
+  }
 
-    const validator_list = await fetch("https://api.stakewiz.com/validators").then((res) => res.json())
-    
-    const convertArrayToObject = (array, key) => {
-        const initialValue = {};
-        return array.reduce((obj, item) => {
-            return {
-            ...obj,
-            [item[key]]: item
-            };
-        }, initialValue);
-    };
+  const validator_list = await fetch("https://api.stakewiz.com/validators").then((res) => res.json())
 
-    let validators = convertArrayToObject(validator_list, "vote_identity");
-    validators = validators.map((validator) => { return { ...validator, commission_rugger: rugging_validators.has(validator.vote_identity) }})
+  const convertArrayToObject = (array, key) => {
+    const initialValue = {};
+    return array.reduce((obj, item) => {
+      return {
+        ...obj,
+        [item[key]]: item
+      };
+    }, initialValue);
+  };
 
-    LocalStorage.set(cacheKey,JSON.stringify({
-        ts: Date.now(),
-        value: validators,
-      })
-    );
-    return validators;
+
+  let validators = validator_list.map((validator) => { return { ...validator, commission_rugger: rugging_validators.has(validator.vote_identity) } })
+
+  validators = convertArrayToObject(validators, "vote_identity");
+
+  LocalStorage.set(cacheKey, JSON.stringify({
+    ts: Date.now(),
+    value: validators,
+  })
+  );
+  return validators;
 }
 
 const rugging_validators = new Set([
