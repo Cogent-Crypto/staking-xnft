@@ -6,6 +6,8 @@ import {
   Loading,
   Image,
   Button,
+  useConnection,
+  usePublicKey
 
 } from "react-xnft";
 import { useStakeAccounts } from "../hooks/useStakeAccounts";
@@ -15,6 +17,7 @@ import { useValidators } from "../hooks/useValidators";
 import type { Validator } from "../hooks/useValidators";
 import { LoadingScreen } from "../components/LoadingScreen";
 import { useEpochInfo } from "../hooks/useEpochInfo";
+import { LAMPORTS_PER_SOL, Transaction, SystemProgram, StakeProgram } from '@solana/web3.js';
 
 export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: { expectingStakeAccountsToUpdate: boolean }) {
   const fetchedStakeAccounts = useStakeAccounts();
@@ -22,10 +25,15 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
   const nav = useNavigation();
   const THEME = useCustomTheme();
   const epochInfo = useEpochInfo();
+  const connection = useConnection();
+  const publicKey = usePublicKey();
+
+  
   if (fetchedStakeAccounts === null || validators === null) {
     return <LoadingScreen />
   }
 
+  const totalExcessLamports = fetchedStakeAccounts.stakeAccounts.reduce((a, b) => a + b.excessLamports, 0);
   const { cached, stakeAccounts } = fetchedStakeAccounts
 
   const clickStakeAccount = (account: StakeAccount) => {
@@ -42,6 +50,37 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
   const clickNewStakeAccount = () => {
     nav.push("selectvalidator", { onSelectScreen: "create" });
   };
+
+  const claimExcessLamports = async () => {
+    const recentBlockhash = await connection.getLatestBlockhash();
+    const transaction = new Transaction({
+      feePayer: publicKey,
+      blockhash: recentBlockhash.blockhash,
+      lastValidBlockHeight: recentBlockhash.lastValidBlockHeight
+    });
+    // loop through all stake accounts and add a transfer instruction to the transaction
+    for (const account of fetchedStakeAccounts.stakeAccounts) {
+      if (account.excessLamports > 0 && transaction.serializeMessage().length < 1232-49 ) {
+        transaction.add(
+          StakeProgram.withdraw({
+            stakePubkey: account.accountAddress,
+            authorizedPubkey: publicKey,
+            toPubkey: publicKey,
+            lamports: account.excessLamports
+        }))}
+      }
+
+    // send the transaction
+    try {
+      const signature = await window.xnft.solana.sendAndConfirm(transaction)
+    } catch (e) {
+      console.log(e);
+      return 
+    }
+    nav.push("overview",{expectingStakeAccountsToUpdate: true})
+      
+
+  }
 
   return (
     <View style={{ height: "100%" }}>
@@ -60,6 +99,7 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
         </Text>
       </View>
       <View tw="py-1 px-1">
+        {totalExcessLamports >0 && <Button tw="w-full mb-2" style={{ borderRadius: "5px" }} onClick={claimExcessLamports}>Claim MEV rewards: {Math.round(totalExcessLamports/LAMPORTS_PER_SOL*1000)/1000} SOL</Button>}
         <Button tw="w-full" style={{ borderRadius: "5px" }} onClick={clickNewStakeAccount}>Create New +</Button>
       </View>
       
