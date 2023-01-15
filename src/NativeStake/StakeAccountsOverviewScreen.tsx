@@ -18,6 +18,7 @@ import type { Validator } from "../hooks/useValidators";
 import { LoadingScreen } from "../components/LoadingScreen";
 import { useEpochInfo } from "../hooks/useEpochInfo";
 import { LAMPORTS_PER_SOL, Transaction, SystemProgram, StakeProgram } from '@solana/web3.js';
+import { AlertIcon } from "../components/Icons";
 
 export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: { expectingStakeAccountsToUpdate: boolean }) {
   const fetchedStakeAccounts = useStakeAccounts();
@@ -28,7 +29,7 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
   const connection = useConnection();
   const publicKey = usePublicKey();
 
-  
+
   if (fetchedStakeAccounts === null || validators === null) {
     return <LoadingScreen />
   }
@@ -60,25 +61,26 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
     });
     // loop through all stake accounts and add a transfer instruction to the transaction
     for (const account of fetchedStakeAccounts.stakeAccounts) {
-      if (account.excessLamports > 0 && transaction.serializeMessage().length < 1232-49 ) {
+      if (account.excessLamports > 0 && transaction.serializeMessage().length < 1232 - 49) {
         transaction.add(
           StakeProgram.withdraw({
             stakePubkey: account.accountAddress,
             authorizedPubkey: publicKey,
             toPubkey: publicKey,
             lamports: account.excessLamports
-        }))}
+          }))
       }
+    }
 
     // send the transaction
     try {
       const signature = await window.xnft.solana.sendAndConfirm(transaction)
     } catch (e) {
       console.log(e);
-      return 
+      return
     }
-    nav.push("overview",{expectingStakeAccountsToUpdate: true})
-      
+    nav.push("overview", { expectingStakeAccountsToUpdate: true })
+
 
   }
 
@@ -95,14 +97,14 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
         >
           {cached && expectingStakeAccountsToUpdate ? (<View tw="-z-10"><Loading></Loading></View>) : ""}
           Total Sol Staked:{" "}
-          {stakeAccounts.reduce((a, b) => a + b.stakeSol, 0).toFixed(1)} SOL 
+          {stakeAccounts.reduce((a, b) => a + b.stakeSol, 0).toFixed(1)} SOL
         </Text>
       </View>
       <View tw="py-1 px-1">
-        {totalExcessLamports >0 && <Button tw="w-full mb-2" style={{ borderRadius: "5px" }} onClick={claimExcessLamports}>Claim MEV rewards: {Math.round(totalExcessLamports/LAMPORTS_PER_SOL*1000)/1000} SOL</Button>}
+        {totalExcessLamports > 0 && <Button tw="w-full mb-2" style={{ borderRadius: "5px" }} onClick={claimExcessLamports}>Claim MEV rewards: {Math.round(totalExcessLamports / LAMPORTS_PER_SOL * 1000) / 1000} SOL</Button>}
         <Button tw="w-full" style={{ borderRadius: "5px" }} onClick={clickNewStakeAccount}>Create New +</Button>
       </View>
-      
+
       {stakeAccounts.length == 0 ? (
         <Text>No stake accounts found</Text>
       ) : (
@@ -127,10 +129,11 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
                 }}
                 onClick={() => clickStakeAccount(account)}
               >
-                <Image
-                  src={validator.image}
-                  style={{ height: "50px", borderRadius: "9999px" }}
-                ></Image>
+                {validator.commission_rugger ? <AlertIcon /> :
+                  <Image
+                    src={validator.image}
+                    style={{ height: "50px", borderRadius: "9999px" }}
+                  ></Image>}
                 <View style={{ paddingLeft: "4px", width: "100%", paddingTop: "3px" }}>
                   <Text style={{ maringTop: "100px" }}>{validator.name}</Text>
                   <View style={{ display: "flex", justifyContent: "space-between", marginTop: "-3px" }}>
@@ -139,7 +142,12 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
                         color: statusColor(account.status),
                       }}
                     >
-                      {account.status}
+                      {validator.commission_rugger ? <Text
+                        style={{
+                          color: "#b8260d",
+                          fontSize: "15px"
+                        }}
+                      >MANIPULATING COMMISSIONS</Text> : account.status}
                       {account.status == "activating" || account.status == "deactivating" ? " (" + epochInfo?.remaining_dhm + ")" : ""}
                     </Text>
                     <Text style={{}}>
