@@ -10,7 +10,7 @@ export type StakePool = {
     website: String
 }
 
-export let stakePools: Array<StakePool> = [
+export const stakePools: Array<StakePool> = [
     {
         poolName: "Cogent",
         apy: 0,

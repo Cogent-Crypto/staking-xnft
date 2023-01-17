@@ -3,7 +3,6 @@ import { StakeProgram, Connection, } from "@solana/web3.js";
 import { useState, useEffect } from "react";
 import ReactXnft, { usePublicKey, useConnection, LocalStorage } from "react-xnft";
 import { useValidators } from "./useValidators";
-import type { Validator } from "./useValidators";
 
 export type StakeAccount = {
     accountAddress: PublicKey;
