@@ -1,5 +1,5 @@
 import React from "react";
-import { Stack } from "react-xnft";
+import { Stack, Tab } from "react-xnft";
 import { StakeAccountDetailScreen } from "./StakeAccountDetailScreen";
 import { StakeAccountsOverviewScreen } from "./StakeAccountsOverviewScreen";
 import { SelectValidatorScreen } from "./SelectValidatorScreen";
@@ -10,6 +10,8 @@ import { MergeStakeAccountScreen } from './MergeStakeAccountScreen';
 import { RedelegateScreen } from './RedelegateScreen';
 import { InstantUnstakeScreen } from './InstantUnstakeScreen';
 import { useCustomTheme } from "../hooks/useCustomTheme";
+import { HomeIcon, LiquidIcon } from "../components/Icons";
+import { LiquidStaking } from "../components/LiquidStaking";
 
 
 export function StakeAccountsScreen() {
@@ -19,6 +21,7 @@ export function StakeAccountsScreen() {
     <Stack.Navigator
       initialRoute={{ name: "overview" }}
       options={({ route }) => {
+
         switch (route.name) {
           case "overview":
             return {
@@ -65,7 +68,7 @@ export function StakeAccountsScreen() {
     >
       <Stack.Screen
         name={"overview"}
-        component={(props: any) => <StakeAccountsOverviewScreen {...props} />}
+        component={(props: any) => <TabNavigator  {...props} />}
       />
       <Stack.Screen
         name={"detail"}
@@ -104,5 +107,47 @@ export function StakeAccountsScreen() {
         component={(props: any) => <ConfirmTransaction {...props} />}
       /> */}
     </Stack.Navigator>
+  );
+}
+
+
+
+export function TabNavigator(props) {
+  const THEME = useCustomTheme();
+
+  return (
+    <Tab.Navigator
+      initialRouteName="Stake Accounts"
+      style={{
+        backgroundColor: "#000",
+        borderTop: "none",
+      }}
+      options={({ route }) => {
+        return {
+          tabBarIcon: ({ focused }) => {
+            const color = focused
+              ? THEME.colors?.activeTab
+              : THEME.colors?.inactiveTab;
+            if (route.name === "Stake Accounts") {
+              return <Tab.Icon element={<HomeIcon />} />;
+            } else {
+              return <Tab.Icon element={<LiquidIcon />} />;
+            }
+          },
+          tabBarStyle: {
+            backgroundColor: "#000",
+          },
+        };
+      }}
+    >
+      <Tab.Screen
+        name="Stake Accounts"
+        component={() => <StakeAccountsOverviewScreen expectingStakeAccountsToUpdate={false} {...props} />}
+      />
+      <Tab.Screen
+        name="Liquid Staking"
+        component={LiquidStaking}
+      />
+    </Tab.Navigator>
   );
 }
