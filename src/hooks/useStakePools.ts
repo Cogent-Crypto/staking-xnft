@@ -36,7 +36,7 @@ export let stakePools: Array<StakePool> = [
         apy: 0,
         tokenSymbol: "mSOL",
         tokenMint: new PublicKey("mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So"),
-        tokenImageURL: "https://raw.githubusercontent.com/solana-labs/toke…LzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So/logo.png",
+        tokenImageURL: "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So/logo.png",
         poolPublicKey: new PublicKey("Jito4APyf642JPZPx3hGc6WWJ8zPKtRbRs4P815Awbb"), //needs to be marinade's contract
         MEVDelegation: false,
         website: "https://marinade.finance/"
