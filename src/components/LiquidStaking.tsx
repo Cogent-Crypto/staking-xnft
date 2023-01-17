@@ -26,6 +26,7 @@ export const LiquidStaking = () => {
                                 key={pool.tokenMint}
                             >
                                 <View
+                                    tw={`flex flex-col`}
                                     style={{
                                         backgroundColor: THEME.colors?.bg2,
                                         height: "100%",
