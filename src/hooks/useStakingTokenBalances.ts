@@ -18,7 +18,7 @@ type parsedTokenAccount = {
     }
 }
 
-export function useStakingTokenBalances() { //lamports
+export function useStakingTokenBalances() { //maps token mint to balance, scale is in SOL decimals e.g. not lamports
     const publicKey = usePublicKey();
     const connection = useConnection();
    
