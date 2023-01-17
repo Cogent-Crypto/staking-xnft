@@ -11,7 +11,6 @@ ReactXnft.events.on("connect", () => {
 
 
 export function App() {
-
   return (
     <View style={{ height: "100%" }}>
       <StakeAccountsScreen />

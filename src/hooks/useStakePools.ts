@@ -10,7 +10,7 @@ export type StakePool = {
     website: String
 }
 
-export let stakePools: Array<StakePool> = [
+export const stakePools: Array<StakePool> = [
     {
         poolName: "Cogent Staked SOL",
         apy: 0,
@@ -26,7 +26,7 @@ export let stakePools: Array<StakePool> = [
         apy: 0,
         tokenSymbol: "JitoSOL",
         tokenMint: new PublicKey("J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn"),
-        tokenImageURL: "https://storage.googleapis.com/token-metadata/JitoSOL.json",
+        tokenImageURL: "https://storage.googleapis.com/token-metadata/JitoSOL-256.png",
         poolPublicKey: new PublicKey("Jito4APyf642JPZPx3hGc6WWJ8zPKtRbRs4P815Awbb"),
         MEVDelegation: true,
         website: "https://www.jito.network/"
