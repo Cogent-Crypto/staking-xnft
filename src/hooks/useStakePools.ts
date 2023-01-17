@@ -12,7 +12,7 @@ export type StakePool = {
 
 export let stakePools: Array<StakePool> = [
     {
-        poolName: "Cogent Staked SOL",
+        poolName: "Cogent",
         apy: 0,
         tokenSymbol: "cgntSOL",
         tokenMint: new PublicKey("CgnTSoL3DgY9SFHxcLj6CgCgKKoTBr6tp4CPAEWy25DE"),
@@ -42,7 +42,7 @@ export let stakePools: Array<StakePool> = [
         website: "https://marinade.finance/"
     },
     {
-        poolName: "Laine Stake Token",
+        poolName: "Laine",
         apy: 0,
         tokenSymbol: "laineSOL",
         tokenMint: new PublicKey("LAinEtNLgpmCP9Rvsf5Hn8W6EhNiKLZQti1xfWMLy6X"),
@@ -54,7 +54,7 @@ export let stakePools: Array<StakePool> = [
     { //TODO finish
         poolName: "BlazeStake",
         apy: 0,
-        tokenSymbol: "scnSOL",
+        tokenSymbol: "bSOL",
         tokenMint: new PublicKey("bSo13r4TkiE4KumL71LsHTPpL2euBYLFx6h9HP3piy1"),
         tokenImageURL: "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/5oVNBeEEQvYi1cX3ir8Dx5n1P7pdxydbGF2X4TxVusJm/logo.png",
         poolPublicKey: new PublicKey("stk9ApL5HeVAwPLr3TLhDXdZS8ptVu7zp6ov8HFDuMi"),
