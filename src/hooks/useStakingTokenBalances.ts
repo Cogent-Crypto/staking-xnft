@@ -5,11 +5,6 @@ import { useState, useEffect } from "react";
 import ReactXnft, { usePublicKey, useConnection, LocalStorage } from "react-xnft";
 import { stakePools } from "./useStakePools";
 
-
-export type StakePoolToken = {
-    balance: number
-}
-
 type parsedTokenAccount = {
     isNative: boolean,
     mint: string
@@ -26,9 +21,8 @@ type parsedTokenAccount = {
 export function useStakingTokenBalances() { //lamports
     const publicKey = usePublicKey();
     const connection = useConnection();
-    // const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/34de7f944c3ac4fa11d689afa1566e8e605e0979/", "processed");
    
-    const [balances, setBalances] = useState(new Map<string, number>());
+    const [balances, setBalances] = useState<Map<string, number> | null>(null);
 
     useEffect(() => {
         if (publicKey) {
