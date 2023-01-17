@@ -10,9 +10,9 @@ export type StakePool = {
     website: String
 }
 
-export const stakePools: Array<StakePool> = [
+export let stakePools: Array<StakePool> = [
     {
-        poolName: "Cogent Staked SOL",
+        poolName: "Cogent",
         apy: 0,
         tokenSymbol: "cgntSOL",
         tokenMint: new PublicKey("CgnTSoL3DgY9SFHxcLj6CgCgKKoTBr6tp4CPAEWy25DE"),
@@ -26,7 +26,7 @@ export const stakePools: Array<StakePool> = [
         apy: 0,
         tokenSymbol: "JitoSOL",
         tokenMint: new PublicKey("J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn"),
-        tokenImageURL: "https://storage.googleapis.com/token-metadata/JitoSOL-256.png",
+        tokenImageURL: "https://storage.googleapis.com/token-metadata/JitoSOL.json",
         poolPublicKey: new PublicKey("Jito4APyf642JPZPx3hGc6WWJ8zPKtRbRs4P815Awbb"),
         MEVDelegation: true,
         website: "https://www.jito.network/"
@@ -35,24 +35,34 @@ export const stakePools: Array<StakePool> = [
         poolName: "Marinade",
         apy: 0,
         tokenSymbol: "mSOL",
-        tokenMint: new PublicKey("J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn"),
-        tokenImageURL: "https://storage.googleapis.com/token-metadata/JitoSOL-256.png",
-        poolPublicKey: new PublicKey("Jito4APyf642JPZPx3hGc6WWJ8zPKtRbRs4P815Awbb"),
+        tokenMint: new PublicKey("mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So"),
+        tokenImageURL: "https://raw.githubusercontent.com/solana-labs/toke…LzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So/logo.png",
+        poolPublicKey: new PublicKey("Jito4APyf642JPZPx3hGc6WWJ8zPKtRbRs4P815Awbb"), //needs to be marinade's contract
         MEVDelegation: false,
         website: "https://marinade.finance/"
     },
     {
-        poolName: "Laine Stake Token",
+        poolName: "Laine",
         apy: 0,
         tokenSymbol: "laineSOL",
         tokenMint: new PublicKey("LAinEtNLgpmCP9Rvsf5Hn8W6EhNiKLZQti1xfWMLy6X"),
-        tokenImageURL: "https://shdw-drive.genesysgo.net/4DUkKJB966oMk8zq57KkAUxqg9HpuWtZ3BKobhmYph39/laineSOL.webp",
+        tokenImageURL: "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/bSo13r4TkiE4KumL71LsHTPpL2euBYLFx6h9HP3piy1/logo.png",
         poolPublicKey: new PublicKey("2qyEeSAWKfU18AFthrF7JA8z8ZCi1yt76Tqs917vwQTV"),
         MEVDelegation: true,
         website: "https://stake.laine.one/"
     },
+    { //TODO finish
+        poolName: "BlazeStake",
+        apy: 0,
+        tokenSymbol: "bSOL",
+        tokenMint: new PublicKey("bSo13r4TkiE4KumL71LsHTPpL2euBYLFx6h9HP3piy1"),
+        tokenImageURL: "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/5oVNBeEEQvYi1cX3ir8Dx5n1P7pdxydbGF2X4TxVusJm/logo.png",
+        poolPublicKey: new PublicKey("stk9ApL5HeVAwPLr3TLhDXdZS8ptVu7zp6ov8HFDuMi"),
+        MEVDelegation: true,
+        website: "https://stake.solblaze.org/"
+    },
     {
-        poolName: "JPOOL Solana Token",
+        poolName: "JPOOL",
         apy: 0,
         tokenSymbol: "jSOL",
         tokenMint: new PublicKey("7Q2afV64in6N6SeZsAAB81TJzwDoD6zpqmHkzi9Dcavn"),
@@ -61,8 +71,9 @@ export const stakePools: Array<StakePool> = [
         MEVDelegation: false,
         website: "https://jpool.one/"
     },
+
     { //TODO finish
-        poolName: "Socean staked SOL",
+        poolName: "Socean",
         apy: 0,
         tokenSymbol: "scnSOL",
         tokenMint: new PublicKey("7Q2afV64in6N6SeZsAAB81TJzwDoD6zpqmHkzi9Dcavn"),
