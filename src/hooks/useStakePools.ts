@@ -12,6 +12,16 @@ export type StakePool = {
 
 export const stakePools: Array<StakePool> = [
     {
+        poolName: "Cogent Staked SOL",
+        apy: 0,
+        tokenSymbol: "cgntSOL",
+        tokenMint: new PublicKey("CgnTSoL3DgY9SFHxcLj6CgCgKKoTBr6tp4CPAEWy25DE"),
+        tokenImageURL: "https://cogent-cogs.s3.us-west-2.amazonaws.com/cgntSOL.png",
+        poolPublicKey: new PublicKey("CgntPoLka5pD5fesJYhGmUCF8KU1QS1ZmZiuAuMZr2az"),
+        MEVDelegation: true,
+        website: "https://cogentcrypto.io/app"
+    },
+    {
         poolName: "Jito",
         apy: 0,
         tokenSymbol: "JitoSOL",
@@ -56,7 +66,7 @@ export const stakePools: Array<StakePool> = [
         apy: 0,
         tokenSymbol: "scnSOL",
         tokenMint: new PublicKey("7Q2afV64in6N6SeZsAAB81TJzwDoD6zpqmHkzi9Dcavn"),
-        tokenImageURL: "https://raw.githubusercontent.com/mfactory-lab/jpool-pub/main/assets/images/jsol.png",
+        tokenImageURL: "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/5oVNBeEEQvYi1cX3ir8Dx5n1P7pdxydbGF2X4TxVusJm/logo.png",
         poolPublicKey: new PublicKey("5oc4nmbNTda9fx8Tw57ShLD132aqDK65vuHH4RU1K4LZ"),
         MEVDelegation: false,
         website: "https://socean.fi/"
