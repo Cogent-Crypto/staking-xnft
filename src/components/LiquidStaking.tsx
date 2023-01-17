@@ -44,12 +44,12 @@ export const LiquidStaking = () => {
                                             src={pool.tokenImageURL}
                                             style={{ height: "40px", borderRadius: "9999px" }}
                                         ></Image>
-                                        <Text tw={`font-white`}>
+                                        <View tw={`text-white text-center`}>
                                             {pool.poolName}
-                                        </Text>
+                                        </View>
                                     </View>
                                     <View style={{ paddingLeft: "4px", paddingTop: "3px", marginTop: "auto" }}>
-                                        <Text>
+                                        <Text tw={`font-light`}>
                                             3 {pool.tokenSymbol}
                                         </Text>
                                     </View>
@@ -58,7 +58,7 @@ export const LiquidStaking = () => {
                         )
                     })}
                 </View>
-            </View>
-        </View>
+            </View >
+        </View >
     )
 }
