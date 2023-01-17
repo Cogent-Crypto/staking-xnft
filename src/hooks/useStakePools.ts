@@ -82,6 +82,16 @@ export const stakePools: Array<StakePool> = [
         MEVDelegation: false,
         website: "https://socean.fi/"
     },
+    { //TODO finish
+        poolName: "DAO Pool",
+        apy: 0,
+        tokenSymbol: "daoSOL",
+        tokenMint: new PublicKey("GEJpt3Wjmr628FqXxTgxMce1pLntcPV4uFi8ksxMyPQh"),
+        tokenImageURL: "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/GEJpt3Wjmr628FqXxTgxMce1pLntcPV4uFi8ksxMyPQh/logo.png",
+        poolPublicKey: new PublicKey("7ge2xKsZXmqPxa3YmXxXmzCp9Hc2ezrTxh6PECaxCwrL"),
+        MEVDelegation: false,
+        website: "https://socean.fi/"
+    },
 
 ]
 
