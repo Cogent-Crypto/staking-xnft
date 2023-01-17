@@ -36,7 +36,7 @@ export const stakePools: Array<StakePool> = [
         apy: 0,
         tokenSymbol: "laineSOL",
         tokenMint: new PublicKey("LAinEtNLgpmCP9Rvsf5Hn8W6EhNiKLZQti1xfWMLy6X"),
-        tokenImageURL: "https://shdw-drive.genesysgo.net/4DUkKJB966oMk8zq57KkAUxqg9HpuWtZ3BKobhmYph39/laineSOL.json",
+        tokenImageURL: "https://shdw-drive.genesysgo.net/4DUkKJB966oMk8zq57KkAUxqg9HpuWtZ3BKobhmYph39/laineSOL.webp",
         poolPublicKey: new PublicKey("2qyEeSAWKfU18AFthrF7JA8z8ZCi1yt76Tqs917vwQTV"),
         MEVDelegation: true,
         website: "https://stake.laine.one/"
@@ -61,5 +61,6 @@ export const stakePools: Array<StakePool> = [
         MEVDelegation: false,
         website: "https://socean.fi/"
     },
+
 ]
 

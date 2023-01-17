@@ -60,8 +60,6 @@ export function useCustomTheme() {
         setCustomTheme(newTheme);
     }, [theme]);
 
-    // console.log("theme", customTheme);
-
     return customTheme;
 }
 

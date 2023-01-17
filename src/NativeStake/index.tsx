@@ -119,15 +119,15 @@ export function TabNavigator(props) {
     <Tab.Navigator
       initialRouteName="Stake Accounts"
       style={{
-        backgroundColor: "#000",
+        backgroundColor: "#272727",
         borderTop: "none",
       }}
       options={({ route }) => {
         return {
           tabBarIcon: ({ focused }) => {
             const color = focused
-              ? THEME.colors?.activeTab
-              : THEME.colors?.inactiveTab;
+              ? THEME?.colors?.activeTab
+              : THEME?.colors?.inactiveTab;
             if (route.name === "Stake Accounts") {
               return <Tab.Icon element={<HomeIcon />} />;
             } else {
@@ -135,7 +135,7 @@ export function TabNavigator(props) {
             }
           },
           tabBarStyle: {
-            backgroundColor: "#000",
+            backgroundColor: THEME?.colors?.bg2,
           },
         };
       }}
