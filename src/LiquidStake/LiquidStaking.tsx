@@ -3,13 +3,23 @@ import { View, Text, Image, useNavigation, Stack } from "react-xnft";
 import { useCustomTheme } from "../hooks/useCustomTheme";
 import { stakePools, StakePool } from "../hooks/useStakePools"
 import { useStakingTokenBalances } from '../hooks/useStakingTokenBalances';
+import { LoadingScreen } from "../components/LoadingScreen";
 
 export const LiquidStakeAccountsScreen = () => {
     const THEME = useCustomTheme();
     const nav = useNavigation();
     const tokenBalances = useStakingTokenBalances();
 
+    if (!tokenBalances) {
+
+        return (<View tw={`grid grid-cols-2`}>
+            <LoadingScreen />
+        </View>
+        )
+    }
+
     return (
+
         <View tw={`grid grid-cols-2`}>
             {stakePools.map((pool: StakePool) => {
                 return (
@@ -43,6 +53,8 @@ export const LiquidStakeAccountsScreen = () => {
                             </View>
                             <View style={{ paddingLeft: "4px", paddingTop: "3px", marginTop: "auto" }}>
                                 <Text tw={`font-light opacity-75`}>
+                                {/* pool.tokenMint.toString {pool.tokenMint.toString()} */}
+                                
                                     {tokenBalances?.get(pool.tokenMint.toString())} {pool.tokenSymbol}
                                 </Text>
                             </View>

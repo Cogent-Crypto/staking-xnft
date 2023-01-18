@@ -19,6 +19,7 @@ import { LoadingScreen } from "../components/LoadingScreen";
 import { useEpochInfo } from "../hooks/useEpochInfo";
 import { LAMPORTS_PER_SOL, Transaction, SystemProgram, StakeProgram } from '@solana/web3.js';
 import { AlertIcon } from "../components/Icons";
+import { useStakingTokenBalances } from "../hooks/useStakingTokenBalances";
  
 export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: { expectingStakeAccountsToUpdate: boolean }) {
   const fetchedStakeAccounts = useStakeAccounts();
@@ -28,6 +29,7 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
   const epochInfo = useEpochInfo();
   const connection = useConnection();
   const publicKey = usePublicKey();
+  // const tokens = useStakingTokenBalances();
 
   if (fetchedStakeAccounts === null || validators === null) {
     return <LoadingScreen />

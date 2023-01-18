@@ -25,10 +25,10 @@ export function useStakingTokenBalances() { //maps token mint to balance, scale 
     const [balances, setBalances] = useState<Map<string, number> | null>(null);
 
     useEffect(() => {
-        if (publicKey) {
+        if (publicKey && connection) {
             let  sorted_map_entries: Array<[string, number]>;
             const cacheKey = "stakepooltokenbalances" + publicKey.toString();
-            const val = LocalStorage.get(cacheKey).then((val) => {
+            LocalStorage.get(cacheKey).then((val) => {
                 if (val) {
                     const resp = JSON.parse(val);
                     if (
@@ -37,43 +37,47 @@ export function useStakingTokenBalances() { //maps token mint to balance, scale 
                     ) {
                         sorted_map_entries = resp.value.sort((a, b) => {return (a[0] < b[0]) ? -1 : (a[0] > b[0]) ? 1 : 0;});                        
                     }
-                }
+                } 
                 console.log("stakePools", stakePools)
                 let mints = new Set(stakePools.map((value) => value.tokenMint.toString()))
-                
                 fetchTokenBalances(publicKey, connection, mints).then((newBalances) => {
                     let new_sorted_map_entries = Array.from(newBalances.entries()).sort((a, b) => {return (a[0] < b[0]) ? -1 : (a[0] > b[0]) ? 1 : 0;});
                     console.log("new_sorted_map_entries", new_sorted_map_entries)
                     console.log("sorted_map_entries", sorted_map_entries)
-                    if (JSON.stringify(sorted_map_entries) != JSON.stringify(new_sorted_map_entries)) {
+                    if (JSON.stringify(sorted_map_entries) != JSON.stringify(new_sorted_map_entries) || !balances) {
+                        console.log("setting new balances")
                         setBalances(newBalances); 
                     }
-                })
+                    
+                }) 
             }).catch((err) => {
                 console.log("failed to proccess stakepool balances", err)
             })
         }
     }, [publicKey]);
-
+    console.log("returning balances", balances)
     return balances;
 }
 
 
-async function fetchTokenBalances(publicKey, connection, stakePoolMintAddress) { 
+async function fetchTokenBalances(publicKey, connection, stakePoolMintAddresses) { 
     const cacheKey = "stakepooltokenbalances" + publicKey.toString();
-
-    const tokensInWallet = await connection.getParsedTokenAccountsByOwner(publicKey, {
+    console.log("connection", connection)
+    console.log("connection.getParsedTokenAccountsByOwner", connection.getParsedTokenAccountsByOwner)
+    let connection2 = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/", "processed");
+    const tokensInWallet = await connection2.getParsedTokenAccountsByOwner(publicKey, {
         programId: TOKEN_PROGRAM_ID
     });
-    console.log("stakePoolMintAddress", stakePoolMintAddress)
+    console.log("stakePoolMintAddress", stakePoolMintAddresses)
    
-    let parsedStakePoolTokens = tokensInWallet.value.map((token)=>{ return token.account.data.parsed.info}).filter((token: parsedTokenAccount) => { return stakePoolMintAddress.has(token.mint)})
+    let parsedStakePoolTokens = tokensInWallet.value.map((token)=>{ return token.account.data.parsed.info}).filter((token: parsedTokenAccount) => { return stakePoolMintAddresses.has(token.mint)})
 
     const stakePoolTokenBalanceMap = new Map<string, number>(parsedStakePoolTokens.map(
         (token: parsedTokenAccount) => {
             return [token.mint, token.tokenAmount.uiAmount]
         }
     ));
+    console.log("fetched stakepool balances")
 
 
     console.log("stakepool balances", stakePoolTokenBalanceMap);
