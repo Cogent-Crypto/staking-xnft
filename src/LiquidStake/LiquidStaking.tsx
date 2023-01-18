@@ -1,45 +1,13 @@
+import React from "react";
 import { View, Text, Image, useNavigation, Stack } from "react-xnft";
 import { useCustomTheme } from "../hooks/useCustomTheme";
 import { stakePools, StakePool } from "../hooks/useStakePools"
-import { LiquidStakeDetail } from "./LiquidStakeDetail";
+import { useStakingTokenBalances } from '../hooks/useStakingTokenBalances';
 
-export function LiquidStakeAccountsScreen() {
-    const THEME = useCustomTheme();
-
-    return (
-        <Stack.Navigator
-            initialRoute={{ name: "liquidstake" }}
-            options={({ route }) => {
-
-                switch (route.name) {
-                    case "liquidstake":
-                        return {
-                            title: "",
-                        };
-                    case "liquidstakedetail":
-                        return {
-                            title: "",
-                        };
-                }
-            }}
-            style={{}}
-            titleStyle={{ color: THEME.colors?.fontColor }}
-        >
-            <Stack.Screen
-                name={"liquidstake"}
-                component={(props: any) => <LiquidStaking  {...props} />}
-            />
-            <Stack.Screen
-                name={"liquidstakedetail"}
-                component={(props: any) => <LiquidStakeDetail  {...props} />}
-            />
-        </Stack.Navigator>
-    );
-}
-
-export const LiquidStaking = () => {
+export const LiquidStakeAccountsScreen = () => {
     const THEME = useCustomTheme();
     const nav = useNavigation();
+    const tokenBalances = useStakingTokenBalances();
 
     return (
         <View tw={`grid grid-cols-2`}>
@@ -75,7 +43,7 @@ export const LiquidStaking = () => {
                             </View>
                             <View style={{ paddingLeft: "4px", paddingTop: "3px", marginTop: "auto" }}>
                                 <Text tw={`font-light opacity-75`}>
-                                    3 {pool.tokenSymbol}
+                                    {tokenBalances?.get(pool.tokenMint.toString())} {pool.tokenSymbol}
                                 </Text>
                             </View>
                         </View>

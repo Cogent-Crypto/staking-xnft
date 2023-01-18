@@ -12,6 +12,7 @@ import { InstantUnstakeScreen } from './InstantUnstakeScreen';
 import { useCustomTheme } from "../hooks/useCustomTheme";
 import { HomeIcon, LiquidIcon } from "../components/Icons";
 import { LiquidStakeAccountsScreen } from "../LiquidStake/LiquidStaking";
+import { LiquidStakeDetail } from "../LiquidStake/LiquidStakeDetail";
 
 
 export function StakeAccountsScreen() {
@@ -61,6 +62,14 @@ export function StakeAccountsScreen() {
             return {
               title: "Instant Unstake　　　",
             };
+          case "liquidstake":
+            return {
+                title: "",
+            };
+          case "liquidstakedetail":
+            return {
+                title: "",
+            };
           default:
             throw new Error("unknown route ");
         }
@@ -103,6 +112,14 @@ export function StakeAccountsScreen() {
       <Stack.Screen
         name={"instantunstake"}
         component={(props: any) => <InstantUnstakeScreen {...props} />}
+      />
+      <Stack.Screen
+              name={"LiquidStakeAccountsScreen"}
+              component={(props: any) => <LiquidStakeAccountsScreen  {...props} />}
+          />
+      <Stack.Screen
+          name={"liquidstakedetail"}
+          component={(props: any) => <LiquidStakeDetail  {...props} />}
       />
       {/* <Stack.Screen
         name={"confirm"}
