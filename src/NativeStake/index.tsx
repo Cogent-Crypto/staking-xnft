@@ -24,8 +24,6 @@ export function StakeAccountsScreen() {
 
         switch (route.name) {
           case "overview":
-            console.log("ROUTEPROPS ", route)
-
             return {
               title: "Stake Accounts　　",
             };
