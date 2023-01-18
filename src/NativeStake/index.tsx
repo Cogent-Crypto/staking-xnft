@@ -11,7 +11,7 @@ import { RedelegateScreen } from './RedelegateScreen';
 import { InstantUnstakeScreen } from './InstantUnstakeScreen';
 import { useCustomTheme } from "../hooks/useCustomTheme";
 import { HomeIcon, LiquidIcon } from "../components/Icons";
-import { LiquidStaking } from "../components/LiquidStaking";
+import { LiquidStakeAccountsScreen } from "../LiquidStake/LiquidStaking";
 
 
 export function StakeAccountsScreen() {
@@ -24,6 +24,8 @@ export function StakeAccountsScreen() {
 
         switch (route.name) {
           case "overview":
+            console.log("ROUTEPROPS ", route)
+
             return {
               title: "Stake Accounts　　",
             };
@@ -146,7 +148,7 @@ export function TabNavigator(props) {
       />
       <Tab.Screen
         name="Liquid Staking"
-        component={LiquidStaking}
+        component={() => <LiquidStakeAccountsScreen {...props} />}
       />
     </Tab.Navigator>
   );
