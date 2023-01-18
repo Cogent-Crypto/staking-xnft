@@ -10,7 +10,7 @@ export type StakePool = {
     website: String
 }
 
-export let stakePools: Array<StakePool> = [
+export const stakePools: Array<StakePool> = [
     {
         poolName: "Cogent",
         apy: 0,
@@ -79,6 +79,16 @@ export let stakePools: Array<StakePool> = [
         tokenMint: new PublicKey("7Q2afV64in6N6SeZsAAB81TJzwDoD6zpqmHkzi9Dcavn"),
         tokenImageURL: "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/5oVNBeEEQvYi1cX3ir8Dx5n1P7pdxydbGF2X4TxVusJm/logo.png",
         poolPublicKey: new PublicKey("5oc4nmbNTda9fx8Tw57ShLD132aqDK65vuHH4RU1K4LZ"),
+        MEVDelegation: false,
+        website: "https://socean.fi/"
+    },
+    { //TODO finish
+        poolName: "DAO Pool",
+        apy: 0,
+        tokenSymbol: "daoSOL",
+        tokenMint: new PublicKey("GEJpt3Wjmr628FqXxTgxMce1pLntcPV4uFi8ksxMyPQh"),
+        tokenImageURL: "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/GEJpt3Wjmr628FqXxTgxMce1pLntcPV4uFi8ksxMyPQh/logo.png",
+        poolPublicKey: new PublicKey("7ge2xKsZXmqPxa3YmXxXmzCp9Hc2ezrTxh6PECaxCwrL"),
         MEVDelegation: false,
         website: "https://socean.fi/"
     },
