@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useEpochInfo } from "../hooks/useEpochInfo";
 import { useCustomTheme } from "../hooks/useCustomTheme";
 import { StakePool } from "../hooks/useStakePools";
-import { depositSol, depositStake, withdrawSol, withdrawStake, } from '@solana/spl-stake-pool';
+import { depositSol, depositStake, withdrawSol, withdrawStake, stakePoolInfo} from '@solana/spl-stake-pool';
 import { publicKey } from '@project-serum/anchor/dist/cjs/utils';
 
 
@@ -23,8 +23,9 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
     async function deposit(pool: StakePool, lamports: number) {
         //amount needs to be lamports
         // different logic if marinade need to be implemented
-
-        // const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/");
+        
+        const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/");
+        stakePoolInfo(connection, pool.poolPublicKey).then(console.log).catch(console.log);
         const recentBlockhash = await connection.getLatestBlockhash();
         const transaction = new Transaction({
             feePayer: publicKey,
@@ -35,7 +36,7 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
         let stakePoolinstruction  = await depositSol(connection, pool.poolPublicKey, publicKey, lamports);
         transaction.add(...stakePoolinstruction.instructions);
         transaction.partialSign(stakePoolinstruction.signers[0]);
-        connection.simulateTransaction(transaction).then(console.log).catch(console.log); //this works
+        // connection.simulateTransaction(transaction).then(console.log).catch(console.log); //this works
         let txnSignature: any
         try {
             txnSignature = await window.xnft.solana.sendAndConfirm(transaction)
