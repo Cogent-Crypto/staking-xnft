@@ -7,7 +7,7 @@ import ReactXnft, { usePublicKey, useConnection, LocalStorage } from "react-xnft
 
 export type StakePool = {
     poolName: String,
-    apy: number,
+    apy: number| null,
     exchangeRate: number | null,
     tokenSymbol: String,
     tokenMint: PublicKey,
@@ -18,75 +18,11 @@ export type StakePool = {
 
 
 }
-const stakePoolCacheKey = "stakepools"
-// type StakePoolInfo = {
-//     address: string;
-//     poolWithdrawAuthority: string;
-//     manager: string;
-//     staker: string;
-//     stakeDepositAuthority: string;
-//     stakeWithdrawBumpSeed: number;
-//     maxValidators: number;
-//     validatorList: {
-//         activeStakeLamports: string;
-//         transientStakeLamports: string;
-//         lastUpdateEpoch: string;
-//         transientSeedSuffixStart: string;
-//         transientSeedSuffixEnd: string;
-//         status: string;
-//         voteAccountAddress: string;
-//     }[];
-//     validatorListStorageAccount: string;
-//     reserveStake: string;
-//     poolMint: string;
-//     managerFeeAccount: string;
-//     tokenProgramId: string;
-//     totalLamports: string;
-//     poolTokenSupply: string;
-//     lastUpdateEpoch: string;
-//     lockup: import("@solana/web3.js").Lockup;
-//     epochFee: import("./layouts").Fee;
-//     nextEpochFee: import("./layouts").Fee | undefined;
-//     preferredDepositValidatorVoteAddress: PublicKey | undefined;
-//     preferredWithdrawValidatorVoteAddress: PublicKey | undefined;
-//     stakeDepositFee: import("./layouts").Fee;
-//     stakeWithdrawalFee: import("./layouts").Fee;
-//     nextStakeWithdrawalFee: import("./layouts").Fee | undefined;
-//     stakeReferralFee: number;
-//     solDepositAuthority: string | undefined;
-//     solDepositFee: import("./layouts").Fee;
-//     solReferralFee: number;
-//     solWithdrawAuthority: string | undefined;
-//     solWithdrawalFee: import("./layouts").Fee;
-//     nextSolWithdrawalFee: import("./layouts").Fee | undefined;
-//     lastEpochPoolTokenSupply: string;
-//     lastEpochTotalLamports: string;
-//     details: {
-//         reserveStakeLamports: number | undefined;
-//         reserveAccountStakeAddress: string;
-//         minimumReserveStakeBalance: number;
-//         stakeAccounts: {
-//             voteAccountAddress: string;
-//             stakeAccountAddress: string;
-//             validatorActiveStakeLamports: string;
-//             validatorLastUpdateEpoch: string;
-//             validatorLamports: string;
-//             validatorTransientStakeAccountAddress: string;
-//             validatorTransientStakeLamports: string;
-//             updateRequired: boolean;
-//         }[];
-//         totalLamports: import("bn.js");
-//         totalPoolTokensimport { useEffect } from 'react';
-// : number;
-//         currentNumberOfValidators: number;
-//         maxNumberOfValidators: number;
-//         updateRequired: boolean;
-//     };
-// }
-let defualtStakePools: Array<StakePool> = [
+
+export const defualtStakePools: Array<StakePool> = [
     {
         poolName: "Cogent",
-        apy: 0,
+        apy: null,
         exchangeRate: null,
         tokenSymbol: "cgntSOL",
         tokenMint: new PublicKey("CgnTSoL3DgY9SFHxcLj6CgCgKKoTBr6tp4CPAEWy25DE"),
@@ -97,7 +33,7 @@ let defualtStakePools: Array<StakePool> = [
     },
     {
         poolName: "Laine",
-        apy: 0,
+        apy: null,
         exchangeRate: null,
         tokenSymbol: "laineSOL",
         tokenMint: new PublicKey("LAinEtNLgpmCP9Rvsf5Hn8W6EhNiKLZQti1xfWMLy6X"),
@@ -108,7 +44,7 @@ let defualtStakePools: Array<StakePool> = [
     },
     {
         poolName: "Jito",
-        apy: 0,
+        apy: null,
         exchangeRate: null,
         tokenSymbol: "JitoSOL",
         tokenMint: new PublicKey("J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn"),
@@ -119,7 +55,7 @@ let defualtStakePools: Array<StakePool> = [
     },
     {
         poolName: "Marinade",
-        apy: 0,
+        apy: null,
         exchangeRate: null,
         tokenSymbol: "mSOL",
         tokenMint: new PublicKey("mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So"),
@@ -130,7 +66,7 @@ let defualtStakePools: Array<StakePool> = [
     },
     { //TODO finish
         poolName: "BlazeStake",
-        apy: 0,
+        apy: null,
         exchangeRate: null,
         tokenSymbol: "bSOL",
         tokenMint: new PublicKey("bSo13r4TkiE4KumL71LsHTPpL2euBYLFx6h9HP3piy1"),
@@ -141,7 +77,7 @@ let defualtStakePools: Array<StakePool> = [
     },
     {
         poolName: "JPOOL",
-        apy: 0,
+        apy: null,
         exchangeRate: null,
         tokenSymbol: "jSOL",
         tokenMint: new PublicKey("7Q2afV64in6N6SeZsAAB81TJzwDoD6zpqmHkzi9Dcavn"),
@@ -153,7 +89,7 @@ let defualtStakePools: Array<StakePool> = [
 
     { //TODO finish
         poolName: "Socean",
-        apy: 0,
+        apy: null,
         exchangeRate: null,
         tokenSymbol: "scnSOL",
         tokenMint: new PublicKey("7Q2afV64in6N6SeZsAAB81TJzwDoD6zpqmHkzi9Dcavn"),
@@ -164,7 +100,7 @@ let defualtStakePools: Array<StakePool> = [
     },
     { //TODO finish
         poolName: "DAO Pool",
-        apy: 0,
+        apy: null,
         exchangeRate: null,
         tokenSymbol: "daoSOL",
         tokenMint: new PublicKey("GEJpt3Wjmr628FqXxTgxMce1pLntcPV4uFi8ksxMyPQh"),
@@ -175,7 +111,7 @@ let defualtStakePools: Array<StakePool> = [
     },
 
 ]
-
+const stakePoolCacheKey = "stakepools"
 export function useStakePools() {
     
     const [stakePools, setStakePools] = useState<StakePool[]>(defualtStakePools)
@@ -196,6 +132,7 @@ export function useStakePools() {
                     } else {
                         fetchStakePoolData(stakePools, validators).then((new_stakePools) => {
                             let new_stringifiedStakePools = JSON.stringify(new_stakePools)
+                            console.log("new_stringifiedStakePools", new_stringifiedStakePools)
                             if (new_stringifiedStakePools !== JSON.stringify(stakePools)) {
                                 setStakePools(stakePools)
                                 LocalStorage.set(stakePoolCacheKey, JSON.stringify({ ts: Date.now(), value: JSON.stringify(stakePools) }))
@@ -205,6 +142,7 @@ export function useStakePools() {
                 } else {
                     fetchStakePoolData(stakePools, validators).then((new_stakePools) => {
                         let new_stringifiedStakePools = JSON.stringify(new_stakePools)
+                        console.log("no stake pool information found in local storage", new_stringifiedStakePools)
                         if (new_stringifiedStakePools !== JSON.stringify(stakePools)) {
                             setStakePools(stakePools)
                             LocalStorage.set(stakePoolCacheKey, JSON.stringify({ ts: Date.now(), value: JSON.stringify(stakePools) }))
@@ -223,18 +161,23 @@ async function fetchStakePoolData(stakePools: StakePool[], validators: { [key: s
     const stakePoolData = await Promise.all(stakePools.map(async (stakePool) => {
         const stakePoolData = await stakePoolInfo(connection, stakePool.poolPublicKey)
         const exchangeRate = parseFloat(stakePoolData.poolTokenSupply) / parseFloat(stakePoolData.totalLamports)
+        
         const stakedLamportsWithAPY = stakePoolData.details.stakeAccounts.map((stakeAccount) => {
+            try {
             return [ parseFloat(stakeAccount.validatorLamports), validators[stakeAccount.voteAccountAddress].apy_estimate]
+            } catch (e) {
+                console.log("error fetching apy for stake account", stakeAccount)
+                return [parseFloat(stakeAccount.validatorLamports), 0]
+            }
         })
-        stakedLamportsWithAPY.push([parseInt(stakePoolData.reserveStake), 0])
+        // stakedLamportsWithAPY.push([stakePoolData.details.reserveStakeLamports ?  stakePoolData.details.reserveStakeLamports:0, 0])
         const summed = stakedLamportsWithAPY.reduce((acc, [lamports, apy]) => {
-            return  [acc[0]+lamports, acc[1]+apy]
+            return  [acc[0]+lamports*apy, acc[1]+lamports]
         }, [0,0])
-        const apy = summed[1] / summed[0]
+        const apy = summed[0] / summed[1]
 
 
-
-
+        console.log("fetched stake pool info")
         return {
             ...stakePool,
             exchangeRate,

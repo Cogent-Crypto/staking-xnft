@@ -1,18 +1,20 @@
 import React from "react";
 import { View, Text, Image, useNavigation, Stack } from "react-xnft";
 import { useCustomTheme } from "../hooks/useCustomTheme";
-import { stakePools, StakePool } from "../hooks/useStakePools"
+import { useStakePools, StakePool } from "../hooks/useStakePools"
 import { useStakingTokenBalances } from '../hooks/useStakingTokenBalances';
 import { LoadingScreen } from "../components/LoadingScreen";
 
 export const LiquidStakeAccountsScreen = () => {
     const THEME = useCustomTheme();
     const nav = useNavigation();
+    const stakePools = useStakePools();
     const tokenBalances = useStakingTokenBalances();
 
     if (!tokenBalances) {
 
         return (<View tw={`grid grid-cols-2`}>
+            {JSON.stringify(stakePools)}
             <LoadingScreen />
         </View>
         )
