@@ -126,7 +126,7 @@ export function useStakePools() {
                     if (
 
                         Object.keys(resp.value).length > 0 &&
-                        Date.now() - resp.ts < 1000 * 60 * 5 * 60 // 5 hours
+                        Date.now() - resp.ts < 1000 *  60 * 5 * 60 // 5 hours
                     ) {
                         return JSON.parse(resp.value)
                     } else {
@@ -170,18 +170,19 @@ async function fetchStakePoolData(stakePools: StakePool[], validators: { [key: s
                 return [parseFloat(stakeAccount.validatorLamports), 0]
             }
         })
+
         // stakedLamportsWithAPY.push([stakePoolData.details.reserveStakeLamports ?  stakePoolData.details.reserveStakeLamports:0, 0])
         const summed = stakedLamportsWithAPY.reduce((acc, [lamports, apy]) => {
             return  [acc[0]+lamports*apy, acc[1]+lamports]
         }, [0,0])
-        const apy = summed[0] / summed[1]
-
+        const apy = summed[0] / summed[1] * stakePoolData.epochFee.denominator.toNumber() / stakePoolData.epochFee.numerator.toNumber() / 10000;
+        console.log("fee", stakePoolData.epochFee.denominator.toNumber())
 
         console.log("fetched stake pool info")
         return {
             ...stakePool,
             exchangeRate,
-            apy
+            apy 
         }
     }))
     return stakePoolData
