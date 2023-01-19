@@ -53,9 +53,7 @@ export const LiquidStakeAccountsScreen = () => {
                             </View>
                             <View style={{ paddingLeft: "4px", paddingTop: "3px", marginTop: "auto" }}>
                                 <Text tw={`font-light opacity-75`}>
-                                {/* pool.tokenMint.toString {pool.tokenMint.toString()} */}
-                                
-                                    {tokenBalances?.get(pool.tokenMint.toString())} {pool.tokenSymbol}
+                                    {tokenBalances?.get(pool.tokenMint.toString())?.toFixed(2) || 0} {pool.tokenSymbol}
                                 </Text>
                             </View>
                         </View>
