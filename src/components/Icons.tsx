@@ -1,4 +1,4 @@
-import { View, Svg, Path } from "react-xnft";
+import { View, Svg, Path, Circle } from "react-xnft";
 
 export function LinkIcon({ lightMode, ...props }) {
   return (
@@ -46,4 +46,21 @@ export function HomeIcon() {
       {/* </g> */}
       {/* </g> */}
     </Svg>)
+}
+
+export const CheckIcon = () => {
+  return (
+    <Svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="32px" height="32px" baseProfile="basic">
+      <Circle cx="24" cy="24" r="20" fill="#6be3a2" />
+      <Path fill="#324561" d="M22.5,33c-0.226,0-0.446-0.076-0.625-0.219l-7.5-6c-0.431-0.345-0.501-0.974-0.156-1.405	c0.347-0.431,0.975-0.501,1.406-0.156l6.667,5.334l9.889-14.126c0.316-0.454,0.94-0.562,1.393-0.246	c0.453,0.317,0.562,0.94,0.246,1.393l-10.5,15c-0.158,0.227-0.403,0.377-0.677,0.417C22.595,32.997,22.547,33,22.5,33z" />
+    </Svg>
+  )
+}
+
+export const RedXIcon = () => {
+  return (
+    <Svg xmlns="http://www.w3.org/2000/svg" width="32px" height="32px" viewBox="0 0 64 64" enableBackground="new 0 0 64 64">
+      <Path d="m32 2c-16.568 0-30 13.432-30 30s13.432 30 30 30 30-13.432 30-30-13.432-30-30-30m5.513 44.508l-5.514-9.894-5.825 9.894h-7.048l9.331-14.783-8.878-14.232h7.244l5.175 9.449 5.317-9.449h7.008l-8.878 13.996 9.429 15.02h-7.361z" fill="#e53935" />
+    </Svg>
+  )
 }
