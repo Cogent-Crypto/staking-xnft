@@ -10,16 +10,15 @@ export const LiquidStakeAccountsScreen = () => {
     const nav = useNavigation();
     const stakePools = useStakePools();
     const tokenBalances = useStakingTokenBalances();
-
+    
     if (!tokenBalances) {
 
         return (<View tw={`grid grid-cols-2`}>
-            {JSON.stringify(stakePools)}
             <LoadingScreen />
         </View>
         )
     }
-
+    debugger;
     return (
 
         <View tw={`grid grid-cols-2`}>
@@ -52,6 +51,11 @@ export const LiquidStakeAccountsScreen = () => {
                                 <View tw={`text-white text-center`}>
                                     {pool.poolName}
                                 </View>
+                            </View>
+                            <View style={{ paddingLeft: "4px", paddingTop: "3px", marginTop: "auto" }}>
+                                <Text tw={`font-light opacity-75`}>
+                                    {Math.round(pool.apy! * 100)*100}% APY
+                                </Text>
                             </View>
                             <View style={{ paddingLeft: "4px", paddingTop: "3px", marginTop: "auto" }}>
                                 <Text tw={`font-light opacity-75`}>
