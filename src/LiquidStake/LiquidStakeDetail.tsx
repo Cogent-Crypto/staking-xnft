@@ -13,6 +13,7 @@ import { useSolBalance } from '../hooks/useSolBalance';
 import { Marinade } from "@marinade.finance/marinade-ts-sdk"
 import { CheckIcon, RedXIcon } from "../components/Icons";
 import { useDebounce } from '../hooks/useDebounce';
+import { useTokens } from '../hooks/useTokenMetaData'
 
 
 export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
@@ -97,8 +98,6 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
     const debouncedStakeAmount = useDebounce(stakeAmount, 500);
     const debouncedUnstakeAmount = useDebounce(unStakeAmount, 500);
     const marinade = new Marinade()
-    
-
 
     const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/");
 
@@ -115,8 +114,8 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
         const {
             associatedMSolTokenAccountAddress,
             transaction,
-          } = await marinade.deposit(lamports)
-          return transaction
+        } = await marinade.deposit(lamports)
+        return transaction
     }
 
     async function depositMarinade(lamports) {
@@ -128,8 +127,8 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
         const {
             associatedMSolTokenAccountAddress,
             transaction,
-          } = await marinade.liquidUnstake(lamports)
-          // sign and send the `transaction`
+        } = await marinade.liquidUnstake(lamports)
+        // sign and send the `transaction`
         return transaction
     }
 
@@ -281,11 +280,11 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
                     <View tw={`w-full flex flex-col h-full`}>
                         <TextField value={stakeAmount} onChange={(v) => setStakeAmount(v.target.value)} />
                         <View tw={`flex items-baseline mt-2`}>
-                            <View tw={`mr-auto`}>Balance: {solBalance / LAMPORTS_PER_SOL} SOL</View><Button onClick={() => setStakeAmount(solBalance / LAMPORTS_PER_SOL - .05)} tw={`text-sm cursor-pointer`}>Max</Button>
+                            <View tw={`mr-auto`}>Balance: {(solBalance / LAMPORTS_PER_SOL).toFixed(3)} SOL</View><Button onClick={() => setStakeAmount(solBalance > 0 ? solBalance / LAMPORTS_PER_SOL - .05 : 0)} tw={`text-sm cursor-pointer`}>Max</Button>
                         </View>
                         <View tw={"mt-4"}>
-                            <DirectStakeRoute setSelectedSwap={setSelectedSwap} active={selectedSwap === "DIRECT"} amount={stakeAmount} exchangeRate={stakePool.exchangeRate} />
-                            <BestMarketRoute setSelectedSwap={setSelectedSwap} active={selectedSwap === "JUPITER"} isLoading={isLoading} bestRoute={bestRoute} />
+                            <DirectStakeRoute setSelectedSwap={setSelectedSwap} active={selectedSwap === "DIRECT"} amount={stakeAmount} pool={stakePool} />
+                            <BestMarketRoute pool={stakePool} setSelectedSwap={setSelectedSwap} active={selectedSwap === "JUPITER"} isLoading={isLoading} bestRoute={bestRoute} />
                         </View>
                         <Button disabled={true} onClick={handleDepositSwapPath} tw="mt-auto w-full mb-1">Stake SOL</Button>
 
@@ -297,11 +296,11 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
                     <View tw={`w-full flex flex-col h-full`}>
                         <TextField value={unStakeAmount} onChange={(v) => setUnStakeAmount(v.target.value)} />
                         <View tw={`flex items-baseline mt-2`}>
-                            <View tw={`mr-auto`}>Balance: {tokenBalance} {stakePool.tokenSymbol}</View><Button onClick={() => setUnStakeAmount(tokenBalance)} tw={`text-sm cursor-pointer`}>Max</Button>
+                            <View tw={`mr-auto`}>Balance: {tokenBalance.toFixed(3)} {stakePool.tokenSymbol}</View><Button onClick={() => setUnStakeAmount(tokenBalance)} tw={`text-sm cursor-pointer`}>Max</Button>
                         </View>
                         <View tw={"mt-4"}>
-                            <DirectStakeRoute setSelectedSwap={setSelectedSwap} active={selectedSwap === "DIRECT"} amount={unStakeAmount} isUnstake={true} exchangeRate={stakePool.exchangeRate} />
-                            <BestMarketRoute setSelectedSwap={setSelectedSwap} active={selectedSwap === "JUPITER"} isLoading={isLoading} bestRoute={bestRoute} />
+                            <DirectStakeRoute pool={stakePool} setSelectedSwap={setSelectedSwap} active={selectedSwap === "DIRECT"} amount={unStakeAmount} isUnstake={true} />
+                            <BestMarketRoute pool={stakePool} setSelectedSwap={setSelectedSwap} active={selectedSwap === "JUPITER"} isLoading={isLoading} bestRoute={bestRoute} />
                         </View>
                         <Button disabled={true} onClick={handleUnstakeSwapPath} tw="w-full mt-auto mb-1">Unstake</Button>
                     </View>
@@ -311,37 +310,57 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
     )
 }
 
-const DirectStakeRoute = ({ active, setSelectedSwap, amount, exchangeRate, isUnstake = false }: { isUnstake?: boolean, active: boolean, setSelectedSwap: any, amount: any, exchangeRate?: any }) => {
+const DirectStakeRoute = ({ active, setSelectedSwap, amount, isUnstake = false, pool }: { pool: StakePool, isUnstake?: boolean, active: boolean, setSelectedSwap: any, amount: any }) => {
     const THEME = useCustomTheme()
     if (!amount) return null
 
-    let displayAmount = amount * exchangeRate
+    let displayAmount = amount * pool.exchangeRate * (1 - pool.solDepositFee)
     if (isUnstake) {
-        // Add actual fee
-        displayAmount = amount * exchangeRate * (1 - .01)
+        displayAmount = amount / pool.exchangeRate * (1 - pool.solWithdrawalFee)
     }
+
+    const routeText = isUnstake ? `${amount} ${pool.tokenSymbol} -> ${pool.poolName} -> ${displayAmount.toFixed(3)} SOL` : `${amount} SOL -> ${pool.poolName} -> ${displayAmount.toFixed(3)} ${pool.tokenSymbol}`
 
     return (
         <View tw={`p-3 mb-2 cursor-pointer rounded-l transition ease-linear`} style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5 }} onClick={() => setSelectedSwap("DIRECT")}>
             <View>
-                Stake Pool:  {amount * exchangeRate}
+                {displayAmount.toFixed(3)}
+                <View tw={`font-light text-sm`}>
+                    {routeText}
+                </View>
             </View>
         </View >
     )
 }
 
 
-const BestMarketRoute = ({ active, setSelectedSwap, bestRoute, isLoading }: { active: boolean, setSelectedSwap: any, bestRoute: any, isLoading: boolean }) => {
+const BestMarketRoute = ({ active, setSelectedSwap, bestRoute, isLoading, pool }: { pool: StakePool, active: boolean, setSelectedSwap: any, bestRoute: any, isLoading: boolean }) => {
     const THEME = useCustomTheme()
-    if (!bestRoute) return null
+    const tokensMap = useTokens();
 
     if (isLoading) return <Loading />
+    if (!bestRoute?.marketInfos?.length) return null
+
+    let inAmount = (bestRoute.inAmount / LAMPORTS_PER_SOL).toFixed(3)
+    let outAmount = (bestRoute.outAmount / LAMPORTS_PER_SOL).toFixed(3)
+
+    // let stops = " -> "
+    // if (bestRoute.marketInfos?.length > 1) {
+    let stops = `${(bestRoute.marketInfos?.map((s: any) => tokensMap[s.inputMint].symbol)).join(" -> ")} -> `
+    let outputMint = tokensMap[bestRoute.marketInfos[bestRoute.marketInfos?.length - 1].outputMint].symbol
+    // }
+
+    console.log(bestRoute)
+
+    const routeText = `${inAmount} ${stops} ${outAmount} ${outputMint} `
 
     return (
-
         <View tw={`p-3 cursor-pointer rounded-l transition ease-linear`} style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5 }} onClick={() => setSelectedSwap("JUPITER")}>
             <View>
-                Best Market Route: {bestRoute.outAmount / LAMPORTS_PER_SOL}
+                {outAmount}
+                <View tw={`font-light text-sm`}>
+                    {routeText || ""}
+                </View>
             </View>
         </View>
     )
