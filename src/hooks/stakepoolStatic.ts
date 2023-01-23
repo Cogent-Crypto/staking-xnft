@@ -1,5 +1,37 @@
 import { PublicKey } from "@solana/web3.js";
 let stake_pool_data = [
+    {
+        poolName: "Marinade",
+        apy: 6.826891329017507,
+        exchangeRate: 1.0894405727740377,
+        tokenSymbol: "mSOL",
+        tokenMint: "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
+        tokenMintSupply: 5643395.636115339,
+        tokenImageURL:
+          "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So/logo.png",
+        poolPublicKey: "Jito4APyf642JPZPx3hGc6WWJ8zPKtRbRs4P815Awbb",
+        MEVDelegation: false,
+        website: "https://marinade.finance/",
+        commission: 0.06,
+        solDepositFee: 0,
+        solWithdrawalFee: 0.3,
+      },
+      {
+        poolName: "BlazeStake",
+        apy: 7.139311336259851,
+        exchangeRate: 0.964186483954727,
+        tokenSymbol: "bSOL",
+        tokenMint: "bSo13r4TkiE4KumL71LsHTPpL2euBYLFx6h9HP3piy1",
+        tokenImageURL:
+          "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/bSo13r4TkiE4KumL71LsHTPpL2euBYLFx6h9HP3piy1/logo.png",
+        poolPublicKey: "stk9ApL5HeVAwPLr3TLhDXdZS8ptVu7zp6ov8HFDuMi",
+        MEVDelegation: true,
+        website: "https://stake.solblaze.org/",
+        tokenMintSupply: 29152,
+        commission: 0.05,
+        solDepositFee: 0.0008,
+        solWithdrawalFee: 0.003,
+      },
   {
     poolName: "Cogent",
     apy: 7.337064,
@@ -47,22 +79,7 @@ let stake_pool_data = [
     solDepositFee: 0,
     solWithdrawalFee: 0.001,
   },
-  {
-    poolName: "BlazeStake",
-    apy: 7.139311336259851,
-    exchangeRate: 0.964186483954727,
-    tokenSymbol: "bSOL",
-    tokenMint: "bSo13r4TkiE4KumL71LsHTPpL2euBYLFx6h9HP3piy1",
-    tokenImageURL:
-      "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/bSo13r4TkiE4KumL71LsHTPpL2euBYLFx6h9HP3piy1/logo.png",
-    poolPublicKey: "stk9ApL5HeVAwPLr3TLhDXdZS8ptVu7zp6ov8HFDuMi",
-    MEVDelegation: true,
-    website: "https://stake.solblaze.org/",
-    tokenMintSupply: 29152,
-    commission: 0.05,
-    solDepositFee: 0.0008,
-    solWithdrawalFee: 0.003,
-  },
+ 
   {
     poolName: "JPOOL",
     apy: 7.370064959481967,
@@ -111,22 +128,7 @@ let stake_pool_data = [
     solDepositFee: 0,
     solWithdrawalFee: 0.003,
   },
-  {
-    poolName: "Marinade",
-    apy: 6.826891329017507,
-    exchangeRate: 1.0894405727740377,
-    tokenSymbol: "mSOL",
-    tokenMint: "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
-    tokenMintSupply: 5643395.636115339,
-    tokenImageURL:
-      "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So/logo.png",
-    poolPublicKey: "Jito4APyf642JPZPx3hGc6WWJ8zPKtRbRs4P815Awbb",
-    MEVDelegation: false,
-    website: "https://marinade.finance/",
-    commission: 0.06,
-    solDepositFee: 0,
-    solWithdrawalFee: 0.3,
-  },
+
 ];
 
 export let stakepoolInfoStatic = stake_pool_data.map((pool) => {
