@@ -70,18 +70,25 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
                     </Text>
                 </View>
             </View>
-            {/* <View tw={`flex items-center mt-4`}>
-                {stakePool.MEVDelegation ? <CheckIcon /> : <RedXIcon />}
-                <Text tw="ml-2">
-                    MEV Enabled
-                </Text>
+            <View tw={`mt-3 flex items-center justify-evenly text-sm`}>
+                <View>
+                    {stakePool.website}
+                </View>
 
-            </View> */}
+                <View tw={`flex items-center`}>
+                    {stakePool.MEVDelegation ? <CheckIcon /> : <RedXIcon />}
+                    <Text tw="ml-2">
+                        MEV Enabled
+                    </Text>
+                </View>
+
+
+            </View>
 
 
 
             <TabLayout setBestRoute={setBestRoute} isLoading={isLoading} bestRoute={bestRoute} getJupiterRoute={getJupiterRoute} tokenBalance={balance} stakePool={stakePool} />
-        </View>
+        </View >
     )
 }
 
@@ -93,7 +100,7 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
     const [stakeAmount, setStakeAmount] = React.useState(null);
     const [unStakeAmount, setUnStakeAmount] = React.useState(null);
     const [tabIndex, setTabIndex] = React.useState(0);
-    const [selectedSwap, setSelectedSwap] = React.useState(null);
+    const [selectedSwap, setSelectedSwap] = React.useState("DIRECT");
 
     const debouncedStakeAmount = useDebounce(stakeAmount, 500);
     const debouncedUnstakeAmount = useDebounce(unStakeAmount, 500);
@@ -323,7 +330,7 @@ const DirectStakeRoute = ({ active, setSelectedSwap, amount, isUnstake = false, 
 
     return (
         <View tw={`relative p-3 mb-2 cursor-pointer rounded transition ease-linear`} style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5 }} onClick={() => setSelectedSwap("DIRECT")}>
-            <View tw="absolute top-0 right-0 text-xs">Stake Pool</View>
+            <View tw="absolute top-0 right-2 text-xs">Stake Pool</View>
             <View>
                 {displayAmount.toFixed(3)}
                 <View tw={`font-light text-sm`}>
