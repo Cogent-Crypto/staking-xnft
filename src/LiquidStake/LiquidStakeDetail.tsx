@@ -25,7 +25,7 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
     const publicKey = usePublicKey();
     // const connection = useConnection();
     const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/");
-    const solabalance = useSolBalance();
+    const solbalance = useSolBalance();
 
 
 
