@@ -3,7 +3,7 @@ import { StakeProgram, Connection, } from "@solana/web3.js";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { useState, useEffect } from "react";
 import ReactXnft, { usePublicKey, useConnection, LocalStorage } from "react-xnft";
-import { defualtStakePools } from "./useStakePools";
+import { useStakePools } from "./useStakePools";
 
 type parsedTokenAccount = {
     isNative: boolean,
@@ -21,11 +21,11 @@ type parsedTokenAccount = {
 export function useStakingTokenBalances() { //maps token mint to balance, scale is in SOL decimals e.g. not lamports
     const publicKey = usePublicKey();
     const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/");
-   
+    const stakePools = useStakePools();
     const [balances, setBalances] = useState<Map<string, number> | null>(null);
 
     useEffect(() => {
-        if (publicKey && connection && defualtStakePools) {
+        if (publicKey && connection && stakePools) {
             let  sorted_map_entries: Array<[string, number]>;
             const cacheKey = "stakepooltokenbalances" + publicKey.toString();
             LocalStorage.get(cacheKey).then((val) => {
@@ -35,11 +35,12 @@ export function useStakingTokenBalances() { //maps token mint to balance, scale 
                         Object.keys(resp.value).length > 0 &&
                         Date.now() - resp.ts < 1000 * 60 * 60  // 1 hour
                     ) {
+                        console.log("loading cached stakepool balances")
                         sorted_map_entries = resp.value.sort((a, b) => {return (a[0] < b[0]) ? -1 : (a[0] > b[0]) ? 1 : 0;});                        
                     }
                 } 
-                console.log("stakePools", defualtStakePools)
-                let mints = new Set(defualtStakePools.map((value) => value.tokenMint.toString()))
+                console.log("about to fetch token  balances from: ", stakePools)
+                let mints = new Set(stakePools.map((value) => value.tokenMint.toString()))
                 fetchTokenBalances(publicKey, connection, mints).then((newBalances) => {
                     let new_sorted_map_entries = Array.from(newBalances.entries()).sort((a, b) => {return (a[0] < b[0]) ? -1 : (a[0] > b[0]) ? 1 : 0;});
                     console.log("new_sorted_map_entries", new_sorted_map_entries)
@@ -52,11 +53,10 @@ export function useStakingTokenBalances() { //maps token mint to balance, scale 
                 }) 
             }).catch((err) => {
                 
-                console.error("failed to proccess stakepool balances", err, defualtStakePools)
-                debugger;
+                console.error("failed to proccess stakepool balances", err, stakePools)
             })
         }
-    }, [publicKey]);
+    }, [publicKey,stakePools]);
     console.log("returning balances", balances)
     return balances;
 }

@@ -15,7 +15,6 @@ export const LiquidStakeAccountsScreen = () => {
     if (!tokenBalances) {
         return <LoadingScreen />
     }
-    debugger;
     return (
         <View tw={`grid grid-cols-2`}>
             {stakePools.map((pool: StakePool) => {
