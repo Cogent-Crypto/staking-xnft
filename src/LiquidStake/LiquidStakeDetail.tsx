@@ -322,7 +322,7 @@ const DirectStakeRoute = ({ active, setSelectedSwap, amount, isUnstake = false, 
     const routeText = isUnstake ? `${amount} ${pool.tokenSymbol} -> ${pool.poolName} -> ${displayAmount.toFixed(3)} SOL` : `${amount} SOL -> ${pool.poolName} -> ${displayAmount.toFixed(3)} ${pool.tokenSymbol}`
 
     return (
-        <View tw={`relative p-3 mb-2 cursor-pointer rounded-l transition ease-linear`} style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5 }} onClick={() => setSelectedSwap("DIRECT")}>
+        <View tw={`relative p-3 mb-2 cursor-pointer rounded transition ease-linear`} style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5 }} onClick={() => setSelectedSwap("DIRECT")}>
             <View tw="absolute top-0 right-0 text-xs">Stake Pool</View>
             <View>
                 {displayAmount.toFixed(3)}
@@ -335,11 +335,18 @@ const DirectStakeRoute = ({ active, setSelectedSwap, amount, isUnstake = false, 
 }
 
 
-const BestMarketRoute = ({ active, setSelectedSwap, bestRoute, isLoading, pool }: { pool: StakePool, active: boolean, setSelectedSwap: any, bestRoute: any, isLoading: boolean }) => {
+const BestMarketRoute = ({ active, setSelectedSwap, bestRoute, isLoading }: { pool: StakePool, active: boolean, setSelectedSwap: any, bestRoute: any, isLoading: boolean }) => {
     const THEME = useCustomTheme()
     const tokensMap = useTokens();
 
-    if (isLoading) return <Loading />
+    if (isLoading) {
+        return (
+            <View tw={`animate-pulse relative p-3 cursor-pointer rounded`} style={{ height: 72, border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5 }} onClick={() => setSelectedSwap("JUPITER")}>
+                <View tw="animate-pulse absolute top-0 right-2 text-xs">Jupiter Swap</View>
+            </View>
+        )
+    }
+
     if (!bestRoute?.marketInfos?.length) return null
 
     let inAmount = (bestRoute.inAmount / LAMPORTS_PER_SOL).toFixed(3)
@@ -351,8 +358,8 @@ const BestMarketRoute = ({ active, setSelectedSwap, bestRoute, isLoading, pool }
     const routeText = `${inAmount} ${stops} ${outAmount} ${outputMint}`
 
     return (
-        <View tw={`relative p-3 cursor-pointer rounded-l transition ease-linear`} style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5 }} onClick={() => setSelectedSwap("JUPITER")}>
-            <View tw="absolute top-0 right-0 text-xs">Jupiter Swap</View>
+        <View tw={`relative p-3 cursor-pointer rounded transition ease-linear`} style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5 }} onClick={() => setSelectedSwap("JUPITER")}>
+            <View tw="absolute top-0 right-2 text-xs">Jupiter Swap</View>
             <View>
                 {outAmount}
                 <View tw={`font-light text-sm`}>
