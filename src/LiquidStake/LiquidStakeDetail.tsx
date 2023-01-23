@@ -314,9 +314,9 @@ const DirectStakeRoute = ({ active, setSelectedSwap, amount, isUnstake = false, 
     const THEME = useCustomTheme()
     if (!amount) return null
 
-    let displayAmount = amount / pool.exchangeRate * (1 - pool.solDepositFee)
+    let displayAmount = amount * pool.exchangeRate * (1 - pool.solDepositFee)
     if (isUnstake) {
-        displayAmount = amount * pool.exchangeRate * (1 - pool.solWithdrawalFee)
+        displayAmount = amount / pool.exchangeRate * (1 - pool.solWithdrawalFee)
     }
 
     const routeText = isUnstake ? `${amount} ${pool.tokenSymbol} -> ${pool.poolName} -> ${displayAmount.toFixed(3)} SOL` : `${amount} SOL -> ${pool.poolName} -> ${displayAmount.toFixed(3)} ${pool.tokenSymbol}`

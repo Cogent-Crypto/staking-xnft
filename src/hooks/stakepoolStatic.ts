@@ -3,7 +3,7 @@ let stake_pool_data = [
     {
         poolName: "Marinade",
         apy: 6.826891329017507,
-        exchangeRate: 1.0894405727740377,
+        exchangeRate: 1/1.0894405727740377,
         tokenSymbol: "mSOL",
         tokenMint: "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
         tokenMintSupply: 5643395.636115339,

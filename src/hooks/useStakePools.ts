@@ -20,7 +20,7 @@ export type StakePool = {
     solWithdrawalFee: number;
 }
 
-const stakePoolCacheKey = "stakepooldata1"
+const stakePoolCacheKey = "stakepooldata3"
 export function useStakePools() {
     
     const [stakePools, setStakePools] = useState<StakePool[]>(stakepoolInfoStatic)
