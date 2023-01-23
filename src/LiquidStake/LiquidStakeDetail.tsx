@@ -12,6 +12,7 @@ import { publicKey } from '@project-serum/anchor/dist/cjs/utils';
 import { useSolBalance } from '../hooks/useSolBalance';
 import { MarinadeMint } from "@marinade.finance/marinade-ts-sdk"
 import { CheckIcon, RedXIcon } from "../components/Icons";
+import { useDebounce } from '../hooks/useDebounce';
 
 
 export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
@@ -27,11 +28,12 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
     const publicKey = usePublicKey();
     // const connection = useConnection();
     const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/");
-    const solbalance = useSolBalance();
+    const solBalance = useSolBalance();
 
 
     const getJupiterRoute = async (inputMint: string, outPutMint: string, amount: number) => {
         amount = amount * 1000000000;
+
         setIsLoading(true);
         const { data } = await (
             await fetch(`https://quote-api.jup.ag/v4/quote?inputMint=${inputMint}&outputMint=${outPutMint}&amount=${amount}&slippageBps=50`)
@@ -41,79 +43,6 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
 
         setBestRoute(data[0])
     }
-
-    async function submitTransaction(transaction: Transaction) {
-        try {
-            await window.xnft.solana.sendAndConfirm(transaction)
-        } catch (error) {
-            console.log("Here is the error", error);
-            return
-        }
-    }
-
-    async function depositMarinade(lamports) {
-        // MarinadeMint.build()
-    }
-    async function withdrawSolSPLTransaction(pool: StakePool, lamports: number): Promise<Transaction> {
-        const recentBlockhash = await connection.getLatestBlockhash();
-        const transaction = new Transaction({
-            feePayer: publicKey,
-            blockhash: recentBlockhash.blockhash,
-            lastValidBlockHeight: recentBlockhash.lastValidBlockHeight
-        });
-        let stakePoolinstruction = await withdrawSol(connection, pool.poolPublicKey, publicKey, publicKey, lamports)
-        transaction.add(...stakePoolinstruction.instructions);
-        return transaction
-    }
-
-    async function withdrawSolSPL(pool: StakePool, lamports: number) {
-        let txn = await withdrawSolSPLTransaction(pool, lamports)
-        submitTransaction(txn)
-    }
-
-    async function withdrawStakeSPLTransaction(pool: StakePool, lamports: number): Promise<Transaction> {
-        const recentBlockhash = await connection.getLatestBlockhash();
-        const transaction = new Transaction({
-            feePayer: publicKey,
-            blockhash: recentBlockhash.blockhash,
-            lastValidBlockHeight: recentBlockhash.lastValidBlockHeight
-        });
-        let stakePoolinstruction = await withdrawStake(connection, stakePool.poolPublicKey, publicKey, lamports,)
-        transaction.add(...stakePoolinstruction.instructions)
-        transaction.partialSign(stakePoolinstruction.signers[0]);
-        return transaction
-    }
-
-    async function withdrawStakeSPL(pool: StakePool, lamports: number) {
-        let txn = await withdrawStakeSPLTransaction(pool, lamports)
-        submitTransaction(txn)
-    }
-
-    async function depositSPLTransaction(pool: StakePool, lamports: number) {
-        //amount needs to be lamports
-        // different logic if marinade need to be implemented
-        // stakePoolInfo(connection, pool.poolPublicKey).then(console.log).catch(console.log);
-
-        const recentBlockhash = await connection.getLatestBlockhash();
-        const transaction = new Transaction({
-            feePayer: publicKey,
-            blockhash: recentBlockhash.blockhash,
-            lastValidBlockHeight: recentBlockhash.lastValidBlockHeight
-        });
-
-        let stakePoolinstruction = await depositSol(connection, pool.poolPublicKey, publicKey, lamports);
-        transaction.add(...stakePoolinstruction.instructions);
-        transaction.partialSign(stakePoolinstruction.signers[0]);
-        // connection.simulateTransaction(transaction).then(console.log).catch(console.log); //this works
-        let txnSignature: any
-        try {
-            txnSignature = await window.xnft.solana.sendAndConfirm(transaction)
-        } catch (error) {
-            console.log("Here is the error", error);
-            return
-        }
-    }
-
 
     return (
         <View tw="text-bold px-2 h-full" style={{
@@ -153,24 +82,100 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
 
 
 
-            <TabLayout setBestRoute={setBestRoute} isLoading={isLoading} bestRoute={bestRoute} getJupiterRoute={getJupiterRoute} solbalance={solbalance} tokenBalance={balance} pool={stakePool} />
-            {/* <View tw={`flex items-center mt-4`}>
-                <TextField onChange={(v) => setAmount(v.target.value)} />
-                <Button onClick={() => depositStake(connection, stakePool.poolPublicKey, amount)} tw="mt-4">Stake</Button>
-            </View>
-            <Button tw="mt-4" onClick={() => deposit(stakePool, amount)}>Deposit</Button>
+            <TabLayout setBestRoute={setBestRoute} isLoading={isLoading} bestRoute={bestRoute} getJupiterRoute={getJupiterRoute} solBalance={solBalance} tokenBalance={balance} stakePool={stakePool} />
 
-            {balance && balance > 0 &&
-            <Button onClick={() => withdrawStake(connection, stakePool.poolPublicKey, amount)} tw="mt-4">Unstake</Button>} */}
         </View>
     )
 }
 
-const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenBalance, solbalance, pool }: { setBestRoute: any, isLoading: boolean, bestRoute: any, getJupiterRoute: (inputMint: String, outPutMint: String, amount: number) => any, tokenBalance: any, solbalance: any, pool: StakePool }) => {
+const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenBalance, solBalance, stakePool }: { setBestRoute: any, isLoading: boolean, bestRoute: any, getJupiterRoute: (inputMint: String, outPutMint: String, amount: number) => any, tokenBalance: any, solBalance: any, pool: StakePool }) => {
     const THEME = useCustomTheme();
-    const [stakeAmount, setStakeAmount] = React.useState(solbalance);
+    const publicKey = usePublicKey();
+    const [stakeAmount, setStakeAmount] = React.useState(solBalance);
     const [unStakeAmount, setUnStakeAmount] = React.useState(tokenBalance);
     const [tabIndex, setTabIndex] = React.useState(0);
+
+    const debouncedStakeAmount = useDebounce(stakeAmount, 500);
+    const debouncedUnstakeAmount = useDebounce(unStakeAmount, 500);
+
+
+    const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/");
+
+    async function submitTransaction(transaction: Transaction) {
+        try {
+            await window.xnft.solana.sendAndConfirm(transaction)
+        } catch (error) {
+            console.log("failed to send stakepool txn:", JSON.stringify(transaction), error);
+            return
+        }
+    }
+
+    async function depositMarinade(lamports) {
+        // MarinadeMint.build()
+    }
+
+    async function withdrawSolSPLTransaction(pool: StakePool, lamports: number): Promise<Transaction> {
+        const recentBlockhash = await connection.getLatestBlockhash();
+        const transaction = new Transaction({
+            feePayer: publicKey,
+            blockhash: recentBlockhash.blockhash,
+            lastValidBlockHeight: recentBlockhash.lastValidBlockHeight
+        });
+        let stakePoolinstruction = await withdrawSol(connection, pool.poolPublicKey, publicKey, publicKey, lamports)
+        transaction.add(...stakePoolinstruction.instructions);
+        return transaction
+    }
+
+    async function withdrawSolSPL(pool: StakePool, lamports: number) {
+        let txn = await withdrawSolSPLTransaction(pool, lamports)
+        submitTransaction(txn)
+    }
+
+    async function withdrawStakeSPLTransaction(pool: StakePool, lamports: number): Promise<Transaction> {
+        const recentBlockhash = await connection.getLatestBlockhash();
+        const transaction = new Transaction({
+            feePayer: publicKey,
+            blockhash: recentBlockhash.blockhash,
+            lastValidBlockHeight: recentBlockhash.lastValidBlockHeight
+        });
+        let stakePoolinstruction = await withdrawStake(connection, stakePool.poolPublicKey, publicKey, lamports,)
+        transaction.add(...stakePoolinstruction.instructions)
+        transaction.partialSign(stakePoolinstruction.signers[0]);
+        return transaction
+    }
+
+    async function withdrawStakeSPL(pool: StakePool, lamports: number) {
+        let txn = await withdrawStakeSPLTransaction(pool, lamports)
+        submitTransaction(txn)
+    }
+
+    async function depositSPLPoolTransaction(pool: StakePool, lamports: number) {
+        //amount needs to be lamports
+        // different logic if marinade need to be implemented
+        // stakePoolInfo(connection, pool.poolPublicKey).then(console.log).catch(console.log);
+
+        const recentBlockhash = await connection.getLatestBlockhash();
+        const transaction = new Transaction({
+            feePayer: publicKey,
+            blockhash: recentBlockhash.blockhash,
+            lastValidBlockHeight: recentBlockhash.lastValidBlockHeight
+        });
+
+        let stakePoolinstruction = await depositSol(connection, pool.poolPublicKey, publicKey, lamports);
+        transaction.add(...stakePoolinstruction.instructions);
+        transaction.partialSign(stakePoolinstruction.signers[0]);
+        // connection.simulateTransaction(transaction).then(console.log).catch(console.log); //this works
+        return transaction
+    }
+
+    async function depositSPLPool(pool: StakePool, lamports: number) {
+        //amount needs to be lamports
+        // different logic if marinade need to be implemented
+        console.log("depositing", lamports)
+        let txn = await depositSPLPoolTransaction(pool, lamports)
+        submitTransaction(txn);
+    }
+
 
     React.useEffect(() => {
         if (tabIndex === 0) {
@@ -179,7 +184,7 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
                 return
             }
 
-            getJupiterRoute("So11111111111111111111111111111111111111112", pool.tokenMint, stakeAmount)
+            getJupiterRoute("So11111111111111111111111111111111111111112", stakePool.tokenMint, stakeAmount)
         }
         if (tabIndex === 1) {
             if (!unStakeAmount) {
@@ -187,9 +192,9 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
                 return
             }
 
-            getJupiterRoute(pool.tokenMint, "So11111111111111111111111111111111111111112", unStakeAmount)
+            getJupiterRoute(stakePool.tokenMint, "So11111111111111111111111111111111111111112", unStakeAmount)
         }
-    }, [tabIndex, stakeAmount, unStakeAmount])
+    }, [tabIndex, debouncedStakeAmount, debouncedUnstakeAmount])
 
     return (
         <View tw={`flex flex-col h-full`}>
@@ -204,7 +209,7 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
                     <View tw={`w-full flex flex-col h-full`}>
                         <TextField value={stakeAmount} onChange={(v) => setStakeAmount(v.target.value)} />
                         <View tw={`flex items-baseline mt-2`}>
-                            <View tw={`mr-auto`}>Balance: {solbalance / LAMPORTS_PER_SOL} SOL</View><Button onClick={() => setStakeAmount(solbalance / LAMPORTS_PER_SOL - .05)} tw={`text-sm cursor-pointer`}>Max</Button>
+                            <View tw={`mr-auto`}>Balance: {solBalance / LAMPORTS_PER_SOL} SOL</View><Button onClick={() => setStakeAmount(solBalance / LAMPORTS_PER_SOL - .05)} tw={`text-sm cursor-pointer`}>Max</Button>
                         </View>
                         {bestRoute && (
                             <View>
@@ -215,7 +220,8 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
                                 }
                             </View>
                         )}
-                        <Button onClick={() => depositStake(connection, pool.poolPublicKey, amount)} tw="mt-auto w-full mb-1">Stake SOL</Button>
+                        <Button onClick={() => depositSPLPool(stakePool, stakeAmount * LAMPORTS_PER_SOL)} tw="mt-auto w-full mb-1">Stake SOL</Button>
+
                     </View>
                 }
                 {
@@ -223,7 +229,7 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
                     <View tw={`w-full flex flex-col h-full`}>
                         <TextField value={unStakeAmount} onChange={(v) => setUnStakeAmount(v.target.value)} />
                         <View tw={`flex items-baseline mt-2`}>
-                            <View tw={`mr-auto`}>Balance: {tokenBalance} {pool.tokenSymbol}</View><Button onClick={() => setUnStakeAmount(tokenBalance)} tw={`text-sm cursor-pointer`}>Max</Button>
+                            <View tw={`mr-auto`}>Balance: {tokenBalance} {stakePool.tokenSymbol}</View><Button onClick={() => setUnStakeAmount(tokenBalance)} tw={`text-sm cursor-pointer`}>Max</Button>
                         </View>
 
                         {bestRoute && (
@@ -236,7 +242,7 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
                             </View>
                         )}
 
-                        <Button onClick={() => withdrawStake(connection, pool.poolPublicKey, amount)} tw="w-full mt-auto mb-1">Unstake</Button>
+                        <Button onClick={() => withdrawStake(connection, stakePool.poolPublicKey, amount)} tw="w-full mt-auto mb-1">Unstake</Button>
                     </View>
                 }
             </View>
