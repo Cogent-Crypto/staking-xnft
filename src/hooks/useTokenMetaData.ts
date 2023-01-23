@@ -1,6 +1,17 @@
 import { useEffect } from "react";
 
-export const useTokens = () => [
+const convertArrayToObject = (array, key) => {
+    const initialValue = {};
+    return array.reduce((obj, item) => {
+      return {
+        ...obj,
+        [item[key]]: item
+      };
+    }, initialValue);
+  };
+
+
+export const useTokens = () => convertArrayToObject([
     {
     address: "CbNYA9n3927uXUukee2Hf4tm3xxkffJPPZvGazc2EAH1",
     chainId: 101,
@@ -8709,4 +8720,4 @@ export const useTokens = () => [
     coingeckoId: "gobi-labs"
     }
     }
-    ]
+    ], "address")
