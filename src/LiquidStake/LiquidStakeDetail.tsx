@@ -322,7 +322,8 @@ const DirectStakeRoute = ({ active, setSelectedSwap, amount, isUnstake = false, 
     const routeText = isUnstake ? `${amount} ${pool.tokenSymbol} -> ${pool.poolName} -> ${displayAmount.toFixed(3)} SOL` : `${amount} SOL -> ${pool.poolName} -> ${displayAmount.toFixed(3)} ${pool.tokenSymbol}`
 
     return (
-        <View tw={`p-3 mb-2 cursor-pointer rounded-l transition ease-linear`} style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5 }} onClick={() => setSelectedSwap("DIRECT")}>
+        <View tw={`relative p-3 mb-2 cursor-pointer rounded-l transition ease-linear`} style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5 }} onClick={() => setSelectedSwap("DIRECT")}>
+            <View tw="absolute top-0 right-0 text-xs">Stake Pool</View>
             <View>
                 {displayAmount.toFixed(3)}
                 <View tw={`font-light text-sm`}>
@@ -344,18 +345,14 @@ const BestMarketRoute = ({ active, setSelectedSwap, bestRoute, isLoading, pool }
     let inAmount = (bestRoute.inAmount / LAMPORTS_PER_SOL).toFixed(3)
     let outAmount = (bestRoute.outAmount / LAMPORTS_PER_SOL).toFixed(3)
 
-    // let stops = " -> "
-    // if (bestRoute.marketInfos?.length > 1) {
     let stops = `${(bestRoute.marketInfos?.map((s: any) => tokensMap[s.inputMint].symbol)).join(" -> ")} -> `
     let outputMint = tokensMap[bestRoute.marketInfos[bestRoute.marketInfos?.length - 1].outputMint].symbol
-    // }
 
-    console.log(bestRoute)
-
-    const routeText = `${inAmount} ${stops} ${outAmount} ${outputMint} `
+    const routeText = `${inAmount} ${stops} ${outAmount} ${outputMint}`
 
     return (
-        <View tw={`p-3 cursor-pointer rounded-l transition ease-linear`} style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5 }} onClick={() => setSelectedSwap("JUPITER")}>
+        <View tw={`relative p-3 cursor-pointer rounded-l transition ease-linear`} style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5 }} onClick={() => setSelectedSwap("JUPITER")}>
+            <View tw="absolute top-0 right-0 text-xs">Jupiter Swap</View>
             <View>
                 {outAmount}
                 <View tw={`font-light text-sm`}>
