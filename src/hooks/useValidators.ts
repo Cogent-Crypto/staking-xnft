@@ -115,9 +115,8 @@ async function fetchValidators() {
     }, initialValue);
   };
 
-  let validators = validator_list.map((validator) => { return { ...validator, commission_rugger: rugging_validators.has(validator.vote_identity), mev_commission: jito_validators[validator.vote_identity] ? parseInt(jito_validators[validator.vote_identity].commission):null  } })
+  let validators = validator_list.map((validator) => { return { ...validator, commission_rugger: rugging_validators.has(validator.vote_identity), mev_commission: jito_validators[validator.vote_identity] ? parseInt(jito_validators[validator.vote_identity].commision):null  } })
   validators = convertArrayToObject(validators, "vote_identity");
-  debugger;
   LocalStorage.set(cacheKey, JSON.stringify({
     ts: Date.now(),
     value: validators,
