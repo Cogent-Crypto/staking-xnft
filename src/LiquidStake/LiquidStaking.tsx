@@ -49,7 +49,7 @@ export const LiquidStakeAccountsScreen = () => {
                             </View>
                             <View style={{ paddingLeft: "4px", paddingTop: "3px", marginTop: "auto" }}>
                                 <Text tw={`font-light opacity-75`}>
-                                    {Math.round(pool.apy! * 100)*100}% APY
+                                    {Math.round(pool.apy * 100)/100}% APY
                                 </Text>
                             </View>
                             <View style={{ paddingLeft: "4px", paddingTop: "3px", marginTop: "auto" }}>
