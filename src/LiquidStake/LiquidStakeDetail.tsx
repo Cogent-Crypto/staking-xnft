@@ -284,7 +284,7 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
                         </View>
                         <View tw={"mt-4"}>
                             <DirectStakeRoute setSelectedSwap={setSelectedSwap} active={selectedSwap === "DIRECT"} amount={stakeAmount} pool={stakePool} />
-                            <BestMarketRoute pool={stakePool} setSelectedSwap={setSelectedSwap} active={selectedSwap === "JUPITER"} isLoading={isLoading} bestRoute={bestRoute} />
+                            <BestMarketRoute setSelectedSwap={setSelectedSwap} active={selectedSwap === "JUPITER"} isLoading={isLoading} bestRoute={bestRoute} />
                         </View>
                         <Button disabled={true} onClick={handleDepositSwapPath} tw="mt-auto w-full mb-1">Stake SOL</Button>
 
@@ -300,7 +300,7 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
                         </View>
                         <View tw={"mt-4"}>
                             <DirectStakeRoute pool={stakePool} setSelectedSwap={setSelectedSwap} active={selectedSwap === "DIRECT"} amount={unStakeAmount} isUnstake={true} />
-                            <BestMarketRoute pool={stakePool} setSelectedSwap={setSelectedSwap} active={selectedSwap === "JUPITER"} isLoading={isLoading} bestRoute={bestRoute} />
+                            <BestMarketRoute setSelectedSwap={setSelectedSwap} active={selectedSwap === "JUPITER"} isLoading={isLoading} bestRoute={bestRoute} />
                         </View>
                         <Button disabled={true} onClick={handleUnstakeSwapPath} tw="w-full mt-auto mb-1">Unstake</Button>
                     </View>
@@ -335,7 +335,7 @@ const DirectStakeRoute = ({ active, setSelectedSwap, amount, isUnstake = false, 
 }
 
 
-const BestMarketRoute = ({ active, setSelectedSwap, bestRoute, isLoading }: { pool: StakePool, active: boolean, setSelectedSwap: any, bestRoute: any, isLoading: boolean }) => {
+const BestMarketRoute = ({ active, setSelectedSwap, bestRoute, isLoading }: { active: boolean, setSelectedSwap: any, bestRoute: any, isLoading: boolean }) => {
     const THEME = useCustomTheme()
     const tokensMap = useTokens();
 
