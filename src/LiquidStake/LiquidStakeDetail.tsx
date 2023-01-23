@@ -7,15 +7,17 @@ import React from "react";
 import { useCustomTheme } from "../hooks/useCustomTheme";
 import { useStakingTokenBalances } from '../hooks/useStakingTokenBalances';
 import { StakePool } from "../hooks/useStakePools";
-import { depositSol, depositStake, withdrawSol, withdrawStake, stakePoolInfo} from '@solana/spl-stake-pool';
+import { depositSol, depositStake, withdrawSol, withdrawStake, stakePoolInfo } from '@solana/spl-stake-pool';
 import { publicKey } from '@project-serum/anchor/dist/cjs/utils';
 import { useSolBalance } from '../hooks/useSolBalance';
-import {MarinadeMint} from "@marinade.finance/marinade-ts-sdk"
+import { MarinadeMint } from "@marinade.finance/marinade-ts-sdk"
 import { CheckIcon, RedXIcon } from "../components/Icons";
 
 
 export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
     const tokenBalances = useStakingTokenBalances();
+    const [bestRoute, setBestRoute] = React.useState([]);
+    const [isLoading, setIsLoading] = React.useState(false);
 
     const balance = tokenBalances?.get(stakePool.tokenMint.toString())
 
@@ -28,8 +30,19 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
     const solbalance = useSolBalance();
 
 
+    const getJupiterRoute = async (inputMint: string, outPutMint: string, amount: number) => {
+        amount = amount * 1000000000;
+        setIsLoading(true);
+        const { data } = await (
+            await fetch(`https://quote-api.jup.ag/v4/quote?inputMint=${inputMint}&outputMint=${outPutMint}&amount=${amount}&slippageBps=50`)
+        ).json()
 
-    async function submitTransaction(transaction:Transaction) {
+        setIsLoading(false);
+
+        setBestRoute(data[0])
+    }
+
+    async function submitTransaction(transaction: Transaction) {
         try {
             await window.xnft.solana.sendAndConfirm(transaction)
         } catch (error) {
@@ -48,13 +61,13 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
             blockhash: recentBlockhash.blockhash,
             lastValidBlockHeight: recentBlockhash.lastValidBlockHeight
         });
-        let stakePoolinstruction = await withdrawSol(connection,pool.poolPublicKey,publicKey,publicKey,lamports)
+        let stakePoolinstruction = await withdrawSol(connection, pool.poolPublicKey, publicKey, publicKey, lamports)
         transaction.add(...stakePoolinstruction.instructions);
         return transaction
     }
 
     async function withdrawSolSPL(pool: StakePool, lamports: number) {
-        let txn = await withdrawSolSPLTransaction(pool,lamports)
+        let txn = await withdrawSolSPLTransaction(pool, lamports)
         submitTransaction(txn)
     }
 
@@ -65,14 +78,14 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
             blockhash: recentBlockhash.blockhash,
             lastValidBlockHeight: recentBlockhash.lastValidBlockHeight
         });
-        let stakePoolinstruction = await withdrawStake(connection,stakePool.poolPublicKey, publicKey, lamports,)
+        let stakePoolinstruction = await withdrawStake(connection, stakePool.poolPublicKey, publicKey, lamports,)
         transaction.add(...stakePoolinstruction.instructions)
         transaction.partialSign(stakePoolinstruction.signers[0]);
         return transaction
     }
 
     async function withdrawStakeSPL(pool: StakePool, lamports: number) {
-        let txn = await withdrawStakeSPLTransaction(pool,lamports)
+        let txn = await withdrawStakeSPLTransaction(pool, lamports)
         submitTransaction(txn)
     }
 
@@ -103,25 +116,30 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
 
 
     return (
-        <View tw="text-bold px-2" style={{
+        <View tw="text-bold px-2 h-full" style={{
             fontSize: "1rem",
             fontWeight: "bold",
             color: THEME.colors?.fontColor,
             display: "flex",
             flexDirection: "column"
-
         }}>
             <View tw="flex items-center mx-auto px-2 pt-4 text-center  w-4/5 cursor-pointer">
                 <Image style={{ height: "50px", maxWidth: "unset", borderRadius: "999px" }} src={stakePool.tokenImageURL} />
-                <Text tw="mx-auto px-1 text-lg">
+                <Text tw="mx-auto px-1 text-lg mb--1">
                     {stakePool.poolName}
-                </Text>
-                <View tw="leading-none">
                     <Text tw="text-green-500 text-md">
                         {balance?.toFixed(2) || 0}
                     </Text>
+                </Text>
+                <View tw="leading-none">
+                    <Text tw="text-green-500 text-md">
+                        {/* {balance?.toFixed(2) || 0} */}
+                        {/* {stakePool?.apy || 0} */}
+                        {Math.round(stakePool.apy * 100) / 100}%
+                    </Text>
                     <Text style={{ color: "#A9A9A9", fontSize: "1rem" }}>
-                        {stakePool.tokenSymbol}
+                        APY
+                        {/* {stakePool.tokenSymbol} */}
                     </Text>
                 </View>
             </View>
@@ -135,7 +153,7 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
 
 
 
-            <TabLayout solbalance={solbalance} tokenBalance={balance} />
+            <TabLayout setBestRoute={setBestRoute} isLoading={isLoading} bestRoute={bestRoute} getJupiterRoute={getJupiterRoute} solbalance={solbalance} tokenBalance={balance} pool={stakePool} />
             {/* <View tw={`flex items-center mt-4`}>
                 <TextField onChange={(v) => setAmount(v.target.value)} />
                 <Button onClick={() => depositStake(connection, stakePool.poolPublicKey, amount)} tw="mt-4">Stake</Button>
@@ -148,39 +166,77 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
     )
 }
 
-const TabLayout = ({ tokenBalance, solbalance }) => {
+const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenBalance, solbalance, pool }: { setBestRoute: any, isLoading: boolean, bestRoute: any, getJupiterRoute: (inputMint: String, outPutMint: String, amount: number) => any, tokenBalance: any, solbalance: any, pool: StakePool }) => {
     const THEME = useCustomTheme();
     const [stakeAmount, setStakeAmount] = React.useState(solbalance);
     const [unStakeAmount, setUnStakeAmount] = React.useState(tokenBalance);
-
     const [tabIndex, setTabIndex] = React.useState(0);
 
+    React.useEffect(() => {
+        if (tabIndex === 0) {
+            if (!stakeAmount) {
+                setBestRoute(null)
+                return
+            }
+
+            getJupiterRoute("So11111111111111111111111111111111111111112", pool.tokenMint, stakeAmount)
+        }
+        if (tabIndex === 1) {
+            if (!unStakeAmount) {
+                setBestRoute(null)
+                return
+            }
+
+            getJupiterRoute(pool.tokenMint, "So11111111111111111111111111111111111111112", unStakeAmount)
+        }
+    }, [tabIndex, stakeAmount, unStakeAmount])
+
     return (
-        <View>
+        <View tw={`flex flex-col h-full`}>
             <View tw={`flex text-center items-center mt-4 w-full justify-evenly `}>
                 <View style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: tabIndex == 0 ? THEME.colors?.bg2 : "#18181b", opacity: tabIndex == 0 ? 1 : .5 }} tw={`py-3 w-1/2 cursor-pointer rounded-l transition ease-linear`} onClick={() => setTabIndex(0)}>Stake</View>
                 <View style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: tabIndex == 1 ? THEME.colors?.bg2 : "#18181b", opacity: tabIndex == 1 ? 1 : .5 }} tw={`py-3 w-1/2 cursor-pointer rounded-r transition ease-linear`} onClick={() => setTabIndex(1)}>Unstake</View>
             </View>
 
-            <View tw={`w-full flex flex-col items-center mt-6 h-full`}>
+            <View tw={`w-full mt-6 h-full`}>
                 {
                     tabIndex === 0 &&
-                    <View tw={`w-full`}>
+                    <View tw={`w-full flex flex-col h-full`}>
                         <TextField value={stakeAmount} onChange={(v) => setStakeAmount(v.target.value)} />
                         <View tw={`flex items-baseline mt-2`}>
                             <View tw={`mr-auto`}>Balance: {solbalance / LAMPORTS_PER_SOL} SOL</View><Button onClick={() => setStakeAmount(solbalance / LAMPORTS_PER_SOL - .05)} tw={`text-sm cursor-pointer`}>Max</Button>
                         </View>
-                        <Button onClick={() => depositStake(connection, stakePool.poolPublicKey, amount)} tw="mt-60 w-full">Stake SOL</Button>
+                        {bestRoute && (
+                            <View>
+                                {isLoading ? "Fetching Best Route" :
+                                    <View>
+                                        Best Route: {bestRoute.outAmount / LAMPORTS_PER_SOL}
+                                    </View>
+                                }
+                            </View>
+                        )}
+                        <Button onClick={() => depositStake(connection, pool.poolPublicKey, amount)} tw="mt-auto w-full mb-1">Stake SOL</Button>
                     </View>
                 }
                 {
                     tabIndex === 1 &&
-                    <View tw={`w-full h-full`}>
+                    <View tw={`w-full flex flex-col h-full`}>
                         <TextField value={unStakeAmount} onChange={(v) => setUnStakeAmount(v.target.value)} />
                         <View tw={`flex items-baseline mt-2`}>
-                            <View tw={`mr-auto`}>Balance: {tokenBalance} SOL</View><Button onClick={() => setUnStakeAmount(tokenBalance)} tw={`text-sm cursor-pointer`}>Max</Button>
+                            <View tw={`mr-auto`}>Balance: {tokenBalance} {pool.tokenSymbol}</View><Button onClick={() => setUnStakeAmount(tokenBalance)} tw={`text-sm cursor-pointer`}>Max</Button>
                         </View>
-                        <Button onClick={() => withdrawStake(connection, stakePool.poolPublicKey, amount)} tw="mt-60 w-full">Unstake</Button>
+
+                        {bestRoute && (
+                            <View>
+                                {isLoading ? "Fetching Best Route" :
+                                    <View>
+                                        Best Route: {bestRoute.outAmount / LAMPORTS_PER_SOL}
+                                    </View>
+                                }
+                            </View>
+                        )}
+
+                        <Button onClick={() => withdrawStake(connection, pool.poolPublicKey, amount)} tw="w-full mt-auto mb-1">Unstake</Button>
                     </View>
                 }
             </View>
