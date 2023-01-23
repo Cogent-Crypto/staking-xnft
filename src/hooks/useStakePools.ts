@@ -1,5 +1,5 @@
 import { PublicKey, Connection } from "@solana/web3.js";
-import { stakePoolInfo} from '@solana/spl-stake-pool';
+import { stakePoolInfo } from '@solana/spl-stake-pool';
 import { useEffect, useState } from 'react';
 import ReactXnft, { usePublicKey, useConnection, LocalStorage } from "react-xnft";
 import { stakepoolInfoStatic } from "./stakepoolStatic";
