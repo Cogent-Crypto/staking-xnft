@@ -10,7 +10,7 @@ import { StakePool } from "../hooks/useStakePools";
 import { depositSol, depositStake, withdrawSol, withdrawStake, stakePoolInfo } from '@solana/spl-stake-pool';
 import { publicKey } from '@project-serum/anchor/dist/cjs/utils';
 import { useSolBalance } from '../hooks/useSolBalance';
-import { MarinadeMint } from "@marinade.finance/marinade-ts-sdk"
+import { Marinade } from "@marinade.finance/marinade-ts-sdk"
 import { CheckIcon, RedXIcon } from "../components/Icons";
 import { useDebounce } from '../hooks/useDebounce';
 
@@ -96,6 +96,8 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
 
     const debouncedStakeAmount = useDebounce(stakeAmount, 500);
     const debouncedUnstakeAmount = useDebounce(unStakeAmount, 500);
+    const marinade = new Marinade()
+    
 
 
     const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/");
@@ -109,8 +111,31 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
         }
     }
 
+    async function depositMarinadeTransaction(lamports): Promise<Transaction> {
+        const {
+            associatedMSolTokenAccountAddress,
+            transaction,
+          } = await marinade.deposit(lamports)
+          return transaction
+    }
+
     async function depositMarinade(lamports) {
-        // MarinadeMint.build()
+        let txn = await depositMarinadeTransaction(lamports)
+        submitTransaction(txn)
+    }
+
+    async function withdrawMarinadeTransaction(lamports): Promise<Transaction> {
+        const {
+            associatedMSolTokenAccountAddress,
+            transaction,
+          } = await marinade.liquidUnstake(lamports)
+          // sign and send the `transaction`
+        return transaction
+    }
+
+    async function withdrawMarinade(lamports) {
+        let txn = await withdrawMarinadeTransaction(lamports)
+        submitTransaction(txn)
     }
 
     async function withdrawSolSPLTransaction(pool: StakePool, lamports: number): Promise<Transaction> {
