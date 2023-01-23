@@ -1,6 +1,6 @@
 
-import { View, Text, List, Button, useNavigation, Image, useConnection, usePublicKey, TextField } from "react-xnft";
-import { Connection, PublicKey, Transaction, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { View, Text, List, Button, useNavigation, Image, useConnection, usePublicKey, TextField, Loading } from "react-xnft";
+import { Connection, PublicKey, Transaction, LAMPORTS_PER_SOL, VersionedTransaction } from "@solana/web3.js";
 import type { StakeAccount } from "../hooks/useStakeAccounts";
 import type { Validator } from "../hooks/useValidators";
 import React from "react";
@@ -23,7 +23,6 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
     const balance = tokenBalances?.get(stakePool.tokenMint.toString())
 
     const THEME = useCustomTheme();
-
 
     const nav = useNavigation();
     const publicKey = usePublicKey();
@@ -52,10 +51,10 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
         }}>
             <View tw="flex items-center mx-auto px-2 pt-4 text-center  w-4/5 cursor-pointer">
                 <Image style={{ height: "50px", maxWidth: "unset", borderRadius: "999px" }} src={stakePool.tokenImageURL} />
-                <Text tw="mx-auto px-1 text-lg mb--1">
+                <Text tw="mx-auto px-1 text-lg leading-none">
                     {stakePool.poolName}
-                    <Text tw="text-green-500 text-md">
-                        {balance?.toFixed(2) || 0}
+                    <Text tw="text-green-500 text-sm">
+                        {balance?.toFixed(2) || 0} {stakePool.tokenSymbol}
                     </Text>
                 </Text>
                 <View tw="leading-none">
@@ -90,9 +89,10 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
 
     const THEME = useCustomTheme();
     const publicKey = usePublicKey();
-    const [stakeAmount, setStakeAmount] = React.useState(solBalance);
-    const [unStakeAmount, setUnStakeAmount] = React.useState(tokenBalance);
+    const [stakeAmount, setStakeAmount] = React.useState(null);
+    const [unStakeAmount, setUnStakeAmount] = React.useState(null);
     const [tabIndex, setTabIndex] = React.useState(0);
+    const [selectedSwap, setSelectedSwap] = React.useState(null);
 
     const debouncedStakeAmount = useDebounce(stakeAmount, 500);
     const debouncedUnstakeAmount = useDebounce(unStakeAmount, 500);
@@ -100,7 +100,7 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
 
     const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/");
 
-    async function submitTransaction(transaction: Transaction) {
+    async function submitTransaction(transaction: Transaction | VersionedTransaction) {
         try {
             await window.xnft.solana.sendAndConfirm(transaction)
         } catch (error) {
@@ -175,6 +175,36 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
         submitTransaction(txn);
     }
 
+    async function jupiterSwap(bestRoute) {
+        const transactions = await (
+            await fetch('https://quote-api.jup.ag/v4/swap', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    // route from /quote api
+                    route: bestRoute,
+                    // user public key to be used for the swap
+                    userPublicKey: publicKey.toString(),
+                    // auto wrap and unwrap SOL. default is true
+                    wrapUnwrapSOL: true,
+                    // feeAccount is optional. Use if you want to charge a fee.  feeBps must have been passed in /quote API.
+                    // This is the ATA account for the output token where the fee will be sent to. If you are swapping from SOL->USDC then this would be the USDC ATA you want to collect the fee.
+                    // feeAccount: "fee_account_public_key"  
+                })
+            })
+        ).json()
+
+        const { swapTransaction } = transactions
+
+        const transaction = VersionedTransaction.deserialize(
+            Buffer.from(swapTransaction, "base64")
+        );
+
+        submitTransaction(transaction)
+    }
+
 
     React.useEffect(() => {
         if (tabIndex === 0) {
@@ -195,6 +225,23 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
         }
     }, [tabIndex, debouncedStakeAmount, debouncedUnstakeAmount])
 
+
+    const handleDepositSwapPath = async () => {
+        if (selectedSwap === "DIRECT") {
+            depositSPLPool(stakePool, stakeAmount * LAMPORTS_PER_SOL)
+        } else if (selectedSwap === "JUPITER") {
+            jupiterSwap(bestRoute)
+        }
+    }
+
+    const handleUnstakeSwapPath = async () => {
+        if (selectedSwap === "DIRECT") {
+            withdrawStake(connection, stakePool.poolPublicKey, publicKey, unStakeAmount)
+        } else if (selectedSwap === "JUPITER") {
+            jupiterSwap(bestRoute)
+        }
+    }
+
     return (
         <View tw={`flex flex-col h-full`}>
             <View tw={`flex text-center items-center mt-4 w-full justify-evenly `}>
@@ -204,48 +251,74 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
 
             <View tw={`w-full mt-6 h-full`}>
                 {
+                    // STAKE TAB
                     tabIndex === 0 &&
                     <View tw={`w-full flex flex-col h-full`}>
                         <TextField value={stakeAmount} onChange={(v) => setStakeAmount(v.target.value)} />
                         <View tw={`flex items-baseline mt-2`}>
                             <View tw={`mr-auto`}>Balance: {solBalance / LAMPORTS_PER_SOL} SOL</View><Button onClick={() => setStakeAmount(solBalance / LAMPORTS_PER_SOL - .05)} tw={`text-sm cursor-pointer`}>Max</Button>
                         </View>
-                        {bestRoute && (
-                            <View>
-                                {isLoading ? "Fetching Best Route" :
-                                    <View>
-                                        Best Route: {bestRoute.outAmount / LAMPORTS_PER_SOL}
-                                    </View>
-                                }
-                            </View>
-                        )}
-                        <Button onClick={() => depositSPLPool(stakePool, stakeAmount * LAMPORTS_PER_SOL)} tw="mt-auto w-full mb-1">Stake SOL</Button>
+                        <View tw={"mt-4"}>
+                            <DirectStakeRoute setSelectedSwap={setSelectedSwap} active={selectedSwap === "DIRECT"} amount={stakeAmount} exchangeRate={stakePool.exchangeRate} />
+                            <BestMarketRoute setSelectedSwap={setSelectedSwap} active={selectedSwap === "JUPITER"} isLoading={isLoading} bestRoute={bestRoute} />
+                        </View>
+                        <Button disabled={true} onClick={handleDepositSwapPath} tw="mt-auto w-full mb-1">Stake SOL</Button>
 
                     </View>
                 }
                 {
+                    // UNSTAKE TAB
                     tabIndex === 1 &&
                     <View tw={`w-full flex flex-col h-full`}>
                         <TextField value={unStakeAmount} onChange={(v) => setUnStakeAmount(v.target.value)} />
                         <View tw={`flex items-baseline mt-2`}>
                             <View tw={`mr-auto`}>Balance: {tokenBalance} {stakePool.tokenSymbol}</View><Button onClick={() => setUnStakeAmount(tokenBalance)} tw={`text-sm cursor-pointer`}>Max</Button>
                         </View>
-
-                        {bestRoute && (
-                            <View>
-                                {isLoading ? "Fetching Best Route" :
-                                    <View>
-                                        Best Route: {bestRoute.outAmount / LAMPORTS_PER_SOL}
-                                    </View>
-                                }
-                            </View>
-                        )}
-
-                        <Button onClick={() => withdrawStake(connection, stakePool.poolPublicKey, publicKey, unStakeAmount)} tw="w-full mt-auto mb-1">Unstake</Button>
+                        <View tw={"mt-4"}>
+                            <DirectStakeRoute setSelectedSwap={setSelectedSwap} active={selectedSwap === "DIRECT"} amount={unStakeAmount} isUnstake={true} exchangeRate={stakePool.exchangeRate} />
+                            <BestMarketRoute setSelectedSwap={setSelectedSwap} active={selectedSwap === "JUPITER"} isLoading={isLoading} bestRoute={bestRoute} />
+                        </View>
+                        <Button disabled={true} onClick={handleUnstakeSwapPath} tw="w-full mt-auto mb-1">Unstake</Button>
                     </View>
                 }
             </View>
         </View >
+    )
+}
+
+const DirectStakeRoute = ({ active, setSelectedSwap, amount, exchangeRate, isUnstake = false }: { isUnstake?: boolean, active: boolean, setSelectedSwap: any, amount: any, exchangeRate?: any }) => {
+    const THEME = useCustomTheme()
+    if (!amount) return null
+
+    let displayAmount = amount * exchangeRate
+    if (isUnstake) {
+        // Add actual fee
+        displayAmount = amount * exchangeRate * (1 - .01)
+    }
+
+    return (
+        <View tw={`p-3 mb-2 cursor-pointer rounded-l transition ease-linear`} style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5 }} onClick={() => setSelectedSwap("DIRECT")}>
+            <View>
+                Stake Pool:  {amount * exchangeRate}
+            </View>
+        </View >
+    )
+}
+
+
+const BestMarketRoute = ({ active, setSelectedSwap, bestRoute, isLoading }: { active: boolean, setSelectedSwap: any, bestRoute: any, isLoading: boolean }) => {
+    const THEME = useCustomTheme()
+    if (!bestRoute) return null
+
+    if (isLoading) return <Loading />
+
+    return (
+
+        <View tw={`p-3 cursor-pointer rounded-l transition ease-linear`} style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5 }} onClick={() => setSelectedSwap("JUPITER")}>
+            <View>
+                Best Market Route: {bestRoute.outAmount / LAMPORTS_PER_SOL}
+            </View>
+        </View>
     )
 }
 
