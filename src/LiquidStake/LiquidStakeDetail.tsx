@@ -93,7 +93,8 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
     const [stakeAmount, setStakeAmount] = React.useState(null);
     const [unStakeAmount, setUnStakeAmount] = React.useState(null);
     const [tabIndex, setTabIndex] = React.useState(0);
-    const [selectedSwap, setSelectedSwap] = React.useState(null);
+    const [selectedSwapStake, setSelectedSwapStake] = React.useState(null);
+    const [selectedSwapUnstake, setSelectedSwapUnstake] = React.useState(null);
 
     const debouncedStakeAmount = useDebounce(stakeAmount, 500);
     const debouncedUnstakeAmount = useDebounce(unStakeAmount, 500);
@@ -251,17 +252,17 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
 
 
     const handleDepositSwapPath = async () => {
-        if (selectedSwap === "DIRECT") {
+        if (selectedSwapStake === "DIRECT") {
             depositSPLPool(stakePool, stakeAmount * LAMPORTS_PER_SOL)
-        } else if (selectedSwap === "JUPITER") {
+        } else if (selectedSwapStake === "JUPITER") {
             jupiterSwap(bestRoute)
         }
     }
 
     const handleUnstakeSwapPath = async () => {
-        if (selectedSwap === "DIRECT") {
+        if (selectedSwapUnstake === "DIRECT") {
             withdrawStake(connection, stakePool.poolPublicKey, publicKey, unStakeAmount)
-        } else if (selectedSwap === "JUPITER") {
+        } else if (selectedSwapUnstake === "JUPITER") {
             jupiterSwap(bestRoute)
         }
     }
@@ -283,10 +284,10 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
                             <View tw={`mr-auto`}>Balance: {(solBalance / LAMPORTS_PER_SOL).toFixed(3)} SOL</View><Button onClick={() => setStakeAmount(solBalance > 0 ? solBalance / LAMPORTS_PER_SOL - .05 : 0)} tw={`text-sm cursor-pointer`}>Max</Button>
                         </View>
                         <View tw={"mt-4"}>
-                            <DirectStakeRoute setSelectedSwap={setSelectedSwap} active={selectedSwap === "DIRECT"} amount={stakeAmount} pool={stakePool} />
-                            <BestMarketRoute setSelectedSwap={setSelectedSwap} active={selectedSwap === "JUPITER"} isLoading={isLoading} bestRoute={bestRoute} />
+                            <DirectStakeRoute setSelectedSwap={setSelectedSwapStake} active={selectedSwapStake === "DIRECT"} amount={stakeAmount} pool={stakePool} />
+                            <BestMarketRoute setSelectedSwap={setSelectedSwapStake} active={selectedSwapStake === "JUPITER"} isLoading={isLoading} bestRoute={bestRoute} />
                         </View>
-                        <Button disabled={true} onClick={handleDepositSwapPath} tw="mt-auto w-full mb-1">Stake SOL</Button>
+                        <Button disabled={true} onClick={handleDepositSwapPath} style={{opacity: selectedSwapStake == null ? 0.5:1 }} tw="mt-auto w-full mb-1">Stake SOL</Button>
 
                     </View>
                 }
@@ -299,10 +300,10 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
                             <View tw={`mr-auto`}>Balance: {tokenBalance.toFixed(3)} {stakePool.tokenSymbol}</View><Button onClick={() => setUnStakeAmount(tokenBalance)} tw={`text-sm cursor-pointer`}>Max</Button>
                         </View>
                         <View tw={"mt-4"}>
-                            <DirectStakeRoute pool={stakePool} setSelectedSwap={setSelectedSwap} active={selectedSwap === "DIRECT"} amount={unStakeAmount} isUnstake={true} />
-                            <BestMarketRoute setSelectedSwap={setSelectedSwap} active={selectedSwap === "JUPITER"} isLoading={isLoading} bestRoute={bestRoute} />
+                            <DirectStakeRoute pool={stakePool} setSelectedSwap={setSelectedSwapUnstake} active={selectedSwapUnstake === "DIRECT"} amount={unStakeAmount} isUnstake={true} />
+                            <BestMarketRoute setSelectedSwap={setSelectedSwapUnstake} active={selectedSwapUnstake === "JUPITER"} isLoading={isLoading} bestRoute={bestRoute} />
                         </View>
-                        <Button disabled={true} onClick={handleUnstakeSwapPath} tw="w-full mt-auto mb-1">Unstake</Button>
+                        <Button disabled={true} style={{opacity: selectedSwapUnstake == null ? 0.5:1 }} onClick={handleUnstakeSwapPath} tw="w-full mt-auto mb-1">Unstake</Button>
                     </View>
                 }
             </View>
@@ -322,8 +323,8 @@ const DirectStakeRoute = ({ active, setSelectedSwap, amount, isUnstake = false, 
     const routeText = isUnstake ? `${amount} ${pool.tokenSymbol} -> ${pool.poolName} -> ${displayAmount.toFixed(3)} SOL` : `${amount} SOL -> ${pool.poolName} -> ${displayAmount.toFixed(3)} ${pool.tokenSymbol}`
 
     return (
-        <View tw={`relative p-3 mb-2 cursor-pointer rounded transition ease-linear`} style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5 }} onClick={() => setSelectedSwap("DIRECT")}>
-            <View tw="absolute top-0 right-0 text-xs">Stake Pool</View>
+        <View tw={`relative p-3 mb-2 cursor-pointer rounded transition ease-linear`} style={{ border: "solid", borderColor: THEME.colors?.secondary, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5, borderWidth: active ? "2px":"0px" }} onClick={() => setSelectedSwap("DIRECT")}>
+            <View tw="absolute top-0 right-0 text-xs pr-1">Stake Pool</View>
             <View>
                 {displayAmount.toFixed(3)}
                 <View tw={`font-light text-sm`}>
@@ -341,8 +342,8 @@ const BestMarketRoute = ({ active, setSelectedSwap, bestRoute, isLoading }: { ac
 
     if (isLoading) {
         return (
-            <View tw={`animate-pulse relative p-3 cursor-pointer rounded`} style={{ height: 72, border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5 }} onClick={() => setSelectedSwap("JUPITER")}>
-                <View tw="animate-pulse absolute top-0 right-2 text-xs">Jupiter Swap</View>
+            <View tw={`animate-pulse relative p-3 cursor-pointer rounded`} style={{ height: 72, border: "solid", borderColor: THEME.colors?.secondary, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5, borderWidth: active ? "2px":"0px" }} onClick={() => setSelectedSwap("JUPITER")}>
+                <View tw="animate-pulse absolute top-0 right-2 text-xs pr-1">Jupiter Swap</View>
             </View>
         )
     }
@@ -358,7 +359,7 @@ const BestMarketRoute = ({ active, setSelectedSwap, bestRoute, isLoading }: { ac
     const routeText = `${inAmount} ${stops} ${outAmount} ${outputMint}`
 
     return (
-        <View tw={`relative p-3 cursor-pointer rounded transition ease-linear`} style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5 }} onClick={() => setSelectedSwap("JUPITER")}>
+        <View tw={`relative p-3 cursor-pointer rounded transition ease-linear`} style={{ border: "solid", borderColor: THEME.colors?.secondary, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5, borderWidth: active ? "2px":"0px" }} onClick={() => setSelectedSwap("JUPITER")}>
             <View tw="absolute top-0 right-2 text-xs">Jupiter Swap</View>
             <View>
                 {outAmount}

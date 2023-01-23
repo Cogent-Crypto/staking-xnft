@@ -33,7 +33,7 @@ import { useTheme } from 'react-xnft';
 
 const LightModeTheme = {
     fontColor: "#000000",
-    // secondary: "#333333",
+    secondary: "#333333",
     bg2: "#fff",
     lightMode: true,
     buttonTextColor: "#71717A"
