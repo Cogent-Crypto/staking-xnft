@@ -26,7 +26,7 @@ export function StakeAccountsScreen() {
         switch (route.name) {
           case "overview":
             return {
-              title: "Stake Accounts　　",
+              title: "Solana Staking　　",
             };
           case "detail":
             return {

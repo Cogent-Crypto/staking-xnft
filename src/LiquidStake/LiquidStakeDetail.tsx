@@ -24,12 +24,10 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
 
     const THEME = useCustomTheme();
 
+
     const nav = useNavigation();
     const publicKey = usePublicKey();
     // const connection = useConnection();
-    const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/");
-    const solBalance = useSolBalance();
-
 
     const getJupiterRoute = async (inputMint: string, outPutMint: string, amount: number) => {
         amount = amount * 1000000000;
@@ -82,13 +80,14 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
 
 
 
-            <TabLayout setBestRoute={setBestRoute} isLoading={isLoading} bestRoute={bestRoute} getJupiterRoute={getJupiterRoute} solBalance={solBalance} tokenBalance={balance} stakePool={stakePool} />
-
+            <TabLayout setBestRoute={setBestRoute} isLoading={isLoading} bestRoute={bestRoute} getJupiterRoute={getJupiterRoute} tokenBalance={balance} stakePool={stakePool} />
         </View>
     )
 }
 
-const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenBalance, solBalance, stakePool }: { setBestRoute: any, isLoading: boolean, bestRoute: any, getJupiterRoute: (inputMint: String, outPutMint: String, amount: number) => any, tokenBalance: any, solBalance: any, pool: StakePool }) => {
+const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenBalance, stakePool }: { setBestRoute: any, isLoading: boolean, bestRoute: any, getJupiterRoute: (inputMint: String, outPutMint: String, amount: number) => any, tokenBalance: any, stakePool: StakePool }) => {
+    const solBalance = useSolBalance();
+
     const THEME = useCustomTheme();
     const publicKey = usePublicKey();
     const [stakeAmount, setStakeAmount] = React.useState(solBalance);
@@ -242,7 +241,7 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
                             </View>
                         )}
 
-                        <Button onClick={() => withdrawStake(connection, stakePool.poolPublicKey, amount)} tw="w-full mt-auto mb-1">Unstake</Button>
+                        <Button onClick={() => withdrawStake(connection, stakePool.poolPublicKey, publicKey, unStakeAmount)} tw="w-full mt-auto mb-1">Unstake</Button>
                     </View>
                 }
             </View>
