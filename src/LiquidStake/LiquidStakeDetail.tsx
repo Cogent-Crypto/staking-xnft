@@ -1,5 +1,5 @@
 
-import { View, Text, List, Button, useNavigation, Image, useConnection, usePublicKey } from "react-xnft";
+import { View, Text, List, Button, useNavigation, Image, useConnection, usePublicKey, TextField } from "react-xnft";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 import type { StakeAccount } from "../hooks/useStakeAccounts";
 import type { Validator } from "../hooks/useValidators";
@@ -9,15 +9,16 @@ import { useStakingTokenBalances } from '../hooks/useStakingTokenBalances';
 import { StakePool } from "../hooks/useStakePools";
 import { CheckIcon, RedXIcon } from "../components/Icons";
 import { depositSol, depositStake, withdrawSol, withdrawStake, stakePoolInfo } from '@solana/spl-stake-pool';
-
-
+import { useSolBalance } from "../hooks/useSolBalance";
 
 export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
+    const [amount, setAmount] = React.useState(0);
     const THEME = useCustomTheme();
 
     const nav = useNavigation();
     const publicKey = usePublicKey();
     const connection = useConnection();
+    const solbalance = useSolBalance()
 
     const tokenBalances = useStakingTokenBalances();
 
@@ -28,7 +29,8 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
         // different logic if marinade need to be implemented
 
         const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/");
-        stakePoolInfo(connection, pool.poolPublicKey).then(console.log).catch(console.log);
+        // stakePoolInfo(connection, pool.poolPublicKey).then(console.log).catch(console.log);
+
         const recentBlockhash = await connection.getLatestBlockhash();
         const transaction = new Transaction({
             feePayer: publicKey,
@@ -48,6 +50,7 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
             return
         }
     }
+
 
     return (
         <View tw="text-bold px-2" style={{
@@ -78,10 +81,13 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
                     MEV Enabled
                 </Text>
 
-                <Button tw="mt-4">Stake</Button>
-                <Button onClick={() => deposit(stakePool, 10000)}>Deposit</Button>
-                <Button tw="mt-4">Unstake</Button>
+                <TextField onChange={(v) => setAmount(v.target.value)} />
             </View>
+
+            <Button onClick={() => depositStake(connection, stakePool.poolPublicKey, amount)} tw="mt-4">Stake</Button>
+            <Button tw="mt-4" onClick={() => deposit(stakePool, amount)}>Deposit</Button>
+            {balance && balance > 0 &&
+                <Button onClick={() => withdrawStake(connection, stakePool.poolPublicKey, amount)} tw="mt-4">Unstake</Button>}
         </View>
     )
 }

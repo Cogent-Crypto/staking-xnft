@@ -1,9 +1,10 @@
 import React from "react";
-import { View, Text, Image, useNavigation, Stack } from "react-xnft";
+import { View, Text, Image, useNavigation } from "react-xnft";
 import { useCustomTheme } from "../hooks/useCustomTheme";
 import { useStakePools, StakePool } from "../hooks/useStakePools"
 import { useStakingTokenBalances } from '../hooks/useStakingTokenBalances';
 import { LoadingScreen } from "../components/LoadingScreen";
+import { stakePoolInfo } from '@solana/spl-stake-pool';
 
 export const LiquidStakeAccountsScreen = () => {
     const THEME = useCustomTheme();
@@ -12,16 +13,10 @@ export const LiquidStakeAccountsScreen = () => {
     const tokenBalances = useStakingTokenBalances();
 
     if (!tokenBalances) {
-
-        return (<View tw={`grid grid-cols-2`}>
-            {JSON.stringify(stakePools)}
-            <LoadingScreen />
-        </View>
-        )
+        return <LoadingScreen />
     }
 
     return (
-
         <View tw={`grid grid-cols-2`}>
             {stakePools.map((pool: StakePool) => {
                 return (
