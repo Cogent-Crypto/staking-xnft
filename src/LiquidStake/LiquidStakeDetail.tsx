@@ -113,7 +113,7 @@ const TabLayout = ({ tokenBalance, solbalance }) => {
                 <View style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: tabIndex == 1 ? THEME.colors?.bg2 : "#18181b", opacity: tabIndex == 1 ? 1 : .5 }} tw={`py-3 w-1/2 cursor-pointer rounded-r transition ease-linear`} onClick={() => setTabIndex(1)}>Unstake</View>
             </View>
 
-            <View tw={`w-full flex items-center mt-6`}>
+            <View tw={`w-full flex flex-col items-center mt-6 h-full`}>
                 {
                     tabIndex === 0 &&
                     <View tw={`w-full`}>
@@ -121,17 +121,17 @@ const TabLayout = ({ tokenBalance, solbalance }) => {
                         <View tw={`flex items-baseline mt-2`}>
                             <View tw={`mr-auto`}>Balance: {solbalance / LAMPORTS_PER_SOL} SOL</View><Button onClick={() => setStakeAmount(solbalance / LAMPORTS_PER_SOL - .05)} tw={`text-sm cursor-pointer`}>Max</Button>
                         </View>
-                        <Button onClick={() => depositStake(connection, stakePool.poolPublicKey, amount)} tw="mt-48 w-full">Stake SOL</Button>
+                        <Button onClick={() => depositStake(connection, stakePool.poolPublicKey, amount)} tw="mt-60 w-full">Stake SOL</Button>
                     </View>
                 }
                 {
                     tabIndex === 1 &&
-                    <View tw={`w-full`}>
+                    <View tw={`w-full h-full`}>
                         <TextField value={unStakeAmount} onChange={(v) => setUnStakeAmount(v.target.value)} />
                         <View tw={`flex items-baseline mt-2`}>
                             <View tw={`mr-auto`}>Balance: {tokenBalance} SOL</View><Button onClick={() => setUnStakeAmount(tokenBalance)} tw={`text-sm cursor-pointer`}>Max</Button>
                         </View>
-                        <Button onClick={() => withdrawStake(connection, stakePool.poolPublicKey, amount)} tw="mt-48 w-full">Unstake</Button>
+                        <Button onClick={() => withdrawStake(connection, stakePool.poolPublicKey, amount)} tw="mt-60 w-full">Unstake</Button>
                     </View>
                 }
             </View>
