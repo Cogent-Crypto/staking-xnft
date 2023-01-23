@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import ReactXnft, { LocalStorage } from "react-xnft";
+import {jitoValidators} from "../utils/jitoValidatorsMockAPI";
 
 ReactXnft.events.on("connect", () => {
   fetchValidators();
@@ -66,6 +67,7 @@ export type Validator = {
   apy_estimate: number;
   rank: number;
   commission_rugger: boolean;
+  mev_commission: number;
 }
 
 export function useValidators() {
@@ -85,9 +87,10 @@ export function useValidators() {
 
 
 async function fetchValidators() {
-  const cacheKey = "validators"
+  const cacheKey = "validatorwithMEVinfo"
   console.log("fetching validators 2");
   const val = await LocalStorage.get(cacheKey);
+  const jito_validators = jitoValidators
 
   console.log("fetching validators 3");
   if (val) {
@@ -112,10 +115,9 @@ async function fetchValidators() {
     }, initialValue);
   };
 
-  let validators = validator_list.map((validator) => { return { ...validator, commission_rugger: rugging_validators.has(validator.vote_identity) } })
-
+  let validators = validator_list.map((validator) => { return { ...validator, commission_rugger: rugging_validators.has(validator.vote_identity), mev_commission: jito_validators[validator.vote_identity] ? parseInt(jito_validators[validator.vote_identity].commission):null  } })
   validators = convertArrayToObject(validators, "vote_identity");
-
+  debugger;
   LocalStorage.set(cacheKey, JSON.stringify({
     ts: Date.now(),
     value: validators,

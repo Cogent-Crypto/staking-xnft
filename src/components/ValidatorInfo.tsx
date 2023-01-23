@@ -52,7 +52,7 @@ export function ValidatorInfo(validator: Validator) {
             </View>
 
             <View tw="overflow-hidden" style={{ maxHeight: expanded ? "400px" : "0", transition: "max-height 0.5s linear" }}>
-                <View tw="grid grid-cols-2 mx-auto mt-4 gap-y-4">
+                <View tw="grid grid-cols-3 mx-auto mt-4 gap-y-4">
                     <StatContainer>
                         <Text style={{ fontSize: "1rem" }}>
                             {parseInt(validator.activated_stake).toLocaleString()}
@@ -65,16 +65,23 @@ export function ValidatorInfo(validator: Validator) {
                         </Text>
                         <SubTitle>Skip Rate</SubTitle>
                     </StatContainer>
+                    <StatContainer tw="cursor-pointer" onClick={() => window.xnft.openWindow(`https://stakewiz.com/validator/${validator.vote_identity}`)}>
+                        <LinkIcon lightMode={THEME.colors?.lightMode} tw="mx-auto h-{4.5} -mt-2" />
+                        <SubTitle>Stakewiz Profile</SubTitle>
+                    </StatContainer>
                     <StatContainer>
                         <Text style={{ fontSize: "1rem" }}>
                             {validator.commission.toFixed(2)}%
                         </Text>
                         <SubTitle>Commission</SubTitle>
                     </StatContainer>
-                    <StatContainer tw="cursor-pointer" onClick={() => window.xnft.openWindow(`https://stakewiz.com/validator/${validator.vote_identity}`)}>
-                        <LinkIcon lightMode={THEME.colors?.lightMode} tw="mx-auto h-{4.5} -mt-2" />
-                        <SubTitle>Stakewiz Profile</SubTitle>
+                    <StatContainer>
+                        <Text style={{ fontSize: "1rem" }}>
+                            {validator.mev_commission != null ? `${validator.mev_commission}%` : "N/A"}
+                        </Text>
+                        <SubTitle>MEV Commission</SubTitle>
                     </StatContainer>
+                    
                 </View>
                 {validator.website &&
                     <View tw="my-2 cursor-pointer hover:underline" onClick={() => window.xnft.openWindow(validator.website)}>

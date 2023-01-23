@@ -13,6 +13,7 @@ import type { Validator } from "../hooks/useValidators";
 import { ExpandIcon } from "../components/Icons";
 import { LoadingScreen } from "../components/LoadingScreen";
 import { useNFTCreators } from "../hooks/useNFTCreators";
+import { jitoValidators } from '../utils/jitoValidatorsMockAPI';
 
 const helpfulInTheCommunity = [
   "CogentC52e7kktFfWHwsqSmr8LiS1yAtfqhHcftCPcBJ",
@@ -22,6 +23,8 @@ const helpfulInTheCommunity = [
   "AS3nKBQfKs8fJ8ncyHrdvo4FDT6S8HMRhD75JjCcyr1t",
   "juicQdAnksqZ5Yb8NQwCLjLWhykvXGktxnQCDvMe6Nx",
   "NoRDTy8jpkpjPR7yxahVdoEUPngbojPhFU5jb8TtY4m",
+  "AuBB9st3RqhHBkzZgBSm6SVnHZNJQSHeBWCSkik4bzdA",
+
 ];
 
 function shuffleArray(array) {
@@ -59,11 +62,11 @@ const nftValidators = [
     nft_group: "Node Monkey",
     creators: ["Cyk9nxwhq3QkAzcrrWhwtGX5Z1W2iFa7wN6b7ABRZDxp"]
   },
-  {
-    voteAddress: "AKoVXpZmi8wSz3sGvCYEygbpdHvSRysWsh36b97iPvKh",
-    nft_group: "Shadowy Super Coder",
-    creators: ["71ghWqucipW661X4ht61qvmc3xKQGMBGZxwSDmZrYQmf"]
-  },
+  // { // Decommisioned
+  //   voteAddress: "AKoVXpZmi8wSz3sGvCYEygbpdHvSRysWsh36b97iPvKh",
+  //   nft_group: "Shadowy Super Coder",
+  //   creators: ["71ghWqucipW661X4ht61qvmc3xKQGMBGZxwSDmZrYQmf"]
+  // },
   {
     voteAddress: "LodezVTbz3v5GK6oULfWNFfcs7D4rtMZQkmRjnh65gq",
     nft_group: "Sentries",
@@ -117,6 +120,10 @@ export function SelectValidatorScreen({
     ({ voteAddress }) => validators[voteAddress]
   )
 
+  const jitoValidators =  Object.values(validators).filter(validator => {
+    return validator.mev_commission != null && validator.image != ""
+  })
+
   const onSearchBarChange = (e) => {
     const text = e.target.value;
     setSearchText(text);
@@ -165,6 +172,12 @@ export function SelectValidatorScreen({
               selectScreenData={data}
               validators={nftProjectValidators}
             />
+            <ValidatorListContainer
+                title={"Validators that share MEV rewards"}
+                onSelectScreen={onSelectScreen}
+                selectScreenData={data}
+                validators={jitoValidators}
+              />
             <ValidatorListContainer
               title="All Validators"
               onSelectScreen={onSelectScreen}
