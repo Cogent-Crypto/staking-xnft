@@ -2,7 +2,7 @@ import { View, Text, Image, Button } from "react-xnft";
 import React from "react";
 import type { Validator } from "../hooks/useValidators";
 import { useCustomTheme } from "../hooks/useCustomTheme";
-import { ExpandIcon, LinkIcon } from "../components/Icons";
+import { ExpandIcon, LinkIcon, CheckIcon, RedXIcon} from "./Icons";
 
 
 const SubTitle = ({ children }: { children: React.ReactNode }) => (
@@ -80,6 +80,13 @@ export function ValidatorInfo(validator: Validator) {
                             {validator.mev_commission != null ? `${validator.mev_commission}%` : "N/A"}
                         </Text>
                         <SubTitle>MEV Commission</SubTitle>
+                    </StatContainer>
+                    <StatContainer>
+                        <View tw="pl-10 -mt-4">
+                            {validator.mev_commission != null ? 
+                            <CheckIcon /> : <RedXIcon />}
+                        </View>
+                        <SubTitle>MEV Support</SubTitle>
                     </StatContainer>
                     
                 </View>

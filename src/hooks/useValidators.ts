@@ -87,7 +87,7 @@ export function useValidators() {
 
 
 async function fetchValidators() {
-  const cacheKey = "validatorwithMEVinfo"
+  const cacheKey = "validatorsMEVinfo"
   console.log("fetching validators 2");
   const val = await LocalStorage.get(cacheKey);
   const jito_validators = jitoValidators
@@ -115,7 +115,7 @@ async function fetchValidators() {
     }, initialValue);
   };
 
-  let validators = validator_list.map((validator) => { return { ...validator, commission_rugger: rugging_validators.has(validator.vote_identity), mev_commission: jito_validators[validator.vote_identity] ? parseInt(jito_validators[validator.vote_identity].commision):null  } })
+  let validators = validator_list.map((validator) => { return { ...validator, commission_rugger: rugging_validators.has(validator.vote_identity), mev_commission: jito_validators[validator.vote_identity] ? parseInt(jito_validators[validator.vote_identity].commission):null  } })
   validators = convertArrayToObject(validators, "vote_identity");
   LocalStorage.set(cacheKey, JSON.stringify({
     ts: Date.now(),
