@@ -2,6 +2,7 @@ import { PublicKey, Connection } from "@solana/web3.js";
 import { stakePoolInfo} from '@solana/spl-stake-pool';
 import { useEffect, useState } from 'react';
 import ReactXnft, { usePublicKey, useConnection, LocalStorage } from "react-xnft";
+import { stakepoolInfoStatic } from "./stakepoolStatic";
 
 export type StakePool = {
     poolName: String,
@@ -13,19 +14,17 @@ export type StakePool = {
     poolPublicKey: PublicKey,
     MEVDelegation: Boolean,
     website: String
-
-
 }
 
 const stakePoolCacheKey = "stakepools"
 export function useStakePools() {
     
-    const [stakePools, setStakePools] = useState<StakePool[] | null>(null)
+    const [stakePools, setStakePools] = useState<StakePool[]>(stakepoolInfoStatic)
     const stakePoolCacheKey = "stakepooldata"
 
     useEffect(() => {
         LocalStorage.get(stakePoolCacheKey).then((val) => {
-            fetch("localhost:3000/stakepoolinfomock").then((res) => {
+            fetch("https://cogentcrypto.io/api/stakepoolinfo").then((res) => {
                 return res.json()
             })
             .then((data) => {
