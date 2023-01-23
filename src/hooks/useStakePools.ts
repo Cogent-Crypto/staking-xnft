@@ -1,5 +1,5 @@
 import { PublicKey, Connection } from "@solana/web3.js";
-import { stakePoolInfo} from '@solana/spl-stake-pool';
+import { stakePoolInfo } from '@solana/spl-stake-pool';
 import { useEffect, useState } from 'react';
 import { useValidators } from "./useValidators";
 import type { Validator } from "./useValidators";
@@ -7,7 +7,7 @@ import ReactXnft, { usePublicKey, useConnection, LocalStorage } from "react-xnft
 
 export type StakePool = {
     poolName: String,
-    apy: number| null,
+    apy: number | null,
     exchangeRate: number | null,
     tokenSymbol: String,
     tokenMint: PublicKey,
@@ -113,12 +113,12 @@ export const defualtStakePools: Array<StakePool> = [
 ]
 const stakePoolCacheKey = "stakepools"
 export function useStakePools() {
-    
+
     const [stakePools, setStakePools] = useState<StakePool[]>(defualtStakePools)
     const validators = useValidators();
 
     useEffect(() => {
-        if( validators) {
+        if (validators) {
             console.log("fetching stakepool information");
             LocalStorage.get(stakePoolCacheKey).then((val) => {
                 if (val) {
@@ -126,7 +126,7 @@ export function useStakePools() {
                     if (
 
                         Object.keys(resp.value).length > 0 &&
-                        Date.now() - resp.ts < 1000 *  60 * 5 * 60 // 5 hours
+                        Date.now() - resp.ts < 1000 * 60 * 5 * 60 // 5 hours
                     ) {
                         return JSON.parse(resp.value)
                     } else {
@@ -150,7 +150,7 @@ export function useStakePools() {
                     })
                 }
             })
-    }
+        }
     }, [validators])
 
     return stakePools
@@ -161,10 +161,10 @@ async function fetchStakePoolData(stakePools: StakePool[], validators: { [key: s
     const stakePoolData = await Promise.all(stakePools.map(async (stakePool) => {
         const stakePoolData = await stakePoolInfo(connection, stakePool.poolPublicKey)
         const exchangeRate = parseFloat(stakePoolData.poolTokenSupply) / parseFloat(stakePoolData.totalLamports)
-        
+
         const stakedLamportsWithAPY = stakePoolData.details.stakeAccounts.map((stakeAccount) => {
             try {
-            return [ parseFloat(stakeAccount.validatorLamports), validators[stakeAccount.voteAccountAddress].apy_estimate]
+                return [parseFloat(stakeAccount.validatorLamports), validators[stakeAccount.voteAccountAddress].apy_estimate]
             } catch (e) {
                 console.log("error fetching apy for stake account", stakeAccount)
                 return [parseFloat(stakeAccount.validatorLamports), 0]
@@ -173,8 +173,8 @@ async function fetchStakePoolData(stakePools: StakePool[], validators: { [key: s
 
         // stakedLamportsWithAPY.push([stakePoolData.details.reserveStakeLamports ?  stakePoolData.details.reserveStakeLamports:0, 0])
         const summed = stakedLamportsWithAPY.reduce((acc, [lamports, apy]) => {
-            return  [acc[0]+lamports*apy, acc[1]+lamports]
-        }, [0,0])
+            return [acc[0] + lamports * apy, acc[1] + lamports]
+        }, [0, 0])
         const apy = summed[0] / summed[1] * stakePoolData.epochFee.denominator.toNumber() / stakePoolData.epochFee.numerator.toNumber() / 10000;
         console.log("fee", stakePoolData.epochFee.denominator.toNumber())
 
@@ -182,7 +182,7 @@ async function fetchStakePoolData(stakePools: StakePool[], validators: { [key: s
         return {
             ...stakePool,
             exchangeRate,
-            apy 
+            apy
         }
     }))
     return stakePoolData

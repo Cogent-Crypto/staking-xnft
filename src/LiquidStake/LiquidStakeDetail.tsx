@@ -1,6 +1,6 @@
 
 import { View, Text, List, Button, useNavigation, Image, useConnection, usePublicKey, TextField } from "react-xnft";
-import { Connection, PublicKey, Transaction } from "@solana/web3.js";
+import { Connection, PublicKey, Transaction, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import type { StakeAccount } from "../hooks/useStakeAccounts";
 import type { Validator } from "../hooks/useValidators";
 import React from "react";
@@ -12,7 +12,10 @@ import { depositSol, depositStake, withdrawSol, withdrawStake, stakePoolInfo } f
 import { useSolBalance } from "../hooks/useSolBalance";
 
 export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
-    const [amount, setAmount] = React.useState(0);
+    const tokenBalances = useStakingTokenBalances();
+
+    const balance = tokenBalances?.get(stakePool.tokenMint.toString())
+
     const THEME = useCustomTheme();
 
     const nav = useNavigation();
@@ -20,9 +23,7 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
     const connection = useConnection();
     const solbalance = useSolBalance()
 
-    const tokenBalances = useStakingTokenBalances();
 
-    const balance = tokenBalances?.get(stakePool.tokenMint.toString())
 
     async function deposit(pool: StakePool, lamports: number) {
         //amount needs to be lamports
@@ -75,20 +76,66 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
                     </Text>
                 </View>
             </View>
-            <View tw={`flex items-center mt-4`}>
+            {/* <View tw={`flex items-center mt-4`}>
                 {stakePool.MEVDelegation ? <CheckIcon /> : <RedXIcon />}
                 <Text tw="ml-2">
                     MEV Enabled
                 </Text>
 
+            </View> */}
+
+
+
+            <TabLayout solbalance={solbalance} tokenBalance={balance} />
+            {/* <View tw={`flex items-center mt-4`}>
                 <TextField onChange={(v) => setAmount(v.target.value)} />
+                <Button onClick={() => depositStake(connection, stakePool.poolPublicKey, amount)} tw="mt-4">Stake</Button>
+            </View>
+            <Button tw="mt-4" onClick={() => deposit(stakePool, amount)}>Deposit</Button>
+
+            {balance && balance > 0 &&
+            <Button onClick={() => withdrawStake(connection, stakePool.poolPublicKey, amount)} tw="mt-4">Unstake</Button>} */}
+        </View>
+    )
+}
+
+const TabLayout = ({ tokenBalance, solbalance }) => {
+    const THEME = useCustomTheme();
+    const [stakeAmount, setStakeAmount] = React.useState(solbalance);
+    const [unStakeAmount, setUnStakeAmount] = React.useState(tokenBalance);
+
+    const [tabIndex, setTabIndex] = React.useState(0);
+
+    return (
+        <View>
+            <View tw={`flex text-center items-center mt-4 w-full justify-evenly `}>
+                <View style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: tabIndex == 0 ? THEME.colors?.bg2 : "#18181b", opacity: tabIndex == 0 ? 1 : .5 }} tw={`py-3 w-1/2 cursor-pointer rounded-l transition ease-linear`} onClick={() => setTabIndex(0)}>Stake</View>
+                <View style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: tabIndex == 1 ? THEME.colors?.bg2 : "#18181b", opacity: tabIndex == 1 ? 1 : .5 }} tw={`py-3 w-1/2 cursor-pointer rounded-r transition ease-linear`} onClick={() => setTabIndex(1)}>Unstake</View>
             </View>
 
-            <Button onClick={() => depositStake(connection, stakePool.poolPublicKey, amount)} tw="mt-4">Stake</Button>
-            <Button tw="mt-4" onClick={() => deposit(stakePool, amount)}>Deposit</Button>
-            {balance && balance > 0 &&
-                <Button onClick={() => withdrawStake(connection, stakePool.poolPublicKey, amount)} tw="mt-4">Unstake</Button>}
-        </View>
+            <View tw={`w-full flex items-center mt-6`}>
+                {
+                    tabIndex === 0 &&
+                    <View tw={`w-full`}>
+                        <TextField value={stakeAmount} onChange={(v) => setStakeAmount(v.target.value)} />
+                        <View tw={`flex items-baseline mt-2`}>
+                            <View tw={`mr-auto`}>Balance: {solbalance / LAMPORTS_PER_SOL} SOL</View><Button onClick={() => setStakeAmount(solbalance / LAMPORTS_PER_SOL - .05)} tw={`text-sm cursor-pointer`}>Max</Button>
+                        </View>
+                        <Button onClick={() => depositStake(connection, stakePool.poolPublicKey, amount)} tw="mt-48 w-full">Stake SOL</Button>
+                    </View>
+                }
+                {
+                    tabIndex === 1 &&
+                    <View tw={`w-full`}>
+                        <TextField value={unStakeAmount} onChange={(v) => setUnStakeAmount(v.target.value)} />
+                        <View tw={`flex items-baseline mt-2`}>
+                            <View tw={`mr-auto`}>Balance: {tokenBalance} SOL</View><Button onClick={() => setUnStakeAmount(tokenBalance)} tw={`text-sm cursor-pointer`}>Max</Button>
+                        </View>
+                        <Button onClick={() => withdrawStake(connection, stakePool.poolPublicKey, amount)} tw="mt-48 w-full">Unstake</Button>
+                    </View>
+                }
+            </View>
+        </View >
     )
 }
 
