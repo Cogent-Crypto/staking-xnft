@@ -26,23 +26,23 @@ export function useStakePools() {
     const [stakePools, setStakePools] = useState<StakePool[]>(stakepoolInfoStatic)
     const stakePoolCacheKey = "stakepooldata"
 
-    useEffect(() => {
-        LocalStorage.get(stakePoolCacheKey).then((val) => {
-            fetch("https://cogentcrypto.io/api/stakepoolinfo").then((res) => {
-                return res.json()
-            })
-            .then((data) => {
-                let stakepooldata: StakePool[] = data.stake_pool_data.map((pool)=> {
-                    return {
-                        ...pool,
-                        tokenMint: new PublicKey(pool.tokenMint),
-                        poolPublicKey: new PublicKey(pool.poolPublicKey)
-                    }
-                })
-                setStakePools(stakepooldata)
-            })
-        })
-    }, [])
+    // useEffect(() => {
+    //     LocalStorage.get(stakePoolCacheKey).then((val) => {
+    //         fetch("https://cogentcrypto.io/api/stakepoolinfo").then((res) => {
+    //             return res.json()
+    //         })
+    //         .then((data) => {
+    //             let stakepooldata: StakePool[] = data.stake_pool_data.map((pool)=> {
+    //                 return {
+    //                     ...pool,
+    //                     tokenMint: new PublicKey(pool.tokenMint),
+    //                     poolPublicKey: new PublicKey(pool.poolPublicKey)
+    //                 }
+    //             })
+    //             setStakePools(stakepooldata)
+    //         })
+    //     })
+    // }, [])
 
     return stakePools
 }
