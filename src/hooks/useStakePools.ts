@@ -13,7 +13,10 @@ export type StakePool = {
     tokenImageURL: String,
     poolPublicKey: PublicKey,
     MEVDelegation: Boolean,
-    website: String
+    website: String,
+    commission: number;
+    solDepositFee: number;
+    solWithdrawalFee: number;
 }
 
 const stakePoolCacheKey = "stakepools"
