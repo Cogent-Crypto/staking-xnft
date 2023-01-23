@@ -10,6 +10,7 @@ export type StakePool = {
     exchangeRate: number
     tokenSymbol: String,
     tokenMint: PublicKey,
+    tokenMintSupply: number,
     tokenImageURL: String,
     poolPublicKey: PublicKey,
     MEVDelegation: Boolean,
@@ -19,7 +20,7 @@ export type StakePool = {
     solWithdrawalFee: number;
 }
 
-const stakePoolCacheKey = "stakepooldata"
+const stakePoolCacheKey = "stakepooldata1"
 export function useStakePools() {
     
     const [stakePools, setStakePools] = useState<StakePool[]>(stakepoolInfoStatic)
