@@ -11,7 +11,7 @@ import { depositSol, depositStake, withdrawSol, withdrawStake, stakePoolInfo } f
 import { publicKey } from '@project-serum/anchor/dist/cjs/utils';
 import { useSolBalance } from '../hooks/useSolBalance';
 import { Marinade } from "@marinade.finance/marinade-ts-sdk"
-import { CheckIcon, RedXIcon } from "../components/Icons";
+import { CheckIcon, RedXIcon, WWW } from "../components/Icons";
 import { useDebounce } from '../hooks/useDebounce';
 import { useTokens } from '../hooks/useTokenMetaData'
 
@@ -50,12 +50,18 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
             display: "flex",
             flexDirection: "column"
         }}>
-            <View tw="flex items-center mx-auto px-2 pt-4 text-center  w-4/5 cursor-pointer">
+            <View tw="flex items-center mx-2 pt-4 text-center  w-11/12 cursor-pointer">
                 <Image style={{ height: "50px", maxWidth: "unset", borderRadius: "999px" }} src={stakePool.tokenImageURL} />
-                <Text tw="mx-auto px-1 text-lg leading-none">
+                <Text tw="ml-2 px-1 text-lg leading-none">
                     {stakePool.poolName}
                     <Text tw="text-green-500 text-sm">
-                        {balance?.toFixed(2) || 0} {stakePool.tokenSymbol}
+                        {stakePool.tokenMintSupply || 0} {stakePool.tokenSymbol}
+                    </Text>
+                </Text>
+                <Text tw="mx-auto px-1 text-lg leading-none">
+                    Balance
+                    <Text tw="text-green-500 text-sm">
+                    {balance?.toFixed(2) || 0} {stakePool.tokenSymbol}
                     </Text>
                 </Text>
                 <View tw="leading-none">
@@ -69,19 +75,28 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
                         {/* {stakePool.tokenSymbol} */}
                     </Text>
                 </View>
+                
+                
             </View>
-            {/* <View tw={`flex items-center mt-4`}>
-                {stakePool.MEVDelegation ? <CheckIcon /> : <RedXIcon />}
-                <Text tw="ml-2">
-                    MEV Enabled
-                </Text>
+            <View tw={`mt-3 flex items-center justify-evenly text-sm`}>
+            <View tw="cursor-pointer mx-2" onClick={()=> { window.xnft.openWindow(stakePool.website)}}>
+                    {stakePool.website}{/* <WWW lightMode={THEME.colors?.lightMode}/> */}
+                </View>
+{/* 
+                <View tw={`flex items-center`}>
+                    {stakePool.MEVDelegation ? <CheckIcon /> : <RedXIcon />}
+                    <Text tw="ml-2">
+                        MEV
+                    </Text>
+                </View> */}
 
-            </View> */}
+
+            </View>
 
 
 
             <TabLayout setBestRoute={setBestRoute} isLoading={isLoading} bestRoute={bestRoute} getJupiterRoute={getJupiterRoute} tokenBalance={balance} stakePool={stakePool} />
-        </View>
+        </View >
     )
 }
 
@@ -324,7 +339,7 @@ const DirectStakeRoute = ({ active, setSelectedSwap, amount, isUnstake = false, 
 
     return (
         <View tw={`relative p-3 mb-2 cursor-pointer rounded transition ease-linear`} style={{ border: "solid", borderColor: THEME.colors?.secondary, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5, borderWidth: active ? "2px":"0px" }} onClick={() => setSelectedSwap("DIRECT")}>
-            <View tw="absolute top-0 right-0 text-xs pr-1">Stake Pool</View>
+            <View tw="absolute top-0 right-2 text-xs">Stake Pool</View>
             <View>
                 {displayAmount.toFixed(3)}
                 <View tw={`font-light text-sm`}>
@@ -343,7 +358,7 @@ const BestMarketRoute = ({ active, setSelectedSwap, bestRoute, isLoading }: { ac
     if (isLoading) {
         return (
             <View tw={`animate-pulse relative p-3 cursor-pointer rounded`} style={{ height: 72, border: "solid", borderColor: THEME.colors?.secondary, backgroundColor: THEME.colors?.bg2, opacity: active ? 1 : 0.5, borderWidth: active ? "2px":"0px" }} onClick={() => setSelectedSwap("JUPITER")}>
-                <View tw="animate-pulse absolute top-0 right-2 text-xs pr-1">Jupiter Swap</View>
+                <View tw="animate-pulse absolute top-0 right-2 text-xs">Jupiter Swap</View>
             </View>
         )
     }
