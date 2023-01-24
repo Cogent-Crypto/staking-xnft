@@ -153,6 +153,12 @@ export function SelectValidatorScreen({
         ></TextField>
         {searchText == "" ? (
           <View>
+            <ValidatorListContainer
+                title={"Validators that share MEV rewards"}
+                onSelectScreen={onSelectScreen}
+                selectScreenData={data}
+                validators={jitoValidators}
+              />
             {nftValidatorsHeld.length > 0 &&
               <ValidatorListContainer
                 title={"Validators you hold NFTs for"}
@@ -172,12 +178,7 @@ export function SelectValidatorScreen({
               selectScreenData={data}
               validators={nftProjectValidators}
             />
-            <ValidatorListContainer
-                title={"Validators that share MEV rewards"}
-                onSelectScreen={onSelectScreen}
-                selectScreenData={data}
-                validators={jitoValidators}
-              />
+            
             <ValidatorListContainer
               title="All Validators"
               onSelectScreen={onSelectScreen}

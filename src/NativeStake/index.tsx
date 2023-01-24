@@ -17,7 +17,6 @@ import { LiquidStakeDetail } from "../LiquidStake/LiquidStakeDetail";
 
 export function StakeAccountsScreen() {
   const THEME = useCustomTheme();
-  const [selectedTab, setSelectedTab] = React.useState("overview");
   return (
     <Stack.Navigator
       initialRoute={{ name: "overview"}}
@@ -158,7 +157,7 @@ export function TabNavigator(props) {
     >
       <Tab.Screen
         name="Stake Accounts"
-        component={() => <StakeAccountsOverviewScreen expectingStakeAccountsToUpdate={false} {...props} />}
+        component={() => <StakeAccountsOverviewScreen expectingStakeAccountsToUpdate={props.expectingStakeAccountsToUpdate ? props.expectingStakeAccountsToUpdate:false } {...props} />}
       />
       <Tab.Screen
         name="Liquid Staking"

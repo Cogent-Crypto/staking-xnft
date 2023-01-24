@@ -128,6 +128,8 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
             nav.pop()
             nav.push("liquidstakedetail", { stakePool: stakePool })
         } catch (error) {
+            nav.pop()
+            nav.push("liquidstakedetail", { stakePool: stakePool })
             console.log("failed to send stakepool txn:", JSON.stringify(transaction), error);
             return
         }
@@ -281,7 +283,7 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
             return
         }
         if (selectedSwapStake === "DIRECT") {
-            if (stakePool.poolName == "Marinades"){
+            if (stakePool.poolName == "Marinade"){
                 depositMarinade(stakeAmount * LAMPORTS_PER_SOL)
             } else {
                 depositSPLPool(stakePool, stakeAmount * LAMPORTS_PER_SOL)

@@ -13,7 +13,7 @@ import {
 import { useStakeAccounts } from "../hooks/useStakeAccounts";
 import { useCustomTheme, statusColor } from "../hooks/useCustomTheme";
 import type { StakeAccount } from "../hooks/useStakeAccounts";
-import { useValidators } from "../hooks/useValidators";
+import { useValidators, fetch } from "../hooks/useValidators";
 import type { Validator } from "../hooks/useValidators";
 import { LoadingScreen } from "../components/LoadingScreen";
 import { useEpochInfo } from "../hooks/useEpochInfo";
@@ -76,11 +76,15 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
     // send the transaction
     try {
       const signature = await window.xnft.solana.sendAndConfirm(transaction)
+      console.log("navigating to overview in order to reload  ")
+      nav.push("selectvalidator")
+      nav.pop()
+      nav.push("overview", { expectingStakeAccountsToUpdate: true })
     } catch (e) {
       console.log(e);
       return
     }
-    nav.push("overview", { expectingStakeAccountsToUpdate: true })
+    
 
 
   }

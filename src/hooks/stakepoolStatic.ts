@@ -9,7 +9,7 @@ let stake_pool_data = [
         tokenMintSupply: 5643395.636115339,
         tokenImageURL:
           "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So/logo.png",
-        poolPublicKey: "Jito4APyf642JPZPx3hGc6WWJ8zPKtRbRs4P815Awbb",
+        poolPublicKey: "MR2LqxoSbw831bNy68utpu5n4YqBH3AzDmddkgk9LQv",
         MEVDelegation: false,
         website: "https://marinade.finance/",
         commission: 0.06,
