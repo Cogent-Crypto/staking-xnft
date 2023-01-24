@@ -17,10 +17,10 @@ import { LiquidStakeDetail } from "../LiquidStake/LiquidStakeDetail";
 
 export function StakeAccountsScreen() {
   const THEME = useCustomTheme();
-
+  const [selectedTab, setSelectedTab] = React.useState("overview");
   return (
     <Stack.Navigator
-      initialRoute={{ name: "overview" }}
+      initialRoute={{ name: "overview"}}
       options={({ route }) => {
 
         switch (route.name) {
@@ -131,7 +131,6 @@ export function StakeAccountsScreen() {
 
 export function TabNavigator(props) {
   const THEME = useCustomTheme();
-
   return (
     <Tab.Navigator
       initialRouteName="Stake Accounts"

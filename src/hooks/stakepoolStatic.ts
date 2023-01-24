@@ -14,7 +14,7 @@ let stake_pool_data = [
         website: "https://marinade.finance/",
         commission: 0.06,
         solDepositFee: 0,
-        solWithdrawalFee: 0.3,
+        solWithdrawalFee: 0.003,
       },
       {
         poolName: "BlazeStake",

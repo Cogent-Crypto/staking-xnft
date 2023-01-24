@@ -17,7 +17,15 @@ export const LiquidStakeAccountsScreen = () => {
     }
     return (
         <View tw={`grid grid-cols-2`}>
-            {stakePools.sort((a,b) => tokenBalances[a.poolPublicKey.toString()] - tokenBalances[b.poolPublicKey.toString()] ).map((pool: StakePool) => {
+            {stakePools.sort((a,b) => {
+                if (tokenBalances[a.poolPublicKey.toString()] > tokenBalances[b.poolPublicKey.toString()] ){
+                    return 1;
+                } else if (tokenBalances[a.poolPublicKey.toString()] < tokenBalances[b.poolPublicKey.toString()] ){
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }).map((pool: StakePool) => {
                 return (
                     <View
                         style={{ padding: "4px", paddingTop: "3px", paddingBottom: "3px", minHeight: "100px" }}

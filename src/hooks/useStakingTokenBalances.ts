@@ -62,7 +62,7 @@ export function useStakingTokenBalances() { //maps token mint to balance, scale 
 }
 
 
-async function fetchTokenBalances(publicKey, connection, stakePoolMintAddresses) { 
+export async function fetchTokenBalances(publicKey, connection, stakePoolMintAddresses) { 
     const cacheKey = "stakepooltokenbalances" + publicKey.toString();
     console.log("connection", connection)
     console.log("connection.getParsedTokenAccountsByOwner", connection.getParsedTokenAccountsByOwner)

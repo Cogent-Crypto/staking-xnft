@@ -10,7 +10,7 @@ import { StakePool } from "../hooks/useStakePools";
 import { depositSol, depositStake, withdrawSol, withdrawStake, stakePoolInfo } from '@solana/spl-stake-pool';
 import { publicKey } from '@project-serum/anchor/dist/cjs/utils';
 import { useSolBalance } from '../hooks/useSolBalance';
-import { Marinade } from "@marinade.finance/marinade-ts-sdk"
+import { Marinade, MarinadeConfig } from "@marinade.finance/marinade-ts-sdk"
 import { CheckIcon, RedXIcon, WWW } from "../components/Icons";
 import { useDebounce } from '../hooks/useDebounce';
 import { useTokens } from '../hooks/useTokenMetaData'
@@ -42,6 +42,7 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
         setBestRoute(data[0])
     }
 
+
     return (
         <View tw="text-bold px-2 h-full" style={{
             fontSize: "1rem",
@@ -55,7 +56,7 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
                 <Text tw="ml-2 px-1 text-lg leading-none">
                     {stakePool.poolName}
                     <Text tw="text-green-500 text-sm">
-                        {stakePool.tokenMintSupply || 0} {stakePool.tokenSymbol}
+                        {Math.round(stakePool.tokenMintSupply) || 0} {stakePool.tokenSymbol}
                     </Text>
                 </Text>
                 <Text tw="mx-auto px-1 text-lg leading-none">
@@ -95,14 +96,14 @@ export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
 
 
 
-            <TabLayout setBestRoute={setBestRoute} isLoading={isLoading} bestRoute={bestRoute} getJupiterRoute={getJupiterRoute} tokenBalance={balance} stakePool={stakePool} />
+            <TabLayout setBestRoute={setBestRoute} isLoading={isLoading} bestRoute={bestRoute} getJupiterRoute={getJupiterRoute} tokenBalance={balance} stakePool={stakePool} refreshTokenBlanceFunc={async () => {useStakingTokenBalances()}} />
         </View >
     )
 }
 
-const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenBalance, stakePool }: { setBestRoute: any, isLoading: boolean, bestRoute: any, getJupiterRoute: (inputMint: String, outPutMint: String, amount: number) => any, tokenBalance: any, stakePool: StakePool }) => {
-    const solBalance = useSolBalance();
-
+const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenBalance, stakePool, refreshTokenBlanceFunc }: { setBestRoute: any, isLoading: boolean, bestRoute: any, getJupiterRoute: (inputMint: String, outPutMint: String, amount: number) => any, tokenBalance: any, stakePool: StakePool, refreshTokenBlanceFunc: CallableFunction }) => {
+    let solBalance = useSolBalance();
+    let nav = useNavigation();
     const THEME = useCustomTheme();
     const publicKey = usePublicKey();
     const [stakeAmount, setStakeAmount] = React.useState(null);
@@ -113,13 +114,19 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
 
     const debouncedStakeAmount = useDebounce(stakeAmount, 500);
     const debouncedUnstakeAmount = useDebounce(unStakeAmount, 500);
-    const marinade = new Marinade()
+    
 
     const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/");
-
+    const config = new MarinadeConfig({
+        connection: connection,
+        publicKey: publicKey
+      })
+    const marinade = new Marinade(config)
     async function submitTransaction(transaction: Transaction | VersionedTransaction) {
         try {
             await window.xnft.solana.sendAndConfirm(transaction)
+            nav.pop()
+            nav.push("liquidstakedetail", { stakePool: stakePool })
         } catch (error) {
             console.log("failed to send stakepool txn:", JSON.stringify(transaction), error);
             return
@@ -131,6 +138,7 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
             associatedMSolTokenAccountAddress,
             transaction,
         } = await marinade.deposit(lamports)
+        console.log("made it here :)")
         return transaction
     }
 
@@ -162,11 +170,12 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
         });
         let stakePoolinstruction = await withdrawSol(connection, pool.poolPublicKey, publicKey, publicKey, lamports)
         transaction.add(...stakePoolinstruction.instructions);
+        transaction.partialSign(stakePoolinstruction.signers[0]);
         return transaction
     }
 
     async function withdrawSolSPL(pool: StakePool, lamports: number) {
-        let txn = await withdrawSolSPLTransaction(pool, lamports)
+        let txn = await withdrawSolSPLTransaction(pool, lamports/LAMPORTS_PER_SOL)
         submitTransaction(txn)
     }
 
@@ -253,7 +262,7 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
                 return
             }
 
-            getJupiterRoute("So11111111111111111111111111111111111111112", stakePool.tokenMint, stakeAmount)
+            getJupiterRoute("So11111111111111111111111111111111111111112", stakePool.tokenMint.toString(), stakeAmount)
         }
         if (tabIndex === 1) {
             if (!unStakeAmount) {
@@ -261,22 +270,38 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
                 return
             }
 
-            getJupiterRoute(stakePool.tokenMint, "So11111111111111111111111111111111111111112", unStakeAmount)
+            getJupiterRoute(stakePool.tokenMint.toString(), "So11111111111111111111111111111111111111112", unStakeAmount)
         }
     }, [tabIndex, debouncedStakeAmount, debouncedUnstakeAmount])
 
 
     const handleDepositSwapPath = async () => {
+        if (stakeAmount === null) {
+            console.log("tried to stake null amount")
+            return
+        }
         if (selectedSwapStake === "DIRECT") {
-            depositSPLPool(stakePool, stakeAmount * LAMPORTS_PER_SOL)
+            if (stakePool.poolName == "Marinades"){
+                depositMarinade(stakeAmount * LAMPORTS_PER_SOL)
+            } else {
+                depositSPLPool(stakePool, stakeAmount * LAMPORTS_PER_SOL)
+            }
         } else if (selectedSwapStake === "JUPITER") {
             jupiterSwap(bestRoute)
         }
     }
 
     const handleUnstakeSwapPath = async () => {
+        if (unStakeAmount === null) {
+            console.log("tried to unstake null amount")
+            return
+        }
         if (selectedSwapUnstake === "DIRECT") {
-            withdrawStake(connection, stakePool.poolPublicKey, publicKey, unStakeAmount)
+            if (stakePool.poolName == "Marinades"){
+                withdrawMarinade(unStakeAmount * LAMPORTS_PER_SOL)
+            } else {
+                withdrawSolSPL(stakePool, unStakeAmount * LAMPORTS_PER_SOL)
+            }
         } else if (selectedSwapUnstake === "JUPITER") {
             jupiterSwap(bestRoute)
         }
