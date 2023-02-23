@@ -37,7 +37,7 @@ export function useStakeAccounts() {
     useEffect(() => {
         if (publicKey && validators) {
 
-            console.log("fetching  stake accounts for public key", publicKey.toString());
+            console.log("fetching stake accounts for public key", publicKey.toString());
             const cacheKey = stakeAccountCacheKey + publicKey.toString();
             LocalStorage.get(cacheKey).then((val) => {
                 let accounts;

@@ -15,6 +15,9 @@ export const LiquidStakeAccountsScreen = () => {
     if (!tokenBalances) {
         return <LoadingScreen />
     }
+    if (!stakePools) {
+        return <LoadingScreen />
+    }
     return (
         <View tw={`grid grid-cols-2`}>
             {stakePools.sort((a,b) => {

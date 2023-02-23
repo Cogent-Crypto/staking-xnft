@@ -23,26 +23,39 @@ export type StakePool = {
 const stakePoolCacheKey = "stakepooldata3"
 export function useStakePools() {
     
-    const [stakePools, setStakePools] = useState<StakePool[]>(stakepoolInfoStatic)
+    const [stakePools, setStakePools] = useState<StakePool[]| null>(null)
     const stakePoolCacheKey = "stakepooldata"
 
-    // useEffect(() => {
-    //     LocalStorage.get(stakePoolCacheKey).then((val) => {
-    //         fetch("https://cogentcrypto.io/api/stakepoolinfo").then((res) => {
-    //             return res.json()
-    //         })
-    //         .then((data) => {
-    //             let stakepooldata: StakePool[] = data.stake_pool_data.map((pool)=> {
-    //                 return {
-    //                     ...pool,
-    //                     tokenMint: new PublicKey(pool.tokenMint),
-    //                     poolPublicKey: new PublicKey(pool.poolPublicKey)
-    //                 }
-    //             })
-    //             setStakePools(stakepooldata)
-    //         })
-    //     })
-    // }, [])
+    useEffect(() => {
+        LocalStorage.get(stakePoolCacheKey).then((val) => {
+
+            if (val) {
+                const resp = JSON.parse(val);
+                if (
+                    Object.keys(resp.value).length > 0 &&
+                    Date.now() - resp.ts < 1000 * 60 * 48 * 60 // 5 hours
+                ) {
+                    setStakePools(resp.value)
+                    return
+                }
+            }
+            
+                fetch("https://cogentcrypto.io/api/stakepoolinfo").then((res) => {
+                    return res.json()
+                })
+                .then((data) => {
+                    let stakepooldata: StakePool[] = data.stake_pool_data.map((pool)=> {
+                        return {
+                            ...pool,
+                            tokenMint: new PublicKey(pool.tokenMint),
+                            poolPublicKey: new PublicKey(pool.poolPublicKey)
+                        }
+                    })
+                    setStakePools(stakepooldata)
+                })
+            
+        })
+    }, [])
 
     return stakePools
 }

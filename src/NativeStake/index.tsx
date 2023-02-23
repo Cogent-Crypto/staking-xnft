@@ -144,9 +144,9 @@ export function TabNavigator(props) {
               ? THEME?.colors?.activeTab
               : THEME?.colors?.inactiveTab;
             if (route.name === "Stake Accounts") {
-              return <Tab.Icon element={<HomeIcon />} />;
+              return <Tab.Icon element={<HomeIcon lightMode={THEME.colors?.lightMode} />} />;
             } else {
-              return <Tab.Icon element={<LiquidIcon />} />;
+              return <Tab.Icon element={<LiquidIcon lightMode={THEME.colors?.lightMode} />} />;
             }
           },
           tabBarStyle: {

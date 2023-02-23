@@ -14,6 +14,7 @@ import { Marinade, MarinadeConfig } from "@marinade.finance/marinade-ts-sdk"
 import { CheckIcon, RedXIcon, WWW } from "../components/Icons";
 import { useDebounce } from '../hooks/useDebounce';
 import { useTokens } from '../hooks/useTokenMetaData'
+import { BN } from "@project-serum/anchor";
 
 
 export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
@@ -139,7 +140,7 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
         const {
             associatedMSolTokenAccountAddress,
             transaction,
-        } = await marinade.deposit(lamports)
+        } = await marinade.deposit(new BN(lamports))
         console.log("made it here :)")
         return transaction
     }
@@ -312,8 +313,8 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
     return (
         <View tw={`flex flex-col h-full`}>
             <View tw={`flex text-center items-center mt-4 w-full justify-evenly `}>
-                <View style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: tabIndex == 0 ? THEME.colors?.bg2 : "#18181b", opacity: tabIndex == 0 ? 1 : .5 }} tw={`py-3 w-1/2 cursor-pointer rounded-l transition ease-linear`} onClick={() => setTabIndex(0)}>Stake</View>
-                <View style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: tabIndex == 1 ? THEME.colors?.bg2 : "#18181b", opacity: tabIndex == 1 ? 1 : .5 }} tw={`py-3 w-1/2 cursor-pointer rounded-r transition ease-linear`} onClick={() => setTabIndex(1)}>Unstake</View>
+                <View style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: tabIndex == 0 ? THEME.colors?.bg2 : "", opacity: tabIndex == 0 ? 1 : .5 }} tw={`py-3 w-1/2 cursor-pointer rounded-l transition ease-linear`} onClick={() => setTabIndex(0)}>Stake</View>
+                <View style={{ border: "solid", borderColor: THEME.colors?.bg2, backgroundColor: tabIndex == 1 ? THEME.colors?.bg2 : "", opacity: tabIndex == 1 ? 1 : .5 }} tw={`py-3 w-1/2 cursor-pointer rounded-r transition ease-linear`} onClick={() => setTabIndex(1)}>Unstake</View>
             </View>
 
             <View tw={`w-full mt-6 h-full`}>

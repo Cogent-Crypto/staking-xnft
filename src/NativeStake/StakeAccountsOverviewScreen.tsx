@@ -13,14 +13,15 @@ import {
 import { useStakeAccounts } from "../hooks/useStakeAccounts";
 import { useCustomTheme, statusColor } from "../hooks/useCustomTheme";
 import type { StakeAccount } from "../hooks/useStakeAccounts";
-import { useValidators, fetch } from "../hooks/useValidators";
+import { useValidators } from "../hooks/useValidators";
 import type { Validator } from "../hooks/useValidators";
 import { LoadingScreen } from "../components/LoadingScreen";
 import { useEpochInfo } from "../hooks/useEpochInfo";
 import { LAMPORTS_PER_SOL, Transaction, SystemProgram, StakeProgram } from '@solana/web3.js';
 import { AlertIcon } from "../components/Icons";
 import { useStakingTokenBalances } from "../hooks/useStakingTokenBalances";
- 
+import { useSolBalance } from "../hooks/useSolBalance";
+
 export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: { expectingStakeAccountsToUpdate: boolean }) {
   const fetchedStakeAccounts = useStakeAccounts();
   const validators = useValidators();
@@ -29,6 +30,7 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
   const epochInfo = useEpochInfo();
   const connection = useConnection();
   const publicKey = usePublicKey();
+  const solbalance = useSolBalance();
   // const tokens = useStakingTokenBalances();
 
   if (fetchedStakeAccounts === null || validators === null) {
@@ -104,6 +106,7 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
           Total Sol Staked:{" "}
           {stakeAccounts.reduce((a, b) => a + b.stakeSol, 0).toFixed(1)} SOL
         </Text>
+        
       </View>
       <View tw="py-1 px-1">
         {totalExcessLamports > 0 && <Button tw="w-full mb-2" style={{ borderRadius: "5px" }} onClick={claimExcessLamports}>Claim MEV rewards: {Math.round(totalExcessLamports / LAMPORTS_PER_SOL * 1000) / 1000} SOL</Button>}
