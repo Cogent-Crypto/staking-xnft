@@ -1,12 +1,13 @@
 {
-  "name": "xnft-quickstart",
-  "version": "1.0.0",
+  "name": "solana-staking",
+  "version": "0.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "xnft build",
-    "start": "xnft watch",
-    "dev": "xnft dev"
+    "build": "expo export:web",
+    "start": "yarn build && npx xnft web",
+    "bundle": "yarn build && npx xnft bundle",
+    "dev": "expo start --web & npx xnft --iframe http://localhost:19006"
   },
   "alias": {
     "process": false,
@@ -16,7 +17,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@coral-xyz/xnft-cli": "0.2.0-latest.300"
+    "@coral-xyz/xnft-cli": "^0.2.0-latest.300",
+    "@babel/core": "^7.20.12",
+    "xnft": ">0.2.0-latest.2873",
+    "@expo/webpack-config": "^0.17.2",
+    "typescript": "^4.6.3"
   },
   "dependencies": {
     "@marinade.finance/marinade-ts-sdk": "^4.0.4",
@@ -26,6 +31,15 @@
     "@unstake-it/sol": "^0.1.3",
     "axios": "^0.27.2",
     "react": "^17.0.2",
-    "react-xnft": "0.2.0-latest.300"
+    "react-xnft": "0.2.0-latest.300",
+    "expo": "~47.0.8",
+    "expo-constants": "~14.0.2",
+    "expo-linking": "~3.3.0",
+    "expo-status-bar": "~1.4.2",
+    "@expo/webpack-config": "^0.17.2",
+    "@expo-google-fonts/dev": "*",
+    "@coral-xyz/common-public": "^0.2.0-latest.1931",
+    "@expo/vector-icons": "^13.0.0",
+    "commander": "^9.4.1"
   }
 }

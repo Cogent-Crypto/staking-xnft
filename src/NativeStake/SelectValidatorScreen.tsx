@@ -13,7 +13,6 @@ import type { Validator } from "../hooks/useValidators";
 import { ExpandIcon } from "../components/Icons";
 import { LoadingScreen } from "../components/LoadingScreen";
 import { useNFTCreators } from "../hooks/useNFTCreators";
-import { jitoValidators } from '../utils/jitoValidatorsMockAPI';
 
 const helpfulInTheCommunity = [
   "CogentC52e7kktFfWHwsqSmr8LiS1yAtfqhHcftCPcBJ",

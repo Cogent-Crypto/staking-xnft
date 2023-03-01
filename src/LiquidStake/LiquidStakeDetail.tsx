@@ -15,7 +15,7 @@ import { CheckIcon, RedXIcon, WWW } from "../components/Icons";
 import { useDebounce } from '../hooks/useDebounce';
 import { useTokens } from '../hooks/useTokenMetaData'
 import { BN } from "@project-serum/anchor";
-
+import { useCustomConnection } from "../hooks/useCustomConnection";
 
 export function LiquidStakeDetail({ stakePool }: { stakePool: StakePool }) {
     const tokenBalances = useStakingTokenBalances();
@@ -117,7 +117,7 @@ const TabLayout = ({ isLoading, setBestRoute, bestRoute, getJupiterRoute, tokenB
     const debouncedUnstakeAmount = useDebounce(unStakeAmount, 500);
     
 
-    const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/");
+    const connection = useCustomConnection();
     const config = new MarinadeConfig({
         connection: connection,
         publicKey: publicKey

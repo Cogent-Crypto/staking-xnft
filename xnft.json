@@ -1,0 +1,18 @@
+{
+    "name": "Solana Staking",
+    "version": "0.0.2",
+    "description": "The Solana Staking xNFT is built by Cogent Crypto. This brings many new staking functionalities that aren't available on other wallets. You can merge, split, send, instant unstake, redelgate, view rewards history, and more. This xNFT also gives validator recommendations based on NFTs you own. e.g. if your favorite NFT project runs a validator then you will see this at the top of the list when selecting a validator to stake with. To learn more or ask any questions please join discord.gg/cogent This is open source and would value any contributions at https://github.com/Cogent-Crypto/staking-xnft",
+    "website": "https://CogentCrypto.io",
+    "kind": "app",
+    "icon": {
+      "md": "./assets/SolanaStaking.jpg"
+    },
+    "screenshots": [
+      "./assets/screenShot.png"
+    ],
+    "entrypoints": {
+      "default": {
+        "web": "./web-build/index.html"
+      }
+    }
+  }

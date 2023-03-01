@@ -1,0 +1,7 @@
+{
+    "expo": {
+      "name": "solana-staking",
+      "slug": "solana-staking",
+      "entryPoint": "./src/App"
+    }
+  }

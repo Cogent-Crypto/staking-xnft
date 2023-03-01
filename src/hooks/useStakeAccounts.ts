@@ -3,6 +3,7 @@ import { StakeProgram, Connection, } from "@solana/web3.js";
 import { useState, useEffect } from "react";
 import ReactXnft, { usePublicKey, useConnection, LocalStorage } from "react-xnft";
 import { useValidators } from "./useValidators";
+import { useCustomConnection } from "../hooks/useCustomConnection";
 
 export type StakeAccount = {
     accountAddress: PublicKey;
@@ -29,7 +30,7 @@ export function useStakeAccounts() {
 
     const publicKey = usePublicKey();
     // const connection = useConnection(); 
-    const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/");
+    const connection = useCustomConnection();
     const validators = useValidators();
 
     const [stakeAccounts, setStakeAccounts] = useState<fetchedStakeAccounts | null>(null);

@@ -4,6 +4,7 @@ import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { useState, useEffect } from "react";
 import ReactXnft, { usePublicKey, useConnection, LocalStorage } from "react-xnft";
 import { useStakePools } from "./useStakePools";
+import { useCustomConnection } from './useCustomConnection';
 
 type parsedTokenAccount = {
     isNative: boolean,
@@ -20,7 +21,7 @@ type parsedTokenAccount = {
 
 export function useStakingTokenBalances() { //maps token mint to balance, scale is in SOL decimals e.g. not lamports
     const publicKey = usePublicKey();
-    const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/");
+    const connection = useCustomConnection();
     const stakePools = useStakePools();
     const [balances, setBalances] = useState<Map<string, number> | null>(null);
 
@@ -66,7 +67,7 @@ export async function fetchTokenBalances(publicKey, connection, stakePoolMintAdd
     const cacheKey = "stakepooltokenbalances" + publicKey.toString();
     console.log("connection", connection)
     console.log("connection.getParsedTokenAccountsByOwner", connection.getParsedTokenAccountsByOwner)
-    let connection2 = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/", "processed");
+    let connection2 = useCustomConnection();
     const tokensInWallet = await connection2.getParsedTokenAccountsByOwner(publicKey, {
         programId: TOKEN_PROGRAM_ID
     });

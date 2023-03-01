@@ -3,9 +3,9 @@ import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import React from "react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { useCustomTheme } from "../hooks/useCustomTheme";
+import { useCustomConnection } from "../hooks/useCustomConnection";
 
-const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/");
-
+const connection = useCustomConnection()
 type reward = { value: number, epoch: number }
 type fetchedRewards = Array<reward>;
 

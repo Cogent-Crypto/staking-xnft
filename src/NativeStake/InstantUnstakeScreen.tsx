@@ -22,12 +22,12 @@ import { useValidators } from "../hooks/useValidators";
 import { LAMPORTS_PER_SOL, PublicKey, Transaction, Connection } from "@solana/web3.js";
 import { PrimaryButton, ButtonStatus } from "../components/PrimaryButton";
 import { publicKey } from "@project-serum/anchor/dist/cjs/utils";
-
+import { useCustomConnection } from "../hooks/useCustomConnection";
 export function InstantUnstakeScreen({stakeAccount}:{stakeAccount: StakeAccount}) {
   const validators = useValidators();
   const walletPublicKey = usePublicKey();
   const nav = useNavigation();
-  const connection = new Connection("https://patient-aged-voice.solana-mainnet.quiknode.pro/bbaca28510a593ccd2b18cb59460f7a43a1f6a36/");
+  const connection = useCustomConnection();
   //unstakeFee
   const [unstakeFee, setUnstakeFee] = useState<number>(0);
   //unstakeLamports
