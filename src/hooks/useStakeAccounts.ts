@@ -24,7 +24,7 @@ export type fetchedStakeAccounts = {
     cached: boolean;
 }
 
-export const stakeAccountCacheKey = "stakeaccounts" // + publicKey.toString();
+export const stakeAccountCacheKey = "stakeaccountss" // + publicKey.toString();
 
 export function useStakeAccounts() {
 
@@ -112,7 +112,6 @@ async function fetchStakeAndPopulateAccountsWithValidatorInfo(validators, public
         ]
     });
 
-
     console.log("accounts", accounts);
 
     if (accounts.length === 0) {
@@ -123,9 +122,12 @@ async function fetchStakeAndPopulateAccountsWithValidatorInfo(validators, public
     const epoch_info = await connection.getEpochInfo();
     const current_epoch = epoch_info.epoch;
     console.log("adding validator info to accounts");
-    let accountsWithInfo = accounts.map((account) => {
+    let accountsWithInfo = accounts.filter((account)=>{return account.account.data.parsed.info.stake != null }).map((account) => {
         let stakeAccount = {} as StakeAccount;
-
+        
+        if (!account.account.data.parsed.info.stake) {
+            //TODO: handle this case. For now we are filtering out accounts that don't have a stake field
+        }
         let activationEpoch = account.account.data.parsed.info.stake.delegation.activationEpoch;
         let deactivationEpoch = account.account.data.parsed.info.stake.delegation.deactivationEpoch;
 
