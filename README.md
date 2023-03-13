@@ -8,7 +8,7 @@ WIP
 First, install dependencies.
 
 ```
-yarn
+npm install
 ```
 
 ### Run the dev server
@@ -16,7 +16,7 @@ yarn
 Then, run the dev server with hot reloading
 
 ```
-yarn dev
+npm run dev
 ```
 
 ### Open the Simulator in Backpack
