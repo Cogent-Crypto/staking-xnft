@@ -1,9 +1,10 @@
 import { AccountInfo, LAMPORTS_PER_SOL, ParsedAccountData, PublicKey } from "@solana/web3.js";
 import { StakeProgram, Connection, } from "@solana/web3.js";
 import { useState, useEffect } from "react";
-import ReactXnft, { usePublicKey, useConnection, LocalStorage } from "react-xnft";
+import { usePublicKey } from "../hooks/xnft-hooks";
 import { useValidators } from "./useValidators";
 import { useCustomConnection } from "../hooks/useCustomConnection";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type StakeAccount = {
     accountAddress: PublicKey;
@@ -29,7 +30,7 @@ export const stakeAccountCacheKey = "stakeaccountss" // + publicKey.toString();
 export function useStakeAccounts() {
 
     const publicKey = usePublicKey();
-    // const connection = useConnection(); 
+    // const connection = useConnection();
     const connection = useCustomConnection();
     const validators = useValidators();
 
@@ -40,7 +41,7 @@ export function useStakeAccounts() {
 
             console.log("fetching stake accounts for public key", publicKey.toString());
             const cacheKey = stakeAccountCacheKey + publicKey.toString();
-            LocalStorage.get(cacheKey).then((val) => {
+            AsyncStorage.getItem(cacheKey).then((val) => {
                 let accounts;
                 if (val) {
                     const resp = JSON.parse(val);
@@ -122,9 +123,9 @@ async function fetchStakeAndPopulateAccountsWithValidatorInfo(validators, public
     const epoch_info = await connection.getEpochInfo();
     const current_epoch = epoch_info.epoch;
     console.log("adding validator info to accounts");
-    let accountsWithInfo = accounts.filter((account)=>{return account.account.data.parsed.info.stake != null }).map((account) => {
+    let accountsWithInfo = accounts.filter((account) => { return account.account.data.parsed.info.stake != null }).map((account) => {
         let stakeAccount = {} as StakeAccount;
-        
+
         if (!account.account.data.parsed.info.stake) {
             //TODO: handle this case. For now we are filtering out accounts that don't have a stake field
         }
@@ -137,7 +138,7 @@ async function fetchStakeAndPopulateAccountsWithValidatorInfo(validators, public
         stakeAccount.stakeSol = stakeAccount.stakeLamports / LAMPORTS_PER_SOL
         stakeAccount.activationEpoch = activationEpoch;
         stakeAccount.deactivationEpoch = deactivationEpoch;
-        stakeAccount.excessLamports = stakeAccount.accountLamports-stakeAccount.stakeLamports-stakeAccountRentExempt
+        stakeAccount.excessLamports = stakeAccount.accountLamports - stakeAccount.stakeLamports - stakeAccountRentExempt
 
 
         if (deactivationEpoch < current_epoch) {
@@ -175,7 +176,7 @@ async function fetchStakeAndPopulateAccountsWithValidatorInfo(validators, public
     });
 
     const cacheKey = stakeAccountCacheKey + publicKey.toString();
-    LocalStorage.set(cacheKey, JSON.stringify({
+    AsyncStorage.setItem(cacheKey, JSON.stringify({
         ts: Date.now(),
         value: accountsWithInfo,
     })

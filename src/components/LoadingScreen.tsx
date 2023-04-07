@@ -1,10 +1,11 @@
 import {
     View,
-    Loading,
-} from "react-xnft";
+} from "react-native";
+
+import tw from "twrnc";
 
 export const LoadingScreen = () => (
-    <View key="loading" tw="flex items-center justify-center h-screen align-top -top-10">
-        <Loading tw="h-35 "></Loading>
+    <View key="loading" style={tw`flex items-center justify-center h-screen align-top -top-10`}>
+        Loading
     </View>
 )

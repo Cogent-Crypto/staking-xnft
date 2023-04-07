@@ -1,26 +1,27 @@
 import { useState, useEffect } from "react";
-import ReactXnft, {  usePublicKey, useConnection, LocalStorage } from "react-xnft";
-import {Connection } from "@solana/web3.js";
+import { usePublicKey, useSolanaConnection as useConnection } from "../hooks/xnft-hooks";
 
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export function useSolBalance() { //lamports
     const publicKey = usePublicKey();
     const connection = useConnection();
-   
+
     const [balance, setBalance] = useState(0);
 
     useEffect(() => {
         if (publicKey) {
 
             const cacheKey = "solbalance" + publicKey.toString();
-            const val = LocalStorage.get(cacheKey).then((val) => {
+            const val = AsyncStorage.getItem(cacheKey).then((val) => {
                 let balance: number;
                 if (val) {
                     const resp = JSON.parse(val);
                     if (
-                    Object.keys(resp.value).length > 0 &&
-                    Date.now() - resp.ts < 1000 * 60 * 60  // 1 hour
+                        Object.keys(resp.value).length > 0 &&
+                        Date.now() - resp.ts < 1000 * 60 * 60  // 1 hour
                     ) {
                         balance = resp.value;
                         setBalance(balance);
@@ -40,11 +41,11 @@ export function useSolBalance() { //lamports
 }
 
 
-async function fetchSolBalance(publicKey, connection) { 
+async function fetchSolBalance(publicKey, connection) {
     const cacheKey = "solbalance" + publicKey.toString();
     const solBalance = await connection.getBalance(publicKey)
     console.log("sol balances", solBalance);
-    LocalStorage.set(cacheKey, JSON.stringify({value: solBalance, ts: Date.now()}));
-    
+    AsyncStorage.setItem(cacheKey, JSON.stringify({ value: solBalance, ts: Date.now() }));
+
     return solBalance;
 }

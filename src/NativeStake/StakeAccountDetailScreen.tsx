@@ -1,5 +1,9 @@
 
-import { View, Text, List, Button, useNavigation, Image, useConnection, usePublicKey, LocalStorage } from "react-xnft";
+import { View, FlatList as List, Button, Image } from "react-native";
+import { usePublicKey, useSolanaConnection as useConnection, } from "../hooks/xnft-hooks";
+import { useNavigation } from '@react-navigation/native';
+
+
 import type { Connection, PublicKey } from "@solana/web3.js";
 import { StakeProgram, Transaction } from "@solana/web3.js";
 import type { StakeAccount } from "../hooks/useStakeAccounts";
@@ -8,7 +12,9 @@ import { StakeAccountDetail } from "../components/StakeAccountDetail";
 import type { Validator } from "../hooks/useValidators";
 import React from "react";
 import { useState } from "react";
+import tw from "twrnc";
 import { useEpochInfo } from "../hooks/useEpochInfo";
+
 import { useCustomTheme } from "../hooks/useCustomTheme";
 
 export function StakeAccountDetailScreen({ stakeAccount, validator, mergableStakeAccounts }: { stakeAccount: StakeAccount, validator: Validator, mergableStakeAccounts: StakeAccount[] }) {
@@ -20,16 +26,18 @@ export function StakeAccountDetailScreen({ stakeAccount, validator, mergableStak
     const connection = useConnection();
     const epochInfo = useEpochInfo();
 
+    console.log(publicKey)
+
     const ListChildren = () => {
         let buttons: any[] = [];
-        const claimMevButton = <Button tw="w-full text-left" key={"claimMev"} onClick={() => claimMev(stakeAccount, publicKey, connection, nav)}>Claim Mev</Button>
-        const unstakeButton = <Button tw="w-full text-left" key={"instantunstake"} onClick={() => { nav.push("instantunstake", { stakeAccount }) }}>Instant Unstake</Button>
-        const deactivateUnstakeButton = <Button tw="w-full text-left" key={"deactivateunstake"} onClick={() => { deactivateStake(stakeAccount, publicKey, connection, nav) }}>Unstake (Availble to withdraw in {epochInfo?.remaining_dhm})</Button>
-        const withdrawButton = <Button tw="w-full text-left" key={"withdraw"} onClick={() => withdrawStake(stakeAccount, publicKey, connection, nav)}>Withdraw</Button>
-        const redelegateButton = <Button tw="w-full text-left" key={"inactive"} onClick={() => { nav.push("selectvalidator", { onSelectScreen: "redelegate", data: stakeAccount }) }}>Redelegate</Button>
-        const sendButton = <Button tw="w-full text-left" key={"send"} onClick={() => { nav.push("send", { stakeAccount, validator }) }}>Send</Button>
-        const mergeButton = <Button tw="w-full text-left" onClick={() => { console.log("merge"); nav.push("merge", { stakeAccount, validator, mergableStakeAccounts }) }}>Merge</Button>
-        const splitButton = <Button tw="w-full text-left" key="active" onClick={() => { nav.push("split", { stakeAccount, validator }) }}>Split</Button>
+        const claimMevButton = <Button key={"claimMev"} onPress={() => claimMev(stakeAccount, publicKey, connection, nav)} title="Claim Mev" />
+        const unstakeButton = <Button key={"instantunstake"} onPress={() => { nav.push("instantunstake", { stakeAccount }) }} title="Instant Unstake" />
+        const deactivateUnstakeButton = <Button key={"deactivateunstake"} onPress={() => { deactivateStake(stakeAccount, publicKey, connection, nav) }} title={`Unstake (Availble to withdraw in ${epochInfo?.remaining_dhm})`} />
+        const withdrawButton = <Button key={"withdraw"} onPress={() => withdrawStake(stakeAccount, publicKey, connection, nav)} title={"Withdraw"} />
+        const redelegateButton = <Button key={"inactive"} onPress={() => { nav.push("selectvalidator", { onSelectScreen: "redelegate", data: stakeAccount }) }} title={"Redelegate"} />
+        const sendButton = <Button key={"send"} onPress={() => { nav.push("send", { stakeAccount, validator }) }} title={"Send"} />
+        const mergeButton = <Button onPress={() => { console.log("merge"); nav.push("merge", { stakeAccount, validator, mergableStakeAccounts }) }} title={"Merge"} />
+        const splitButton = <Button key="active" onPress={() => { nav.push("split", { stakeAccount, validator }) }} title={"Split"} />
 
         if (stakeAccount.excessLamports > 0) {
             buttons.push(claimMevButton)
@@ -66,7 +74,7 @@ export function StakeAccountDetailScreen({ stakeAccount, validator, mergableStak
                 <StakeAccountDetail stakeAccount={stakeAccount} validator={validator} />
 
                 <View style={{ overflow: "hidden", position: "fixed", bottom: 0, width: "100%", display: "flex", flexDirection: "column" }}>
-                    <Button onClick={() => setExpanded(!expanded)} style={{ width: "100%", borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }} tw="py-3">Stake Account Actions</Button>
+                    <Button onPress={() => setExpanded(!expanded)} style={{ width: "100%", borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }} style={tw`py-3`} title={"Stake Account Actions"} />
                     <View style={{ maxHeight: expanded ? "400px" : "0", transition: "max-height 0.5s linear" }}>
                         <List style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0, backgroundColor: THEME.colors?.bg2 }}>
                             {ListChildren()}
@@ -148,7 +156,7 @@ async function withdrawStake(stakeAccount: StakeAccount, publicKey: PublicKey, c
     }
 
     // const newStakeAccounts = stakeAccounts.filter((account: StakeAccount) => account.accountAddress.toString() !== stakeAccount.accountAddress.toString());
-    // await LocalStorage.set(stakeAccountCacheKey+publicKey.toString(), newStakeAccounts);
+    // await AsyncStorage.setItem(stakeAccountCacheKey + publicKey.toString(), newStakeAccounts);
     nav.pop()
     nav.push("overview", { expectingStakeAccountsToUpdate: true })
 }

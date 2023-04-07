@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
-import ReactXnft, { LocalStorage } from "react-xnft";
 
-ReactXnft.events.on("connect", () => {
-  fetchValidators();
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+window.addEventListener("load", () => {
+  window.xnft.on("connect", () => {
+    fetchValidators();
+  });
 });
 
 export type Validator = {
@@ -73,9 +76,9 @@ export function useValidators() {
   const [validators, setValidators] = useState<{ [key: string]: Validator } | null>(null);
 
   useEffect(() => {
-    console.log("fetching validators 1");
     fetchValidators().then((validators) => {
       console.log("fetched validators");
+
       setValidators(validators);
     })
   }, []);
@@ -88,7 +91,7 @@ export function useValidators() {
 async function fetchValidators() {
   const cacheKey = "validatorsWithMEVinfo2"
   console.log("fetching validators 2");
-  const val = await LocalStorage.get(cacheKey);
+  const val = await AsyncStorage.getItem(cacheKey);
 
   console.log("fetching validators 3");
   if (val) {
@@ -101,9 +104,9 @@ async function fetchValidators() {
       return await resp.value;
     }
   }
-  console.log("val",val)
+  console.log("val", val)
   console.log("fetching jito validators ");
-  
+
   const jito_validators = await fetchJitoValidators()
   console.log("fetched jito validators");
   console.log("fetching validator info from stakewiz")
@@ -121,7 +124,7 @@ async function fetchValidators() {
   };
   console.log("formmatted validator list")
   console.log("modifying validator list")
-  let validators = validator_list.map((validator) => { return { ...validator, commission_rugger: rugging_validators.has(validator.vote_identity), mev_commission: jito_validators[validator.vote_identity] ? jito_validators[validator.vote_identity].mev_commission_bps/100:null  } })
+  let validators = validator_list.map((validator) => { return { ...validator, commission_rugger: rugging_validators.has(validator.vote_identity), mev_commission: jito_validators[validator.vote_identity] ? jito_validators[validator.vote_identity].mev_commission_bps / 100 : null } })
   validators = convertArrayToObject(validators, "vote_identity");
   console.log("modified validator list")
   console.log("making validator string")
@@ -131,19 +134,20 @@ async function fetchValidators() {
   })
   console.log("made validator string 2")
   console.log("saving validator list to local storage")
-  await LocalStorage.set(cacheKey,stored_value)
+  await AsyncStorage.setItem(cacheKey, stored_value)
   console.log("saved validator list to local storage")
+
   return validators;
 }
 
 type JitoValidatorRes = {
   "validators":
-    {
-      "vote_account": string,
-      "mev_commission_bps": number
-      "running_jito": boolean
-    }[]
-  }
+  {
+    "vote_account": string,
+    "mev_commission_bps": number
+    "running_jito": boolean
+  }[]
+}
 
 async function fetchJitoValidators() {
 

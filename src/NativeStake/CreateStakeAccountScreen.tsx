@@ -1,11 +1,15 @@
 
-import { View, Text, Button, TextField, usePublicKey, useConnection, useNavigation } from "react-xnft";
+import { View, Text, TextInput } from "react-native";
+import { usePublicKey, useSolanaConnection as useConnection } from "../hooks/xnft-hooks";
+import { useNavigation } from '@react-navigation/native';
+
 import type { Validator } from "../hooks/useValidators";
 import React from "react";
 import { useSolBalance } from '../hooks/useSolBalance';
 import { PublicKey, Authorized, LAMPORTS_PER_SOL, Keypair, StakeProgram, Lockup } from "@solana/web3.js";
 import { ValidatorInfo } from "../components/ValidatorInfo";
 import { PrimaryButton, ButtonStatus } from "../components/PrimaryButton";
+import tw from "twrnc";
 
 export function CreateStakeAccountScreen({ validator }: { validator: Validator }) {
 
@@ -20,26 +24,26 @@ export function CreateStakeAccountScreen({ validator }: { validator: Validator }
         let input = e.target.value.replace(/[^0-9.]/g, '').replace(/^0+/, '');
         //remove all . except the first one
         input = input.replace(/\./g, (c, i, text) => text.indexOf(c) === i ? c : '')
-        input = input.slice(0,10)
-  
-        
+        input = input.slice(0, 10)
+
+
         if (input == "") {
             setStakeAmountDisplay("0");
-          setStakeAmount(0);
-          return
+            setStakeAmount(0);
+            return
         }
-  
+
         setStakeAmountDisplay(input);
         const buildingSmallNumberRegex = /^0\.0*$/
         if (buildingSmallNumberRegex.test(input)) {
             setStakeAmount(0);
-          return
+            return
         }
         let stakeAmount = parseFloat(input);
         if (isNaN(stakeAmount)) {
             setStakeAmount(0);
             setStakeAmountDisplay("0");
-          return
+            return
         }
         setStakeAmount(stakeAmount)
         setStakeAmountDisplay(input)
@@ -108,17 +112,17 @@ export function CreateStakeAccountScreen({ validator }: { validator: Validator }
 
     return (
 
-        <View tw="h-full flex flex-col">
+        <View style={tw`h-full flex flex-col`}>
             <ValidatorInfo {...validator} />
             <View style={{ flex: 1, paddingTop: "20px", margin: '0px 12px' }}>
-                <TextField
+                <TextInput
                     onChange={onSolInputChange}
                     style={{ width: "100%" }}
                     value={stakeAmountDisplay}
-                ></TextField>
+                ></TextInput>
                 <Text>{(solbalance / LAMPORTS_PER_SOL).toFixed(2)} Sol in wallet</Text>
             </View>
-            <PrimaryButton status={buttonStatus} disabled={buttonDisabled} text={buttonText} onClick={onStake} />
+            <PrimaryButton status={buttonStatus} disabled={buttonDisabled} text={buttonText} onPress={onStake} />
 
         </View>
 
@@ -126,7 +130,7 @@ export function CreateStakeAccountScreen({ validator }: { validator: Validator }
         //     <TextField onChange={onSolInputChange} value={stakeAmount}></TextField>
         //     <Text>{(solbalance/LAMPORTS_PER_SOL).toFixed(2)} Sol in wallet</Text>
         //     <Text>{validator.name}</Text>
-        //     <Button onClick={onStake}>Stake</Button>
+        //     <Button onPress={onStake}>Stake</Button>
         // </View>
 
 

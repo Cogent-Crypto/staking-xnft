@@ -1,11 +1,11 @@
-import {useState, useEffect} from 'react';
-import ReactXnft, {LocalStorage, useConnection, usePublicKey} from "react-xnft";
+import { useState, useEffect } from 'react';
+import { usePublicKey, useSolanaConnection as useConnection, } from "../hooks/xnft-hooks";
 import { PublicKey } from "@solana/web3.js";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import type { Connection } from "@solana/web3.js";
-import { Axios } from "axios";
 import { programs } from "@metaplex/js";
-import { publicKey } from '@project-serum/anchor/dist/cjs/utils';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const {
   metadata: { Metadata },
@@ -16,19 +16,19 @@ export type NFT = {
   first_verified_creator: string;
 };
 
-export function useNFTCreators() { 
+export function useNFTCreators() {
   const connection = useConnection();
   const publicKey = usePublicKey();
   const [nftCreators, setNFTCreators] = useState<Set<string> | null>(null);
   useEffect(() => {
     console.log("fetching nft creators");
     fetchCreators(connection, publicKey).then((creators) => {
-        console.log("fetched validators");
-        setNFTCreators(creators);
-      })
+      console.log("fetched validators");
+      setNFTCreators(creators);
+    })
   }, [publicKey]);
 
-  return nftCreators; 
+  return nftCreators;
 }
 
 //consider storing all mints to avoid extra lookups
@@ -38,12 +38,12 @@ export let fetchCreators = async (
 ): Promise<Set<string>> => {
 
   const cacheKey = "creatorsheld" + publicKey.toString()
-  const val = await LocalStorage.get(cacheKey);
+  const val = await AsyncStorage.get(cacheKey);
   if (val) {
     const resp = JSON.parse(val);
     if (
       Object.keys(resp.value).length > 0 &&
-      Date.now() - resp.ts < 1000 * 60* 60 // 1 hour
+      Date.now() - resp.ts < 1000 * 60 * 60 // 1 hour
     ) {
       return new Set(await resp.value);
     }
@@ -93,10 +93,10 @@ export let fetchCreators = async (
   let creators = new Set(await Promise.all(promises).then((tokens) => {
     return tokens.filter((t) => t != undefined);
   }));
-  LocalStorage.set(cacheKey,JSON.stringify({
+  AsyncStorage.setItem(cacheKey, JSON.stringify({
     ts: Date.now(),
     value: creators,
   })
-);
+  );
   return creators
 };

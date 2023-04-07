@@ -2,11 +2,11 @@ import {
   View,
   Text,
   Button,
-  TextField,
-  usePublicKey,
-  useConnection,
-  useNavigation,
-} from "react-xnft";
+  TextInput,
+} from "react-native";
+import { useNavigation } from '@react-navigation/native';
+
+import { usePublicKey, useSolanaConnection as useConnection } from "../hooks/xnft-hooks";
 import React, { useState, useEffect } from "react";
 import { PublicKey, SystemProgram, Transaction, StakeProgram, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { StakeAccount } from "../hooks/useStakeAccounts";
@@ -14,6 +14,7 @@ import { PrimaryButton, ButtonStatus } from "../components/PrimaryButton";
 import type { Validator } from "../hooks/useValidators";
 import { ValidatorInfo } from "../components/ValidatorInfo";
 import { StakeAccountDetail } from "../components/StakeAccountDetail";
+import tw from "twrnc";
 import { prettifyAddress } from "../utils";
 
 export function SendStakeAccountScreen({ stakeAccount, validator }: { stakeAccount: StakeAccount, validator: Validator }) {
@@ -124,22 +125,21 @@ export function SendStakeAccountScreen({ stakeAccount, validator }: { stakeAccou
     buttonText = "Send (Destination is a New Account)";
   }
 
-
   return (
     <View style={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <View style={{ flex: 1, margin: '0px 12px' }}>
         <StakeAccountDetail stakeAccount={stakeAccount} validator={validator} />
-        <TextField
+        <TextInput
           onChange={onAddressChange}
           value={destinationAddress}
           style={{ width: "100%" }}
-          tw="mt-2"
-        ></TextField>
-        <Text style={{ fontSize: "10px" }} tw="mt-2">
+          style={tw`mt-2`}
+        ></TextInput>
+        <Text style={{ fontSize: "10px" }} style={tw`mt-2`}>
           Sending a stake account permanently transfers the withdraw and delegation authority to the desination address
         </Text>
       </View>
-      <PrimaryButton key={buttonStatus} status={buttonStatus} disabled={!accountValidated} onClick={onSend} text={buttonText} />
+      <PrimaryButton key={buttonStatus} status={buttonStatus} disabled={!accountValidated} onPress={onSend} text={buttonText} />
       {/* {showInvalidKeyToast ? <Toast  message="Invalid Solana Address" status={ToastType.warn} />:""} */}
     </View>
   );

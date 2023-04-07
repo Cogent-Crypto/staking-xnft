@@ -1,12 +1,14 @@
 import React from "react";
-import ReactXnft, { View } from "react-xnft";
+import { View } from "react-native";
+// import Reacft, { View } from "react-native";
+
 import { StakeAccountsScreen } from "./NativeStake";
 //
 // On connection to the host environment, warm the cache.
 //
-ReactXnft.events.on("connect", () => {
-  // no-op
-});
+// ReactXnft.events.on("connect", () => {
+//   // no-op
+// });
 
 
 
