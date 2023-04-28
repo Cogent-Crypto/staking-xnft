@@ -1,10 +1,11 @@
-import { AccountInfo, LAMPORTS_PER_SOL, ParsedAccountData, PublicKey } from "@solana/web3.js";
+import { AccountInfo, Keypair, LAMPORTS_PER_SOL, ParsedAccountData, PublicKey } from "@solana/web3.js";
 import { StakeProgram, Connection, } from "@solana/web3.js";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { useState, useEffect } from "react";
-import ReactXnft, { usePublicKey, useConnection, LocalStorage } from "react-xnft";
 import { useStakePools } from "./useStakePools";
 import { useCustomConnection } from './useCustomConnection';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type parsedTokenAccount = {
     isNative: boolean,
@@ -20,50 +21,52 @@ type parsedTokenAccount = {
 }
 
 export function useStakingTokenBalances() { //maps token mint to balance, scale is in SOL decimals e.g. not lamports
-    const publicKey = usePublicKey();
+    const publicKey = new Keypair().publicKey
+
+    // const publicKey = usePublicKey();
     const connection = useCustomConnection();
     const stakePools = useStakePools();
     const [balances, setBalances] = useState<Map<string, number> | null>(null);
 
     useEffect(() => {
         if (publicKey && connection && stakePools) {
-            let  sorted_map_entries: Array<[string, number]>;
+            let sorted_map_entries: Array<[string, number]>;
             const cacheKey = "stakepooltokenbalances" + publicKey.toString();
-            LocalStorage.get(cacheKey).then((val) => {
+            AsyncStorage.getItem(cacheKey).then((val) => {
                 if (val) {
                     const resp = JSON.parse(val);
-                    if ( 
+                    if (
                         Object.keys(resp.value).length > 0 &&
                         Date.now() - resp.ts < 1000 * 60 * 60  // 1 hour
                     ) {
                         console.log("loading cached stakepool balances")
-                        sorted_map_entries = resp.value.sort((a, b) => {return (a[0] < b[0]) ? -1 : (a[0] > b[0]) ? 1 : 0;});                        
+                        sorted_map_entries = resp.value.sort((a, b) => { return (a[0] < b[0]) ? -1 : (a[0] > b[0]) ? 1 : 0; });
                     }
-                } 
+                }
                 console.log("about to fetch token  balances from: ", stakePools)
                 let mints = new Set(stakePools.map((value) => value.tokenMint.toString()))
                 fetchTokenBalances(publicKey, connection, mints).then((newBalances) => {
-                    let new_sorted_map_entries = Array.from(newBalances.entries()).sort((a, b) => {return (a[0] < b[0]) ? -1 : (a[0] > b[0]) ? 1 : 0;});
+                    let new_sorted_map_entries = Array.from(newBalances.entries()).sort((a, b) => { return (a[0] < b[0]) ? -1 : (a[0] > b[0]) ? 1 : 0; });
                     console.log("new_sorted_map_entries", new_sorted_map_entries)
                     console.log("sorted_map_entries", sorted_map_entries)
                     if (JSON.stringify(sorted_map_entries) != JSON.stringify(new_sorted_map_entries) || !balances) {
                         console.log("setting new balances")
-                        setBalances(newBalances); 
+                        setBalances(newBalances);
                     }
-                    
-                }) 
+
+                })
             }).catch((err) => {
-                
+
                 console.error("failed to proccess stakepool balances", err, stakePools)
             })
         }
-    }, [publicKey,stakePools]);
+    }, [publicKey, stakePools]);
     console.log("returning balances", balances)
     return balances;
 }
 
 
-export async function fetchTokenBalances(publicKey, connection, stakePoolMintAddresses) { 
+export async function fetchTokenBalances(publicKey, connection, stakePoolMintAddresses) {
     const cacheKey = "stakepooltokenbalances" + publicKey.toString();
     console.log("connection", connection)
     console.log("connection.getParsedTokenAccountsByOwner", connection.getParsedTokenAccountsByOwner)
@@ -72,8 +75,8 @@ export async function fetchTokenBalances(publicKey, connection, stakePoolMintAdd
         programId: TOKEN_PROGRAM_ID
     });
     console.log("stakePoolMintAddress", stakePoolMintAddresses)
-   
-    let parsedStakePoolTokens = tokensInWallet.value.map((token)=>{ return token.account.data.parsed.info}).filter((token: parsedTokenAccount) => { return stakePoolMintAddresses.has(token.mint)})
+
+    let parsedStakePoolTokens = tokensInWallet.value.map((token) => { return token.account.data.parsed.info }).filter((token: parsedTokenAccount) => { return stakePoolMintAddresses.has(token.mint) })
 
     const stakePoolTokenBalanceMap = new Map<string, number>(parsedStakePoolTokens.map(
         (token: parsedTokenAccount) => {
@@ -84,6 +87,7 @@ export async function fetchTokenBalances(publicKey, connection, stakePoolMintAdd
 
 
     console.log("stakepool balances", stakePoolTokenBalanceMap);
-    LocalStorage.set(cacheKey, JSON.stringify({value: Array.from(stakePoolTokenBalanceMap.entries()), ts: Date.now()}));
+    AsyncStorage.setItem(cacheKey, JSON.stringify({ value: Array.from(stakePoolTokenBalanceMap.entries()), ts: Date.now() }));
+
     return new Map<string, number>(stakePoolTokenBalanceMap);
 }

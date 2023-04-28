@@ -1,9 +1,11 @@
 import React from "react";
-import { View, Text, Image, useNavigation } from "react-xnft";
+import { View, Text, Image } from "react-native";
 import { useCustomTheme } from "../hooks/useCustomTheme";
 import { useStakePools, StakePool } from "../hooks/useStakePools"
 import { useStakingTokenBalances } from '../hooks/useStakingTokenBalances';
 import { LoadingScreen } from "../components/LoadingScreen";
+import { useNavigation } from '@react-navigation/native';
+
 import { stakePoolInfo } from '@solana/spl-stake-pool';
 
 export const LiquidStakeAccountsScreen = () => {
@@ -11,7 +13,7 @@ export const LiquidStakeAccountsScreen = () => {
     const nav = useNavigation();
     const stakePools = useStakePools();
     const tokenBalances = useStakingTokenBalances();
-    
+
     if (!tokenBalances) {
         return <LoadingScreen />
     }
@@ -20,10 +22,10 @@ export const LiquidStakeAccountsScreen = () => {
     }
     return (
         <View tw={`grid grid-cols-2`}>
-            {stakePools.sort((a,b) => {
-                if (tokenBalances[a.poolPublicKey.toString()] > tokenBalances[b.poolPublicKey.toString()] ){
+            {stakePools.sort((a, b) => {
+                if (tokenBalances[a.poolPublicKey.toString()] > tokenBalances[b.poolPublicKey.toString()]) {
                     return 1;
-                } else if (tokenBalances[a.poolPublicKey.toString()] < tokenBalances[b.poolPublicKey.toString()] ){
+                } else if (tokenBalances[a.poolPublicKey.toString()] < tokenBalances[b.poolPublicKey.toString()]) {
                     return -1;
                 } else {
                     return 0;
@@ -33,7 +35,7 @@ export const LiquidStakeAccountsScreen = () => {
                     <View
                         style={{ padding: "4px", paddingTop: "3px", paddingBottom: "3px", minHeight: "100px" }}
                         key={pool.tokenMint}
-                        onClick={() => nav.push("liquidstakedetail", { stakePool: pool })}
+                        onPress={() => nav.push("liquidstakedetail", { stakePool: pool })}
                     >
                         <View
                             tw={`flex flex-col`}
@@ -60,7 +62,7 @@ export const LiquidStakeAccountsScreen = () => {
                             </View>
                             <View style={{ paddingLeft: "4px", paddingTop: "3px", marginTop: "auto" }}>
                                 <Text tw={`font-light opacity-75`}>
-                                    {Math.round(pool.apy * 100)/100}% APY
+                                    {Math.round(pool.apy * 100) / 100}% APY
                                 </Text>
                             </View>
                             <View style={{ paddingLeft: "4px", paddingTop: "3px", marginTop: "auto" }}>

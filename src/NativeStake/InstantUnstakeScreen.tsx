@@ -3,18 +3,21 @@ import {
   Button,
   View,
   Text,
-  usePublicKey,
-  useConnection,
-  useNavigation,
-} from "react-xnft";
-import {
-  IDL_JSON as UNSTAKE_IDL_JSON,
-  findProtocolFeeAccount,
-  previewUnstake,
-  unstakeTx,
-  deactivateStakeAccountTx,
-} from "@unstake-it/sol";
-import type { Unstake } from "@unstake-it/sol";
+} from "react-native";
+
+import { useNavigation } from '@react-navigation/native';
+
+import { usePublicKey } from "../hooks/xnft-hooks";
+import tw from "twrnc";
+
+// import {
+//   IDL_JSON as UNSTAKE_IDL_JSON,
+//   findProtocolFeeAccount,
+//   previewUnstake,
+//   unstakeTx,
+//   deactivateStakeAccountTx,
+// } from "@unstake-it/sol";
+// import type { Unstake } from "@unstake-it/sol";
 import { Program, AnchorProvider, Wallet } from "@project-serum/anchor";
 import type { StakeAccount } from "../hooks/useStakeAccounts";
 import { StakeAccountDetail } from "../components/StakeAccountDetail";
@@ -23,7 +26,7 @@ import { LAMPORTS_PER_SOL, PublicKey, Transaction, Connection } from "@solana/we
 import { PrimaryButton, ButtonStatus } from "../components/PrimaryButton";
 import { publicKey } from "@project-serum/anchor/dist/cjs/utils";
 import { useCustomConnection } from "../hooks/useCustomConnection";
-export function InstantUnstakeScreen({stakeAccount}:{stakeAccount: StakeAccount}) {
+export function InstantUnstakeScreen({ stakeAccount }: { stakeAccount: StakeAccount }) {
   const validators = useValidators();
   const walletPublicKey = usePublicKey();
   const nav = useNavigation();
@@ -40,10 +43,10 @@ export function InstantUnstakeScreen({stakeAccount}:{stakeAccount: StakeAccount}
     UNSTAKE_IDL_JSON as Unstake,
     PROG_ID,
     /* @ts-ignore */
-    new AnchorProvider(connection, {publicKey:walletPublicKey, signTransaction:()=>{return true}}, {})
+    new AnchorProvider(connection, { publicKey: walletPublicKey, signTransaction: () => { return true } }, {})
   );
 
-  
+
   console.log("here 2")
   const PROTOCOL_FEE_ADDRESS = new PublicKey(
     "2hN9UhvRFVfPYKL6rZJ5YiLEPCLTpN755pgwDJHWgFbU"
@@ -61,7 +64,7 @@ export function InstantUnstakeScreen({stakeAccount}:{stakeAccount: StakeAccount}
 
   let availableLiquidityLamports: number = 0;
   let unStakeLamportsWithRent: number;
-  
+
 
   console.log("here 6")
 
@@ -90,77 +93,77 @@ export function InstantUnstakeScreen({stakeAccount}:{stakeAccount: StakeAccount}
     };
 
     fetchData();
-    return () => {setUnstakeLamports(0), setUnstakeFee(0)};
+    return () => { setUnstakeLamports(0), setUnstakeFee(0) };
   }, []);
 
   const instantUnstake = async () => {
     console.log("instant unstake")
-        const fetchedProtoclFeeData = await UNSTAKE_PROGRAM.account.protocolFee.fetch(PROTOCOL_FEE_ADDRESS);
-        const protocolFee = {
-            publicKey: PROTOCOL_FEE_ADDRESS,
-            account: fetchedProtoclFeeData,
-        };
+    const fetchedProtoclFeeData = await UNSTAKE_PROGRAM.account.protocolFee.fetch(PROTOCOL_FEE_ADDRESS);
+    const protocolFee = {
+      publicKey: PROTOCOL_FEE_ADDRESS,
+      account: fetchedProtoclFeeData,
+    };
 
-        const recentBlockhash = await connection.getLatestBlockhash();
-        const transaction = new Transaction({
-            feePayer: walletPublicKey,
-            blockhash: recentBlockhash.blockhash,
-            lastValidBlockHeight: recentBlockhash.lastValidBlockHeight
-        });
-        const tx = await unstakeTx(UNSTAKE_PROGRAM, {
-            stakeAccount: stakeAccount.accountAddress,
-            poolAccount: UNSTAKE_POOL_ADDRESS,
-            unstaker: walletPublicKey,
-            protocolFee: protocolFee,
-            referrer: "GxHamnPVxsBaWdbUSjR4C5izhMv2snriGyYtjCkAVzze",
-        });
-        transaction.add(tx);
+    const recentBlockhash = await connection.getLatestBlockhash();
+    const transaction = new Transaction({
+      feePayer: walletPublicKey,
+      blockhash: recentBlockhash.blockhash,
+      lastValidBlockHeight: recentBlockhash.lastValidBlockHeight
+    });
+    const tx = await unstakeTx(UNSTAKE_PROGRAM, {
+      stakeAccount: stakeAccount.accountAddress,
+      poolAccount: UNSTAKE_POOL_ADDRESS,
+      unstaker: walletPublicKey,
+      protocolFee: protocolFee,
+      referrer: "GxHamnPVxsBaWdbUSjR4C5izhMv2snriGyYtjCkAVzze",
+    });
+    transaction.add(tx);
 
-        // crank stake acccount deactivation
-        if (stakeAccount.status === "active" || stakeAccount.status === "activating") {
-            transaction.add(
-                await deactivateStakeAccountTx(UNSTAKE_PROGRAM, {
-                    stakeAccount: stakeAccount.accountAddress,
-                    poolAccount: UNSTAKE_POOL_ADDRESS,
-                })
-            );
-        }
+    // crank stake acccount deactivation
+    if (stakeAccount.status === "active" || stakeAccount.status === "activating") {
+      transaction.add(
+        await deactivateStakeAccountTx(UNSTAKE_PROGRAM, {
+          stakeAccount: stakeAccount.accountAddress,
+          poolAccount: UNSTAKE_POOL_ADDRESS,
+        })
+      );
+    }
 
-        try {
-          await window.xnft.solana.sendAndConfirm(transaction,);
-      } catch (error) {
-          console.log("error",error);
-          return
-      }   
-      nav.pop()
-      nav.pop()
-      nav.push("overview",{expectingStakeAccountsToUpdate: true})
+    try {
+      await window.xnft.solana.sendAndConfirm(transaction,);
+    } catch (error) {
+      console.log("error", error);
+      return
+    }
+    nav.pop()
+    nav.pop()
+    nav.push("overview", { expectingStakeAccountsToUpdate: true })
   };
 
   if (validators == null) {
     return <View>"Error Loading Validators"</View>;
   }
-  console.log("stakeaccount",stakeAccount)
+  console.log("stakeaccount", stakeAccount)
   const validator = validators[stakeAccount.validatorAddress.toString()];
   let buttonText = "Instant Unstake"
-  if(unstakeFee != 0) {
-    buttonText += ` (Recieve ${(unstakeLamports/LAMPORTS_PER_SOL).toFixed(4)} SOL) `
+  if (unstakeFee != 0) {
+    buttonText += ` (Recieve ${(unstakeLamports / LAMPORTS_PER_SOL).toFixed(4)} SOL) `
   }
 
-  
+
 
   return (
     <View style={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <View style={{ flex: 1, margin: '0px 12px' }}>
         <StakeAccountDetail stakeAccount={stakeAccount} validator={validator} />
-        <Text tw="px-4">Instant Unstake Fee: {(unstakeFee/LAMPORTS_PER_SOL).toFixed(4)} SOL ({(unstakeFee/unstakeLamports*100).toFixed(2)}%)</Text>
+        <Text style={tw`px-4`}>Instant Unstake Fee: {(unstakeFee / LAMPORTS_PER_SOL).toFixed(4)} SOL ({(unstakeFee / unstakeLamports * 100).toFixed(2)}%)</Text>
       </View>
-        <PrimaryButton
-          status={ButtonStatus.Ok}
-          disabled={false}
-          text={buttonText}
-          onClick={instantUnstake}
-        />
+      <PrimaryButton
+        status={ButtonStatus.Ok}
+        disabled={false}
+        text={buttonText}
+        onPress={instantUnstake}
+      />
     </View>
   );
 }

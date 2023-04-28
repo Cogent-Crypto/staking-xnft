@@ -1,4 +1,4 @@
-import { View, Button } from "react-xnft";
+import { View, Button } from "react-native";
 import React from "react";
 import { useCustomTheme } from "../hooks/useCustomTheme";
 
@@ -7,10 +7,10 @@ export enum ButtonStatus {
     Error = "error",
     Warn = "warn",
 }
-export function PrimaryButton({ status, disabled, onClick, text }: { status: ButtonStatus, disabled: Boolean, onClick: CallableFunction, text: String }) {
+export function PrimaryButton({ status, disabled, onPress, text }: { status: ButtonStatus, disabled: Boolean, onPress: CallableFunction, text: String }) {
 
     const THEME = useCustomTheme();
-    
+
     const buttonStyle = {
         width: "100%",
         height: "48px",
@@ -50,7 +50,7 @@ export function PrimaryButton({ status, disabled, onClick, text }: { status: But
             <Button
                 key={disabled}
                 style={buttonStyle}
-                onClick={onClick}
+                onPress={onPress}
                 disabled={disabled}
             >
                 {text}

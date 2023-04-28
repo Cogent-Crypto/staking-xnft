@@ -1,15 +1,14 @@
 import React from "react";
 import {
-  useNavigation,
   View,
   Text,
-  Loading,
   Image,
-  Button,
-  useConnection,
-  usePublicKey
+  Button
+} from "react-native";
 
-} from "react-xnft";
+import { useNavigation } from '@react-navigation/native';
+
+import { usePublicKey, useSolanaConnection as useConnection } from "../hooks/xnft-hooks";
 import { useStakeAccounts } from "../hooks/useStakeAccounts";
 import { useCustomTheme, statusColor } from "../hooks/useCustomTheme";
 import type { StakeAccount } from "../hooks/useStakeAccounts";
@@ -20,6 +19,7 @@ import { useEpochInfo } from "../hooks/useEpochInfo";
 import { LAMPORTS_PER_SOL, Transaction, SystemProgram, StakeProgram } from '@solana/web3.js';
 import { AlertIcon } from "../components/Icons";
 import { useStakingTokenBalances } from "../hooks/useStakingTokenBalances";
+import tw from "twrnc";
 import { useSolBalance } from "../hooks/useSolBalance";
 
 export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: { expectingStakeAccountsToUpdate: boolean }) {
@@ -86,7 +86,7 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
       console.log(e);
       return
     }
-    
+
 
 
   }
@@ -102,15 +102,15 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
             textAlign: "center",
           }}
         >
-          {cached && expectingStakeAccountsToUpdate ? (<View tw="-z-10"><Loading></Loading></View>) : ""}
+          {cached && expectingStakeAccountsToUpdate ? (<View style={tw`-z-10`}>Loading</View>) : ""}
           Total Sol Staked:{" "}
           {stakeAccounts.reduce((a, b) => a + b.stakeSol, 0).toFixed(1)} SOL
         </Text>
-        
+
       </View>
-      <View tw="py-1 px-1">
-        {totalExcessLamports > 0 && <Button tw="w-full mb-2" style={{ borderRadius: "5px" }} onClick={claimExcessLamports}>Claim MEV rewards: {Math.round(totalExcessLamports / LAMPORTS_PER_SOL * 1000) / 1000} SOL</Button>}
-        <Button tw="w-full" style={{ borderRadius: "5px" }} onClick={clickNewStakeAccount}>Create New +</Button>
+      <View style={tw`py-1 px-1`}>
+        {totalExcessLamports > 0 && <Button style={tw`w-full mb-2`} style={{ borderRadius: "5px" }} onPress={claimExcessLamports}>Claim MEV rewards: {Math.round(totalExcessLamports / LAMPORTS_PER_SOL * 1000) / 1000} SOL</Button>}
+        <Button style={tw`w-full`} style={{ borderRadius: "5px" }} onPress={clickNewStakeAccount}>Create New +</Button>
       </View>
 
       {stakeAccounts.length == 0 ? (
@@ -135,7 +135,7 @@ export function StakeAccountsOverviewScreen({ expectingStakeAccountsToUpdate }: 
                   paddingBottom: "4px",
                   borderRadius: "5px",
                 }}
-                onClick={() => clickStakeAccount(account)}
+                onPress={() => clickStakeAccount(account)}
               >
                 {validator.commission_rugger ? <AlertIcon /> :
                   <Image

@@ -1,19 +1,23 @@
 import React from "react";
-import ReactXnft, { View } from "react-xnft";
+import { Screen } from "./components/Screen";
+// import Reacft, { View } from "react-native";
+
 import { StakeAccountsScreen } from "./NativeStake";
+import { View, Text, Image } from "react-native";
 //
 // On connection to the host environment, warm the cache.
 //
-ReactXnft.events.on("connect", () => {
-  // no-op
-});
+// ReactXnft.events.on("connect", () => {
+//   // no-op
+// });
+
 
 
 
 export function App() {
   return (
-    <View style={{ height: "100%" }}>
+    <Screen>
       <StakeAccountsScreen />
-    </View>
+    </Screen>
   );
 }

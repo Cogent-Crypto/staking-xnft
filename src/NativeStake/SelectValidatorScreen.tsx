@@ -2,10 +2,11 @@ import {
   View,
   Text,
   Image,
-  TextField,
+  TextInput,
   Button,
-  useNavigation,
-} from "react-xnft";
+} from "react-native";
+import { useNavigation } from '@react-navigation/native';
+
 import React, { useState } from "react";
 import { useValidators } from "../hooks/useValidators";
 import { useCustomTheme } from "../hooks/useCustomTheme";
@@ -13,6 +14,7 @@ import type { Validator } from "../hooks/useValidators";
 import { ExpandIcon } from "../components/Icons";
 import { LoadingScreen } from "../components/LoadingScreen";
 import { useNFTCreators } from "../hooks/useNFTCreators";
+import tw from "twrnc";
 
 const helpfulInTheCommunity = [
   "CogentC52e7kktFfWHwsqSmr8LiS1yAtfqhHcftCPcBJ",
@@ -119,7 +121,7 @@ export function SelectValidatorScreen({
     ({ voteAddress }) => validators[voteAddress]
   )
 
-  const jitoValidators =  Object.values(validators).filter(validator => {
+  const jitoValidators = Object.values(validators).filter(validator => {
     return validator.mev_commission != null && validator.image != ""
   })
 
@@ -145,19 +147,19 @@ export function SelectValidatorScreen({
   return (
     <View style={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <View style={{ margin: "0px 5px" }}>
-        <TextField
+        <TextInput
           onChange={onSearchBarChange}
           value={searchText}
           style={{ width: "100%" }}
-        ></TextField>
+        ></TextInput>
         {searchText == "" ? (
           <View>
             <ValidatorListContainer
-                title={"Validators that share MEV rewards"}
-                onSelectScreen={onSelectScreen}
-                selectScreenData={data}
-                validators={jitoValidators}
-              />
+              title={"Validators that share MEV rewards"}
+              onSelectScreen={onSelectScreen}
+              selectScreenData={data}
+              validators={jitoValidators}
+            />
             {nftValidatorsHeld.length > 0 &&
               <ValidatorListContainer
                 title={"Validators you hold NFTs for"}
@@ -177,7 +179,7 @@ export function SelectValidatorScreen({
               selectScreenData={data}
               validators={nftProjectValidators}
             />
-            
+
             <ValidatorListContainer
               title="All Validators"
               onSelectScreen={onSelectScreen}
@@ -186,7 +188,7 @@ export function SelectValidatorScreen({
             />
             <Button
               style={{ marginTop: "8px", cursor: "pointer", width: "100%" }}
-              onClick={() => {
+              onPress={() => {
                 console.log("hi");
                 setValidatorRenderCount(validatorRenderCount + 20);
               }}
@@ -211,7 +213,7 @@ export function SelectValidatorScreen({
                       cursor: "pointer",
                       width: "100%",
                     }}
-                    onClick={() => {
+                    onPress={() => {
                       setValidatorRenderCount(validatorRenderCount + 20);
                     }}
                   >
@@ -220,7 +222,7 @@ export function SelectValidatorScreen({
                 )}
               </View>
             ) : (
-              <Text tw="mt-2">No Results</Text>
+              <Text style={tw`mt-2`}>No Results</Text>
             )}
           </View>
         )}
@@ -311,7 +313,7 @@ const ValidatorListItem = ({
       }}
     >
       <View
-        tw="flex items-start"
+        style={tw`flex items-start`}
         style={{
           backgroundColor: THEME.colors?.bg2,
           width: "100%",
@@ -323,32 +325,32 @@ const ValidatorListItem = ({
         }}
       >
         <Image
-          tw="mr-2"
+          style={tw`mr-2`}
           src={validator.image}
-          onClick={clickValidator}
+          onPress={clickValidator}
           style={{ height: "44px", borderRadius: "9999px" }}
         />
-        <View tw="w-full" onClick={clickValidator}>
+        <View style={tw`w-full`} onPress={clickValidator}>
           <Text>{validator.name}</Text>
 
-          <View tw="flex mt--2 text-sm justify-between">
-            <Text tw="font-light">
+          <View style={tw`flex mt--2 text-sm justify-between`}>
+            <Text style={tw`font-light`}>
               {Math.round(validator.activated_stake).toLocaleString()} SOL
               Staked
             </Text>
-            <Text tw="font-light">{validator.apy_estimate}% APY</Text>
+            <Text style={tw`font-light`}>{validator.apy_estimate}% APY</Text>
           </View>
           {isExpanded && (
-            <View tw="py-2 py-1 text-white text-xs ">
+            <View style={tw`py-2 py-1 text-white text-xs `}>
               {validator.website && (
                 <View
-                  onClick={() => window.xnft.openWindow(validator.website)}
-                  tw="py-1 hover:underline"
+                  onPress={() => window.xnft.openWindow(validator.website)}
+                  style={tw`py-1 hover:underline`}
                 >
                   {validator.website}
                 </View>
               )}
-              <View tw="py-1">{validator.description}</View>
+              <View style={tw`py-1`}>{validator.description}</View>
             </View>
           )}
         </View>
@@ -356,7 +358,7 @@ const ValidatorListItem = ({
         <ExpandIcon
           lightMode={THEME.colors?.lightMode}
           expanded={isExpanded}
-          onClick={() => handleExpand()}
+          onPress={() => handleExpand()}
           tw={`transition-transform ml-auto min-w-[24px]`}
         />
       </View>

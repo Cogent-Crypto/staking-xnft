@@ -1,5 +1,7 @@
 import React from "react";
-import { Stack, Tab } from "react-xnft";
+import {
+  createStackNavigator,
+} from "@react-navigation/stack";
 import { StakeAccountDetailScreen } from "./StakeAccountDetailScreen";
 import { StakeAccountsOverviewScreen } from "./StakeAccountsOverviewScreen";
 import { SelectValidatorScreen } from "./SelectValidatorScreen";
@@ -8,20 +10,23 @@ import { SendStakeAccountScreen } from './SendStakeAccountScreen';
 import { SplitStakeAccountScreen } from './SplitStakeAccountScreen';
 import { MergeStakeAccountScreen } from './MergeStakeAccountScreen';
 import { RedelegateScreen } from './RedelegateScreen';
-import { InstantUnstakeScreen } from './InstantUnstakeScreen';
+// import { InstantUnstakeScreen } from './InstantUnstakeScreen';
 import { useCustomTheme } from "../hooks/useCustomTheme";
 import { HomeIcon, LiquidIcon } from "../components/Icons";
 import { LiquidStakeAccountsScreen } from "../LiquidStake/LiquidStaking";
-import { LiquidStakeDetail } from "../LiquidStake/LiquidStakeDetail";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+// import { LiquidStakeDetail } from "../LiquidStake/LiquidStakeDetail";
+
+const Stack = createStackNavigator();
 
 export function StakeAccountsScreen() {
   const THEME = useCustomTheme();
+
   return (
     <Stack.Navigator
-      initialRoute={{ name: "overview"}}
-      options={({ route }) => {
-
+      initialRouteName={"overview"}
+      screenOptions={({ route }) => {
         switch (route.name) {
           case "overview":
             return {
@@ -61,18 +66,17 @@ export function StakeAccountsScreen() {
             };
           case "liquidstake":
             return {
-                title: "",
+              title: "",
             };
-          case "liquidstakedetail":
-            return {
-                title: "",
-            };
+          // case "liquidstakedetail":
+          //   return {
+          //     title: "",
+          //   };
           default:
             throw new Error("unknown route ");
         }
       }}
-      style={{}}
-      titleStyle={{ color: THEME.colors?.fontColor }}
+    // titleStyle={{ color: THEME.colors?.fontColor }}
     >
       <Stack.Screen
         name={"overview"}
@@ -106,18 +110,18 @@ export function StakeAccountsScreen() {
         name={"redelegate"}
         component={(props: any) => <RedelegateScreen {...props} />}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name={"instantunstake"}
         component={(props: any) => <InstantUnstakeScreen {...props} />}
-      />
+      /> */}
       <Stack.Screen
-              name={"LiquidStakeAccountsScreen"}
-              component={(props: any) => <LiquidStakeAccountsScreen  {...props} />}
-          />
-      <Stack.Screen
-          name={"liquidstakedetail"}
-          component={(props: any) => <LiquidStakeDetail  {...props} />}
+        name={"LiquidStakeAccountsScreen"}
+        component={(props: any) => <LiquidStakeAccountsScreen  {...props} />}
       />
+      {/* <Stack.Screen
+        name={"liquidstakedetail"}
+        component={(props: any) => <LiquidStakeDetail  {...props} />}
+      /> */}
       {/* <Stack.Screen
         name={"confirm"}
         component={(props: any) => <ConfirmTransaction {...props} />}
@@ -130,23 +134,25 @@ export function StakeAccountsScreen() {
 
 export function TabNavigator(props) {
   const THEME = useCustomTheme();
+  const Tab = createBottomTabNavigator();
+
   return (
     <Tab.Navigator
       initialRouteName="Stake Accounts"
-      style={{
+      sceneContainerStyle={{
         backgroundColor: "#272727",
-        borderTop: "none",
+        // borderTop: "none",
       }}
-      options={({ route }) => {
+      screenOptions={({ route }) => {
         return {
           tabBarIcon: ({ focused }) => {
             const color = focused
               ? THEME?.colors?.activeTab
               : THEME?.colors?.inactiveTab;
             if (route.name === "Stake Accounts") {
-              return <Tab.Icon element={<HomeIcon lightMode={THEME.colors?.lightMode} />} />;
+              return <HomeIcon lightMode={THEME.colors?.lightMode} />;
             } else {
-              return <Tab.Icon element={<LiquidIcon lightMode={THEME.colors?.lightMode} />} />;
+              return <LiquidIcon lightMode={THEME.colors?.lightMode} />;
             }
           },
           tabBarStyle: {
@@ -157,7 +163,7 @@ export function TabNavigator(props) {
     >
       <Tab.Screen
         name="Stake Accounts"
-        component={() => <StakeAccountsOverviewScreen expectingStakeAccountsToUpdate={props.expectingStakeAccountsToUpdate ? props.expectingStakeAccountsToUpdate:false } {...props} />}
+        component={() => <StakeAccountsOverviewScreen expectingStakeAccountsToUpdate={props.expectingStakeAccountsToUpdate ? props.expectingStakeAccountsToUpdate : false} {...props} />}
       />
       <Tab.Screen
         name="Liquid Staking"

@@ -1,6 +1,11 @@
 import React from "react";
-import { Button, View, Text, usePublicKey, useConnection, useNavigation } from "react-xnft";
+import { View, Text } from "react-native";
+import { useNavigation } from '@react-navigation/native';
+
+import { usePublicKey, useSolanaConnection as useConnection } from "../hooks/xnft-hooks";
+
 import type { StakeAccount } from "../hooks/useStakeAccounts";
+
 import type { Validator } from "../hooks/useValidators";
 import { StakeAccountDetail } from "../components/StakeAccountDetail";
 import { ValidatorInfo } from "../components/ValidatorInfo";
@@ -34,16 +39,17 @@ export function RedelegateScreen({
     delegateTxn.recentBlockhash = recentBlockhash.blockhash;
 
     try {
-        await window.xnft.solana.sendAndConfirm(delegateTxn);
-        }
+      await window.xnft.solana.sendAndConfirm(delegateTxn);
+    }
     catch (error) {
-        console.log("error",error);
-        return
-    }   
+      console.log("error", error);
+      return
+    }
 
-    nav.pop()
-    nav.pop()
-    nav.push("overview",{expectingStakeAccountsToUpdate: true})
+    nav.goBack()
+    nav.goBack()
+    // nav.navigate({ name: "overview" }, { expectingStakeAccountsToUpdate: true })
+    nav.navigate("overview")
   };
 
   if (!validators) {
@@ -52,7 +58,7 @@ export function RedelegateScreen({
 
   const existingValidator =
     validators[stakeAccount.validatorAddress.toString()];
-    
+
   return (
     <View style={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <View style={{ flex: 1, margin: "0px 12px" }}>
@@ -63,14 +69,14 @@ export function RedelegateScreen({
         <Text>Switching To</Text>
 
         <ValidatorInfo {...validator} />
-       
+
       </View>
       <PrimaryButton
-          status={ButtonStatus.Ok}
-          disabled={false}
-          onClick={onRedelegate}
-          text="Redelegate"
-        />
+        status={ButtonStatus.Ok}
+        disabled={false}
+        onPress={onRedelegate}
+        text="Redelegate"
+      />
     </View>
   );
 }

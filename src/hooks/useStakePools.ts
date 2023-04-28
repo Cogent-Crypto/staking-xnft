@@ -1,8 +1,8 @@
-import { PublicKey, Connection } from "@solana/web3.js";
-import { stakePoolInfo } from '@solana/spl-stake-pool';
+import { PublicKey } from "@solana/web3.js";
+// import { stakePoolInfo } from '@solana/spl-stake-pool';
 import { useEffect, useState } from 'react';
-import ReactXnft, { usePublicKey, useConnection, LocalStorage } from "react-xnft";
-import { stakepoolInfoStatic } from "./stakepoolStatic";
+// import { stakepoolInfoStatic } from "./stakepoolStatic";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type StakePool = {
     poolName: String,
@@ -22,12 +22,12 @@ export type StakePool = {
 
 const stakePoolCacheKey = "stakepooldata3"
 export function useStakePools() {
-    
-    const [stakePools, setStakePools] = useState<StakePool[]| null>(null)
+
+    const [stakePools, setStakePools] = useState<StakePool[] | null>(null)
     const stakePoolCacheKey = "stakepooldata"
 
     useEffect(() => {
-        LocalStorage.get(stakePoolCacheKey).then((val) => {
+        AsyncStorage.getItem(stakePoolCacheKey).then((val) => {
 
             if (val) {
                 const resp = JSON.parse(val);
@@ -39,12 +39,12 @@ export function useStakePools() {
                     return
                 }
             }
-            
-                fetch("https://cogentcrypto.io/api/stakepoolinfo").then((res) => {
-                    return res.json()
-                })
+
+            fetch("https://cogentcrypto.io/api/stakepoolinfo").then((res) => {
+                return res.json()
+            })
                 .then((data) => {
-                    let stakepooldata: StakePool[] = data.stake_pool_data.map((pool)=> {
+                    let stakepooldata: StakePool[] = data.stake_pool_data.map((pool) => {
                         return {
                             ...pool,
                             tokenMint: new PublicKey(pool.tokenMint),
@@ -53,7 +53,7 @@ export function useStakePools() {
                     })
                     setStakePools(stakepooldata)
                 })
-            
+
         })
     }, [])
 

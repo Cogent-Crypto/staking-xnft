@@ -1,16 +1,19 @@
-import { View, Text, Image, LocalStorage, Button, Loading, useTheme } from "react-xnft";
+import { View, Text } from "react-native";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import React from "react";
-import { Connection, PublicKey } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 import { useCustomTheme } from "../hooks/useCustomTheme";
 import { useCustomConnection } from "../hooks/useCustomConnection";
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import tw from 'twrnc';
 
 const connection = useCustomConnection()
 type reward = { value: number, epoch: number }
 type fetchedRewards = Array<reward>;
 
 const getStakeReward = (cacheKey: string, stakeaccount, epoch) => {
-    return LocalStorage.get(cacheKey).then((val) => {
+    return AsyncStorage.getItem(cacheKey).then((val) => {
 
         if (val !== undefined) {
             const resp = JSON.parse(val);
@@ -19,7 +22,7 @@ const getStakeReward = (cacheKey: string, stakeaccount, epoch) => {
         }
 
         return connection.getInflationReward([stakeaccount], epoch).then((result) => {
-            LocalStorage.set(cacheKey, JSON.stringify({
+            AsyncStorage.setItem(cacheKey, JSON.stringify({
                 ts: Date.now(),
                 value: result[0]?.amount,
             }));
@@ -80,8 +83,8 @@ export function StakeRewardHistory({ stakeAccountPK }: { stakeAccountPK: any }) 
 
     return (
         <View>
-            <View tw="mt-6">
-                <Text tw="font-medium text-base">Recent Rewards</Text>
+            <View style={tw`mt-6`}>
+                <Text style={tw`font-medium text-base`}>Recent Rewards</Text>
                 {rewardHistory.length > 0 &&
                     <ShowRewardHistory loadMoreRewards={loadMoreRewards} rewardHistory={rewardHistory} allRewardsLoaded={allRewardsLoaded} />
                 }
@@ -89,7 +92,7 @@ export function StakeRewardHistory({ stakeAccountPK }: { stakeAccountPK: any }) 
         </View>)
 }
 
-const ShowRewardHistory = ({ rewardHistory, loadMoreRewards, allRewardsLoaded }: { rewardHistory: fetchedRewards, loadMoreRewards: () => Promise<any>, allRewardsLoaded:Boolean }) => {
+const ShowRewardHistory = ({ rewardHistory, loadMoreRewards, allRewardsLoaded }: { rewardHistory: fetchedRewards, loadMoreRewards: () => Promise<any>, allRewardsLoaded: Boolean }) => {
     const [isLoading, setIsLoading] = React.useState(false);
     const THEME = useCustomTheme();
 
@@ -102,20 +105,20 @@ const ShowRewardHistory = ({ rewardHistory, loadMoreRewards, allRewardsLoaded }:
     }
 
     return (
-        <View tw="flex flex-col justify-center mb-4 ">
+        <View style={tw`flex flex-col justify-center mb-4`}>
             {rewardHistory.map((reward, index) => {
-                return ( reward.value !== undefined &&
-                    <View key={index} tw="flex mb-1 mx-auto">
-                        <Text tw="font-bold text-base">{reward.epoch}:</Text>
-                        <Text tw="ml-2 font-bold text-teal-500 text-base">{reward.value / LAMPORTS_PER_SOL}</Text>
+                return (reward.value !== undefined &&
+                    <View key={index} style={tw`flex mb-1 mx-auto`}>
+                        <Text style={tw`font-bold text-base`}>{reward.epoch}:</Text>
+                        <Text style={tw`ml-2 font-bold text-teal-500 text-base`}>{reward.value / LAMPORTS_PER_SOL}</Text>
                     </View>
                 )
             })}
-            <View tw="mx-auto">
+            <View style={tw`mx-auto`}>
                 {/* If Loading show loading indicator */}
-                {isLoading && <Loading />}
+                {isLoading && "Loading..."}
                 {/* If not Loading and last fetched value isn't undefined show Button */}
-                { !allRewardsLoaded && !isLoading && rewardHistory[rewardHistory.length - 1]?.value && <View tw="text-sm cursor-pointer" style={{ color: THEME.colors?.secondary }} onClick={() => handleViewMore()}>More</View>}
+                {!allRewardsLoaded && !isLoading && rewardHistory[rewardHistory.length - 1]?.value && <View style={tw`text-sm cursor-pointer text-[${THEME?.colors?.secondary}]`} onPress={() => handleViewMore()}>More</View>}
             </View>
         </View >
     )

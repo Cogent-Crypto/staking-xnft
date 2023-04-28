@@ -1,7 +1,9 @@
-import ReactXnft, { View, Image, Text, Button, useConnection, usePublicKey, useNavigation, ScrollBar } from "react-xnft";
-import { PublicKey, StakeProgram, Transaction } from "@solana/web3.js";
+import { View, Image, Text, Button, ScrollView } from "react-native";
+import { useNavigation } from '@react-navigation/native';
+
+import { usePublicKey, useSolanaConnection as useConnection } from "../hooks/xnft-hooks";
+import { StakeProgram, Transaction } from "@solana/web3.js";
 import React, { useState } from "react";
-import { useStakeAccounts } from "../hooks/useStakeAccounts";
 import type { StakeAccount } from "../hooks/useStakeAccounts";
 import type { Validator } from "../hooks/useValidators";
 import { useCustomTheme, statusColor } from "../hooks/useCustomTheme";
@@ -110,11 +112,11 @@ export function MergeStakeAccountScreen({
           <StakeAccountDetail stakeAccount={stakeAccount} validator={validator} />
 
         </View>
-        <ScrollBar style={{ flexGrow: "1", margin: "0px 8px", overflowY: "auto" }}>
+        <ScrollView style={{ flexGrow: "1", margin: "0px 8px", overflowY: "auto" }}>
           {mergeAbleAccounts.map((account) => {
             return <SelectableStakeAccount key={account.accountAddress + JSON.stringify(account.selected)} stakeAccount={account} validator={validator} mergeAbleAccounts={mergeAbleAccounts} setMergeAbleAccounts={setMergeAbleAccounts} />
           })}
-        </ScrollBar>
+        </ScrollView>
         <View
           style={{
             display: "flex",
@@ -127,14 +129,14 @@ export function MergeStakeAccountScreen({
         >
           <Button
             style={mergeSelectedButtonStyle}
-            onClick={mergeSelected}
+            onPress={mergeSelected}
             disabled={selectedCount == 0}
           >
             {mergeSelectedButtonText}
           </Button>
           <Button
             style={mergeAllButtonStyle}
-            onClick={mergeAll}
+            onPress={mergeAll}
           >
             {mergeAllButtonText}
           </Button>
@@ -182,7 +184,7 @@ export function SelectableStakeAccount({
           borderRadius: "5px",
           opacity: stakeAccount.selected ? 1 : .5,
         }}
-        onClick={() => {
+        onPress={() => {
           if (mergeAbleAccounts.length == 1) {
             return
           }

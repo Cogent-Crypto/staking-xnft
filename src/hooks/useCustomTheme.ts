@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useTheme } from 'react-xnft';
+import { useColorScheme as useTheme } from "./xnft-hooks";
 
 
 // "colors": {
