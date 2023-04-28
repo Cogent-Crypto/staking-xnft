@@ -22,6 +22,7 @@ const Stack = createStackNavigator();
 
 export function StakeAccountsScreen() {
   const THEME = useCustomTheme();
+
   return (
     <Stack.Navigator
       initialRouteName={"overview"}

@@ -1,8 +1,9 @@
 import React from "react";
-import { View } from "react-native";
+import { Screen } from "./components/Screen";
 // import Reacft, { View } from "react-native";
 
 import { StakeAccountsScreen } from "./NativeStake";
+import { View, Text, Image } from "react-native";
 //
 // On connection to the host environment, warm the cache.
 //
@@ -12,10 +13,11 @@ import { StakeAccountsScreen } from "./NativeStake";
 
 
 
+
 export function App() {
   return (
-    <View style={{ height: "100%" }}>
+    <Screen>
       <StakeAccountsScreen />
-    </View>
+    </Screen>
   );
 }

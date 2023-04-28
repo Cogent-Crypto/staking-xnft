@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-window.addEventListener("load", () => {
-  window.xnft.on("connect", () => {
-    fetchValidators();
-  });
-});
+// window.addEventListener("load", () => {
+//   window.xnft.on("connect", () => {
+//     fetchValidators();
+//   });
+// });
 
 export type Validator = {
   identity: string;
